@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <link rel="stylesheet" href="../resources/shared/styles/style.css">
+   <link rel="stylesheet" href="../resources/shared/styles/form.css">
+   <link rel="stylesheet" href="../resources/credentials/styles/style.css">
+   <title>Asset Master</title>
+   <link rel="icon" href="../resources/images/logo.png">
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+</head>
+<body>
+
+   <form id = "loginForm">
+      <h1>Login</h1>
+      <label for="username">Username</label> <br>
+      <input type="text" name="username" id="username"> <br>
+      <label for="password">Password</label>
+      <i class="fa-regular fa-eye" id = "showPassword"></i>
+      <input type="password" name="password" id="password">
+      <button type="submit" id = "submitButton">Submit</button>
+      <p>Don't have an account? <a href="/signup">Sign Up</a></p>
+   </form>
+
+   <footer>
+      Copyright &copy; 2023 Asset Master
+   </footer>
+
+   <script type="module" src="../resources/shared/scripts/shared.js"></script>
+   <script type="module" src="../resources/credentials/scripts/login.js"></script>
+</body>
+</html>

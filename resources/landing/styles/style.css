@@ -1,0 +1,93 @@
+#mainPage{
+   position: fixed;
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   justify-content: center;
+   gap:20px;
+   width: 100%;
+   height: 100%;
+   margin:auto;
+   text-align: center;
+}
+
+#mainPage h1{
+   font-size: 110px;
+   margin-bottom: 0;
+}
+
+#mainPage p{
+   font-size: 22px;
+   max-width: 50%;
+}
+
+#mainPage > img{
+   width:500px;
+   max-width: 80%;
+   height:auto;
+}
+#mainPage p > a{
+   color:#07EA3A;
+   text-decoration: none;
+   font-weight: bold;
+   max-width:300px;
+   height:auto;
+}
+
+#logInSignUpContainer{
+   display: flex;
+   flex-direction: row;
+   flex-wrap: wrap;
+   gap:20px;
+}
+
+#logInSignUpContainer button{
+   box-sizing: border-box;
+   cursor:pointer;
+   width: 160px;
+   height: 55px;
+   font-size: 20px;
+   text-align: center;
+   color:white;
+   padding: 8px;
+   font-weight: bold;
+   border-radius: 5px;
+   border: none;
+   transition: .5s;
+}
+
+#loginButton{
+   background-color: #07EA3A;
+}
+
+#registerButton{
+   background-color: #08B0FF;
+}
+
+@media only screen and (max-width:900px) {
+   #mainPage h1{
+      font-size: 4.6em;
+   }
+
+   #mainPage p{
+      font-size: 1.4em;
+      max-width:70%;
+   }
+}
+
+@media only screen and (max-width:500px) {
+   #logInSignUpContainer{
+      flex-direction: column;
+      gap:10px;
+   }
+
+   #logInSignUpContainer button{
+      width:220px;
+   }
+
+   #mainPage p{
+      font-size: 1.2em;
+      max-width:80%;
+   }
+
+}

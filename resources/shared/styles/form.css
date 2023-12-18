@@ -1,0 +1,172 @@
+form{
+   width:600px;
+   max-width: 90%;
+   margin:auto;
+   margin-top:2em;
+
+
+   display: flex;
+   flex-direction: column;
+   align-items: flex-start;
+   justify-content: center;
+   flex-wrap: nowrap;
+
+   text-align: center;
+}
+
+form h1{
+   font-size: 70px;
+   width:100%;
+}
+
+form label{
+   text-align: left;
+   font-weight: bold;
+   font-size: 20px;
+   width:100%;
+}
+
+form p{
+   width:100%;
+   font-size: 16px;
+}
+
+form input{
+   box-sizing: border-box;
+
+   border:0;
+   outline: none;
+
+   background-color: none;
+   border: 1px solid black;
+   border-radius: 3px;
+   color:black;
+   width:100%;
+   line-height: 28px;
+   padding: 8px 16px;
+   font-size: 16px;
+   margin-bottom: 10px;
+}
+
+.fa-eye{
+   position: relative;
+   top:32px;
+   left:93%;
+   cursor: pointer;
+   color:black;
+   width:20px;
+ }
+
+form input:focus{
+   border: 2px solid #08B0FF;
+}
+
+form button{
+   cursor: pointer;
+   background-color: #08B0FF;
+   border:0;
+   border-radius: 3px;
+   padding: 10px;
+   width:100%;
+   font-size: 20px;
+   font-weight: bold;
+   color:white;
+   margin-top: 10px;
+   line-height: 28px;
+
+   transition:.5s;
+}
+
+form a{
+   color:#08B0FF;
+   font-weight: bolder;
+   text-decoration: none;
+   text-align: center;
+}
+
+
+
+ @keyframes popup {
+   0%{
+
+   }
+   100%{
+      transform: translate(50%,300%);
+   }
+ }
+
+
+
+.formContainer{
+   position: absolute;
+   transform: translate(50%,-200%);
+
+
+
+
+
+   border:2px solid black;
+   border-radius: 5px;
+   color:black;
+   background-color: white;
+   min-height: 500px;
+   text-align: center;
+   padding:25px;
+   z-index:1000;
+
+}
+
+.formContainer.visible {
+   transition: all 3s ease-in-out;
+   display: fixed;
+   animation: popup 1s;
+}
+.formContainer.hidden {
+   display: none;
+   animation: popout 10s;
+}
+.formContainer > form{
+   padding:25px;
+}
+
+.formContainer h1{
+   font-size: 55px;
+   margin-bottom:20px;
+   margin-top:0;
+}
+
+.formContainer label{
+   font-size: 18px;
+}
+
+.formContainer button{
+   background-color: #EC2EFF;
+}
+
+.formContainer input, .formContainer select{
+   background:#f5f5f5;
+   font-weight: bolder;
+}
+
+.formContainer button > i{
+   margin-left:5px;
+}
+
+.formContainer input[type="date"]{
+   font-weight: bolder;
+   font-size:20px;
+}
+
+.formContainer > .exitFormButton{
+   position: relative;
+   cursor: pointer;
+   top:5%;
+   right:5%;
+   width: 60px;
+   border-radius:25px ;
+   background:none;
+   border:0;
+   margin:0;
+   font-size: 30px;
+   color:red;
+}

@@ -11,6 +11,7 @@ Side project to dive deep into full stack development
    mv  assetmaster/* .
    rm -rf assetmaster
 
+   npm install
    npm install mysql2 --save-dev (SQL connection)
    npm install --save-dev nodemon (Refresh Development Server on Changes)
       package.json[script] -> "start": "nodemon -L ./bin/www"
