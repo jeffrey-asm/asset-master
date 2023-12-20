@@ -47,56 +47,42 @@ for(let i = 0; i < inputs.length;i++){
 
 signUpForm.onsubmit = function(event){
    removeError(errorMessage);
-   //Use regex for stronger passwords
-   let passwordTest = new RegExp("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,30}$");
-   let emailTest = new RegExp('^(([^<>()[\\]\\.,;:\\s@"]+(\\.[^<>()[\\]\\.,;:\\s@"]+)*)|(".+"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$');
+   //Try to make a POST request to add new user
+   let url = '../register_user';
+   let formData = new FormData(this);
 
-   if(usernameInput.value.length == 0 || usernameInput.value.length > 30){
-      errorMessage = displayError(usernameInput,errorMessage, "Username must be between 1 and 30 characters <i class='fa-solid fa-signature'></i>");
-   } else if(passwordInput.value.length < 8){
-      errorMessage = displayError(passwordInput,errorMessage, "Passwords must be at least 8 characters <i class='fa-solid fa-key'></i>");
-   } else if (passwordTest.test(passwordInput.value) == 0){
-      //Passwords must have at least one special character, one digit, 1 uppercase, 1 lowercase, and at least 8 total characters
-      errorMessage = displayError(passwordInput,errorMessage, "Passwords must have at least one special character (@$!%*?&), one digit, 1 uppercase, 1 lowercase, and at least 8 total characters <i class='fa-solid fa-lock'></i>");
-   } else if (passwordInput.value != additionalPasswordInput.value){
-      //Passwords must match in case users enters in undesired input for security
-      errorMessage = displayError(additionalPasswordInput,errorMessage, "Passwords do not match <i class='fa-solid fa-lock'></i>");
-   } else if(emailTest.test(emailInput.value) == 0){
-      //Ensure valid email for security of account
-      errorMessage = displayError(emailInput,errorMessage, "Invalid email address <i class='fa-regular fa-envelope'></i>");
-   } else{
-      //Try to make a POST request to add new user
-      let url = '../register_user';
-      let formData = new FormData(this);
+   //Interesting loading animation inside button
+   submitButton.innerHTML = `<div class="lds-facebook"><div></div><div></div><div></div></div>`;
 
-      //Interesting loading animation inside button
-      submitButton.innerHTML = `<div class="lds-facebook"><div></div><div></div><div></div></div>`;
+   // Manually encode the form data
+   let encodedFormData = new URLSearchParams(formData).toString();
 
-      // Manually encode the form data
-      let encodedFormData = new URLSearchParams(formData).toString();
-
-      fetch(url,{
-         method:"POST",
-         body:encodedFormData,
-         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-         },
-      })
-         .then(response => response.json())
-         .then(data => {
-            if(data.hasOwnProperty('error')){
-               if(data['error'] == 'Username already taken!'){
-                  errorMessage = displayError(usernameInput,errorMessage, `${data['error']} <i class='fa-solid fa-lock'></i>`);
-                  submitButton.innerHTML = "Submit";
-               } else{
-                  errorMessage = displayError(emailInput,errorMessage, `${data['error']} <i class='fa-solid fa-lock'></i>`);
-                  submitButton.innerHTML = "Submit";
-               }
+   fetch(url,{
+      method:"POST",
+      body:encodedFormData,
+      headers: {
+         'Content-Type': 'application/x-www-form-urlencoded',
+      },
+   })
+      .then(response => response.json())
+      .then(data => {
+         if(data.hasOwnProperty('status')){
+            //Display error message on specific component after verifying form on backend
+            errorMessage = displayError(document.getElementById(data.componentID),errorMessage,data.message);
+            submitButton.innerHTML = "Submit";
+         } else if(data.hasOwnProperty('error')){
+            if(data['error'] == 'Username already taken!'){
+               errorMessage = displayError(usernameInput,errorMessage, `${data['error']} <i class='fa-solid fa-lock'></i>`);
+               submitButton.innerHTML = "Submit";
             } else{
-               transitionToPage(submitButton,'/users/home');
+               errorMessage = displayError(emailInput,errorMessage, `${data['error']} <i class='fa-solid fa-lock'></i>`);
+               submitButton.innerHTML = "Submit";
             }
-         })
-         .catch(error => console.error(error));
-   }
+         } else{
+            transitionToPage(submitButton,'/users/home');
+         }
+      })
+      .catch(error => console.error(error));
+
    return false;
 }
