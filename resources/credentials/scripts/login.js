@@ -31,15 +31,38 @@ passwordIcon.onclick = function(){
 }
 
 loginForm.onsubmit = function(event){
-   let usernameSaved = localStorage.getItem("asset-master-username", usernameInput.value);
-   let passwordSaved = localStorage.getItem("asset-master-password", passwordInput.value);
+   removeError(errorMessage);
+   let url = '../login_user';
+   let formData = new FormData(this);
 
-   if (usernameInput.value != usernameSaved || passwordInput.value != passwordSaved){
-      //Assume this does not work until planning for structured database
-      errorMessage = displayError(passwordInput,errorMessage, "Invalid user credentials <i class='fa-solid fa-lock'></i>");
-      usernameInput.classList.add("errorInput");
-   } else{
-      transitionToPage(submitButton,"../home/index.html")
-   }
+   //Interesting loading animation inside button
+   submitButton.innerHTML = `<div class="lds-facebook"><div></div><div></div><div></div></div>`;
+
+   // Manually encode the form data
+   let encodedFormData = new URLSearchParams(formData).toString();
+
+   // Interesting animation
+   submitButton.innerHTML = `<div class="lds-facebook"><div></div><div></div><div></div></div>`;
+
+   fetch(url,{
+      method:"POST",
+      body:encodedFormData,
+      headers: {
+         'Content-Type': 'application/x-www-form-urlencoded',
+      },
+   })
+      .then(response => response.json())
+      .then(data => {
+         if(data.hasOwnProperty('error')){
+            errorMessage = displayError(passwordInput,errorMessage, "Invalid user credentials <i class='fa-solid fa-lock'></i>");
+            usernameInput.classList.add("errorInput");
+            submitButton.innerHTML = "Submit";
+            console.log(data);
+         } else{
+            transitionToPage(submitButton,'/users/home');
+         }
+      })
+      .catch(error => console.error(error));
+
    return false;
 }

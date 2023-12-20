@@ -8,7 +8,8 @@ let passwordInput = document.getElementById("password");
 let passwordIcon = document.getElementById("showPassword");
 let additionalPasswordInput = document.getElementById("additionalPassword");
 let additionalPasswordIcon = document.getElementById("showAdditionalPassword");
-let submitButton = document.getElementById("submitButton");
+let emailInput = document.getElementById("email");
+let submitButton = document.getElementById('submitButton');
 
 let errorMessage;
 
@@ -45,10 +46,12 @@ for(let i = 0; i < inputs.length;i++){
 }
 
 signUpForm.onsubmit = function(event){
+   removeError(errorMessage);
    //Use regex for stronger passwords
    let passwordTest = new RegExp("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,30}$");
+   let emailTest = new RegExp('^(([^<>()[\\]\\.,;:\\s@"]+(\\.[^<>()[\\]\\.,;:\\s@"]+)*)|(".+"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$');
 
-   if(usernameInput.value.length == 0 || usernameInput.value.length >= 15){
+   if(usernameInput.value.length == 0 || usernameInput.value.length > 30){
       errorMessage = displayError(usernameInput,errorMessage, "Username must be between 1 and 30 characters <i class='fa-solid fa-signature'></i>");
    } else if(passwordInput.value.length < 8){
       errorMessage = displayError(passwordInput,errorMessage, "Passwords must be at least 8 characters <i class='fa-solid fa-key'></i>");
@@ -58,24 +61,42 @@ signUpForm.onsubmit = function(event){
    } else if (passwordInput.value != additionalPasswordInput.value){
       //Passwords must match in case users enters in undesired input for security
       errorMessage = displayError(additionalPasswordInput,errorMessage, "Passwords do not match <i class='fa-solid fa-lock'></i>");
-   }else{
+   } else if(emailTest.test(emailInput.value) == 0){
+      //Ensure valid email for security of account
+      errorMessage = displayError(emailInput,errorMessage, "Invalid email address <i class='fa-regular fa-envelope'></i>");
+   } else{
       //Try to make a POST request to add new user
-      const url = '../registerUser';
-      const formData = new FormData(this);
+      let url = '../register_user';
+      let formData = new FormData(this);
 
-      alert(1);
+      //Interesting loading animation inside button
+      submitButton.innerHTML = `<div class="lds-facebook"><div></div><div></div><div></div></div>`;
+
+      // Manually encode the form data
+      let encodedFormData = new URLSearchParams(formData).toString();
 
       fetch(url,{
          method:"POST",
-         body:formData
+         body:encodedFormData,
+         headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+         },
       })
          .then(response => response.json())
-         .then(data => console.log(data))
-         .error(error => console.log(error))
-
-      transitionToPage(submitButton,"../home/index.html");
+         .then(data => {
+            if(data.hasOwnProperty('error')){
+               if(data['error'] == 'Username already taken!'){
+                  errorMessage = displayError(usernameInput,errorMessage, `${data['error']} <i class='fa-solid fa-lock'></i>`);
+                  submitButton.innerHTML = "Submit";
+               } else{
+                  errorMessage = displayError(emailInput,errorMessage, `${data['error']} <i class='fa-solid fa-lock'></i>`);
+                  submitButton.innerHTML = "Submit";
+               }
+            } else{
+               transitionToPage(submitButton,'/users/home');
+            }
+         })
+         .catch(error => console.error(error));
    }
-
-
    return false;
 }

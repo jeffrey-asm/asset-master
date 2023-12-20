@@ -68,12 +68,12 @@ form button{
    border-radius: 3px;
    padding: 10px;
    width:100%;
-   font-size: 20px;
+   font-size: 22px;
    font-weight: bold;
    color:white;
    margin-top: 10px;
    line-height: 28px;
-
+   height:60px;
    transition:.5s;
 }
 
@@ -170,3 +170,42 @@ form a{
    font-size: 30px;
    color:red;
 }
+/* https://loading.io/css/ */
+.lds-facebook {
+   display: inline-block;
+   position: relative;
+   width: 80px;
+   height: 40px;
+   bottom:15px;
+   margin:auto;
+ }
+ .lds-facebook div {
+   display: inline-block;
+   position: absolute;
+   left: 8px;
+   width: 16px;
+   background: #fff;
+   animation: lds-facebook 1.2s cubic-bezier(0, 0.5, 0.5, 1) infinite;
+ }
+ .lds-facebook div:nth-child(1) {
+   left: 8px;
+   animation-delay: -0.24s;
+ }
+ .lds-facebook div:nth-child(2) {
+   left: 32px;
+   animation-delay: -0.12s;
+ }
+ .lds-facebook div:nth-child(3) {
+   left: 56px;
+   animation-delay: 0;
+ }
+ @keyframes lds-facebook {
+   0% {
+     top: 8px;
+     height: 30px;
+   }
+   50%, 100% {
+     top: 24px;
+     height: 20px;
+   }
+ }
