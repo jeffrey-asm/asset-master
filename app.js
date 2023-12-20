@@ -5,12 +5,19 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const cors = require('cors');
 const helmet = require('helmet');
-const bodyParser = require('body-parser');
+const session = require("express-session")
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
 var app = express();
+
+app.use(session({
+  secret:process.env.KEY,
+  resave:true,
+  saveUninitialized:true
+}));
+
 app.use(cors());
 app.use(helmet());
 app.use(logger('dev'));
