@@ -57,8 +57,8 @@ loginForm.onsubmit = function(event){
             errorMessage = displayError(passwordInput,errorMessage, "Invalid user credentials <i class='fa-solid fa-lock'></i>");
             usernameInput.classList.add("errorInput");
             submitButton.innerHTML = "Submit";
-            console.log(data);
          } else{
+            submitButton.innerHTML = "";
             transitionToPage(submitButton,'/users/home');
          }
       })

@@ -3,6 +3,7 @@
 body{
    font-family: 'Inter', sans-serif;
    color:black;
+   background-color: #ffffff;
 
    margin:0;
    padding:0;
@@ -10,8 +11,30 @@ body{
    overflow-x: hidden;
 }
 
+button{
+   cursor: pointer;
+   background-color: #08B0FF;
+   border:0;
+   border-radius: 3px;
+   padding: 10px;
+   width:100%;
+   font-size: 22px;
+   font-weight: bold;
+   color:white;
+   margin-top: 10px;
+   line-height: 28px;
+   height:60px;
+   transition:.5s;
+}
+
 button:hover {
    box-shadow: 0 0 10px #B3B6B4;
+}
+
+.mainImage img{
+   width:800px;
+   max-width: 95%;
+   margin:auto;
 }
 
 .error{
@@ -42,8 +65,20 @@ button:hover {
    transition: transform 1s ease-in;
 }
 
+header{
+   display: flex;
+   flex-direction: row;
+   flex-wrap: wrap;
+   align-items: center;
+   justify-content: space-between;
+   padding: 10px;
+   width:90%;
+   margin:auto;
+}
+
 footer{
-   position: absolute;
+   position:absolute;
+   margin-top: 20px;
    bottom: 0;
    text-align: center;
    width:100%;
@@ -59,6 +94,13 @@ header{
    justify-content: space-between;
    width:90%;
    margin:auto;
+   padding:20px;
+}
+
+header h1 > a{
+   font-size: 60px;
+   color:black;
+   text-decoration: none;
 }
 
 nav{
@@ -67,16 +109,17 @@ nav{
    flex-wrap: wrap;
    align-items: center;
    justify-content: space-between;
-   gap:15px;
+   gap:35px;
 }
 
-nav a{
-   font-size: 25px;
+nav a,nav i{
+   font-size: 32px;
    font-weight: bold;
    text-decoration: none;
    color:black;
+   cursor:pointer;
 }
 
-nav a:hover{
+nav a:hover,nav i:hover{
    color:#07EA3A;
 }

@@ -6,16 +6,20 @@ const logger = require('morgan');
 const cors = require('cors');
 const helmet = require('helmet');
 const session = require("express-session")
+require("dotenv").config();
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
 var app = express();
 
+app.use(cookieParser());
+//Change cookie to secure on HTTPS
 app.use(session({
-  secret:process.env.KEY,
+  secret:process.env.SESSION_SECRET,
   resave:true,
-  saveUninitialized:true
+  saveUninitialized:true,
+  cookie: { secure: false }
 }));
 
 app.use(cors());
@@ -23,13 +27,13 @@ app.use(helmet());
 app.use(logger('dev'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(cookieParser());
 app.use('/resources',express.static(path.join(__dirname,'resources')));
 
 
 app.set('views', path.join(__dirname, 'components'));
 app.set('view engine', 'ejs');
 
+//Validation to bring unregistered users to landing page
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 

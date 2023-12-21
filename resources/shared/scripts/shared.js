@@ -1,5 +1,5 @@
 function transitionToPage(component,link){
-   component.style.color = "transparent";
+   component.innerHTML = "";
 
    setTimeout(()=>{
       component.style.transition = "2.5s";
@@ -32,5 +32,14 @@ function displayError(inputComponent, errorComponent, message){
    return errorComponent;
 }
 
+//Nav icon for user settings
+let settingsIcon = document.getElementById('settingsIcon');
+console.log(1);
+
+if(settingsIcon){
+   settingsIcon.onclick = function(event){
+      window.location.assign('/users/settings');
+   }
+}
 
 export {transitionToPage,removeError,displayError};

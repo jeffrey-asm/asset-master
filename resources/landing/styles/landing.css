@@ -1,32 +1,27 @@
-#mainPage{
+.mainPage{
    position: fixed;
+   display: grid;
    display: flex;
    flex-direction: column;
    align-items: center;
    justify-content: center;
-   gap:20px;
    width: 100%;
-   height: 100%;
+   height:80%;
    margin:auto;
    text-align: center;
 }
 
-#mainPage h1{
+.mainPage h1{
    font-size: 110px;
-   margin-bottom: 0;
+   margin: 0;
 }
 
-#mainPage p{
+.mainPage p{
    font-size: 22px;
-   max-width: 50%;
+   margin:auto;
 }
 
-#mainPage > img{
-   width:500px;
-   max-width: 80%;
-   height:auto;
-}
-#mainPage p > a{
+.mainText p > a{
    color:#07EA3A;
    text-decoration: none;
    font-weight: bold;
@@ -34,23 +29,36 @@
    height:auto;
 }
 
+.mainText{
+   display: flex;
+   flex-direction: column;
+   flex-wrap: wrap;
+   align-items: center;
+   justify-content: center;
+   gap:20px;
+}
+
 #logInSignUpContainer{
    display: flex;
    flex-direction: row;
    flex-wrap: wrap;
+   align-items: center;
+   justify-content: center;
    gap:20px;
+   width:100%;
+   margin:auto;
 }
 
 #logInSignUpContainer button{
    box-sizing: border-box;
    cursor:pointer;
-   width: 160px;
-   height: 55px;
-   font-size: 20px;
+   width: 220px;
+   height: 60px;
+   font-size: 22px;
    text-align: center;
    color:white;
-   padding: 8px;
-   font-weight: bold;
+   padding: 10px;
+   font-weight: bolder;
    border-radius: 5px;
    border: none;
    transition: .5s;
