@@ -79,6 +79,7 @@ signUpForm.onsubmit = function(event){
                submitButton.innerHTML = "Submit";
             }
          } else{
+            submitButton.innerHTML = "";
             transitionToPage(submitButton,'/users/home');
          }
       })

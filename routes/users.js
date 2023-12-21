@@ -1,16 +1,27 @@
 var express = require('express');
 var router = express.Router();
-const path = require('path');
+
+const homeController = require("../controllers/usersController.js");
 
 /* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.redirect('/users/home');
-});
+router.get('/', homeController.redirect);
 
-router.get('/home', function(req, res, next) {
-  // const path = path.join(__dirname,'../components','home.html');
-  res.sendFile(path.join(__dirname,'../components','home.html'));
-});
+// Handle home page routing
+router.get('/home', homeController.home);
 
+// Handle budget page routing
+router.get('/budget', homeController.budget);
+
+// Handle accounts page routing
+router.get('/accounts', homeController.accounts);
+
+// Handle settings page routing
+router.get('/settings', homeController.settings);
+
+// Get user information essential for settings page
+router.get('/getUserInfo', homeController.userInformation);
+
+// Logout method using express-session
+router.get('/logout', homeController.logout);
 
 module.exports = router;

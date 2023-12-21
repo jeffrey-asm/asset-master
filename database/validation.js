@@ -1,8 +1,4 @@
-
-
-
-
-
+const path = require('path');
 
 function signUpFormValidation(username,password,additionalPassword,email){
    let passwordTest = new RegExp("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,30}$");
