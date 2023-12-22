@@ -13,9 +13,9 @@ function renderOrRedirect(request,result,file){
 
 //TODO remove in deployement
 function developmentTest(request){
-  // request.session.UserID = 'kqdkjzyyk1703200713376';
-  // request.session.Username = 'root';
-  // request.session.Email = 'cordej2@rpi.edu';
+  // request.session.UserID = 'gswkjupf1703253610914';
+  // request.session.Username = 'bro';
+  // request.session.Email = 'jeffrey@gmail.com';
   // request.session.Verified = 'F';
 }
 

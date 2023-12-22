@@ -10,7 +10,10 @@ exports.login = asyncHandler(async(request,result,next)=>{
       let credentialsCheck = await runQuery(`SELECT * FROM Users WHERE Username = ?;`,[request.body.username]);
 
       if(credentialsCheck.length != 1){
-      result.send({error:'Invalid Credentials'});
+         result.json({
+            status:'fail',
+            message:"Invalid Credentials <i class='fa-solid fa-database'></i>"
+          });
       return;
       } else{
       //Compare hashed passwords
@@ -22,11 +25,16 @@ exports.login = asyncHandler(async(request,result,next)=>{
 
          result.send({success:true});
       } else{
-         result.send({error:'Invalid Credentials'});
+         result.json({
+            status:'fail',
+            message:"Invalid Credentials <i class='fa-solid fa-database'></i>"
+          });
       }
       }
    } catch (error){
-      result.json({error:`Could not successfully process request: ${error}`});
+      result.json({
+         status:'fail',
+         message:`Could not successfully process request <i class='fa-solid fa-database'></i>`});
    }
 });
 

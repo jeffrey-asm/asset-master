@@ -1,6 +1,9 @@
 form{
    width:900px;
 }
+form h2{
+   font-size:30px;
+}
 form button{
    background:#07EA3A;
 }
@@ -13,6 +16,7 @@ form button{
 }
 
 .editingContainer label{
+   font-size:22px;
    grid-row:1;
    grid-column: 1;
 }
@@ -20,9 +24,23 @@ form button{
 .editingContainer .editCategory{
    grid-row:1;
    grid-column: 3/4;
+   font-size:20px;
+}
+
+.editingContainer .editCategory[disabled]{
+   background:white;
+   color:#DCDAD1;
+}
+
+.editingContainer .error{
+   grid-row:3;
+   width:100%;
+   font-size:20px;
+   grid-column: 1/4;
 }
 
 .editingContainer input{
+   font-size:20px;
    grid-row:2;
    grid-column: 1/4;
 }
@@ -44,24 +62,25 @@ form label{
 }
 
 .securityTitle{
+   font-size:22px;
    grid-row:1;
    grid-column: 1;
    margin:0;
 }
 
 .securityText{
+   font-size:20px;
    grid-row:2;
    grid-column: 1;
    margin:0;
 }
 
-
-
 #logOutButton{
-   border:2px solid red;
-   color:red;
-   background-color: white;
+   justify-self: center;
+   justify-content: center;
+   background-color: red;
    width:200px;
+   margin:20px auto 20px auto;
 }
 
 .securityButton{
@@ -73,10 +92,10 @@ form label{
    border:2px solid black;
    color:black;
    background-color: white;
-   width:200px;
+   width:150px;
    font-size:18px;
    padding:0;
-   height:80px;
+   height:60px;
 }
 
 #verifiedImage{

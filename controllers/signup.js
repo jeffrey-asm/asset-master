@@ -6,11 +6,13 @@ const hash = require('../database/hash.js');
 
 exports.signup = asyncHandler(async(request,result,next)=>{
    //First validate all form input on backend for safety of structured information on current database
-  let formValidation = validation.signUpFormValidation(...Object.values(request.body));
-  if(formValidation['status'] === 'fail'){
-    result.send(formValidation);
+  let formValidation = validation.signUpFormValidation(request.body.username,request.body.password,request.body.additionalPassword,request.body.email);
+
+  if(formValidation.status && formValidation.status != 'pass'){
+    result.json(formValidation);
     return;
   }
+
 
   try{
     let passwordHash = hash(request.body.password);

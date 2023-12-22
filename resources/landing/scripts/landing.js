@@ -11,4 +11,3 @@ signUpButton.onclick = function (event) {
    transitionToPage(this, '/signup');
 }
 
-export {transitionToPage};

@@ -1,5 +1,7 @@
 function transitionToPage(component,link){
-   component.innerHTML = "";
+   setTimeout(()=>{
+      component.innerHTML = "";
+   },300);
 
    setTimeout(()=>{
       component.style.transition = "2.5s";
@@ -11,34 +13,57 @@ function transitionToPage(component,link){
    },1000);
 }
 
-function removeError(errorComponent){
+function removeMessage(errorComponent){
    if(document.body.contains(errorComponent)){
-      errorComponent.remove();
+      errorComponent.style.animation = 'fadeOut 1s';
+      setTimeout(()=>{
+         errorComponent.remove();
+      },800);
+
    }
 }
 
-function displayError(inputComponent, errorComponent, message){
-   inputComponent.classList.add("errorInput");
+function displayMessage(inputComponent, currentMessage, message, classType){
+   if(document.body.contains(currentMessage)){
+      //apply no fadeout
+      currentMessage.remove();
+   }
 
-   removeError(errorComponent);
+   let container = Object.assign(document.createElement('p'),{className:classType,innerHTML:message});
+   inputComponent.before(container);
 
-   errorComponent = document.createElement("p");
-   errorComponent.className = "error";
-   errorComponent.innerHTML = message;
+   //Always return message component to check if node still exists
+   return container;
+}
 
-   inputComponent.after(errorComponent);
+function trimInputs(components){
+   for(let i = 0; i < components.length; i++){
+      //Always trim inputs for valid form validation
+      components[i].value = components[i].value.trim();
+   }
+}
 
-   //Always return component to check if node still exists
-   return errorComponent;
+
+
+function togglePopUp(component){
+   if(component.classList.contains('popupShown')){
+      //Must hide elements behind
+      component.classList.remove('popupShown');
+      component.classList.add('popupHidden');
+   } else{
+      component.classList.remove('popupHidden');
+      component.classList.add('popupShown');
+   }
+
 }
 
 //Nav icon for user settings
-let settingsIcon = document.getElementById('settingsIcon');
+let profileIcon = document.getElementById('profileIcon');
 
-if(settingsIcon){
-   settingsIcon.onclick = function(event){
-      window.location.assign('/users/settings');
+if(profileIcon){
+   profileIcon.onclick = function(event){
+      window.location.assign('../users/profile');
    }
 }
 
-export {transitionToPage,removeError,displayError};
+export {transitionToPage,displayMessage,removeMessage,trimInputs,togglePopUp};
