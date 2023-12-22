@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 const usersController = require("../controllers/users.js");
-const editUserController = require("../controllers/editUser.js");
+const updateUserController = require("../controllers/updateUser.js");
 
 /* GET users listing. */
 router.get('/', usersController.redirect);
@@ -17,13 +17,13 @@ router.get('/budget', usersController.budget);
 router.get('/accounts', usersController.accounts);
 
 // Handle settings page routing
-router.get('/settings', usersController.settings);
+router.get('/profile', usersController.profile);
 
 // Get user information essential for settings page
 router.get('/getUserInfo', usersController.userInformation);
 
 // Update user information essential for settings page
-router.post('/updateUser', editUserController.updateUser);
+router.post('/updateUser', updateUserController.updateUser);
 
 // Logout method using express-session
 router.get('/logout', usersController.logout);

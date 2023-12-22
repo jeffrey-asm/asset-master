@@ -28,8 +28,8 @@ exports.accounts = asyncHandler(async(request,result,next)=>{
   renderOrRedirect(request,result,'accounts.html');
 });
 
-exports.settings = asyncHandler(async(request,result,next)=>{
-  renderOrRedirect(request,result,'settings.html');
+exports.profile = asyncHandler(async(request,result,next)=>{
+  renderOrRedirect(request,result,'profile.html');
 });
 
 exports.userInformation = asyncHandler(async(request,result,next)=>{

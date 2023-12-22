@@ -5,9 +5,9 @@
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <link rel="stylesheet" href="../resources/shared/styles/style.css">
    <link rel="stylesheet" href="../resources/shared/styles/form.css">
-   <link rel="stylesheet" href="../resources/settings/styles/settings.css">
+   <link rel="stylesheet" href="../resources/profile/styles/profile.css">
    <title>Asset Master</title>
-   <link rel="icon" href="../resources/images/logo.jpg">
+   <link rel="icon" href="../resources/shared/images/logo.jpg">
    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </head>
 <body>
@@ -21,15 +21,15 @@
          <a href = "/users/home">Home</a>
          <a href = "/users/budget">Budget</a>
          <a href = "/users/accounts">Accounts</a>
-         <i class="fa-solid fa-user-secret" id = "settingsIcon"></i>
+         <i class="fa-solid fa-user-secret" id = "profileIcon"></i>
       </nav>
 
    </header>
 
    <main>
       <div class = "sectionTitle">
-         <img src="../resources/settings/images/settings.jpg" alt="settings-image">
-         <h1>Settings</h1>
+         <img src="../resources/profile/images/profile.jpg" alt="profile-image">
+         <h1>Profile</h1>
       </div>
 
 
@@ -66,7 +66,7 @@
          <div class = 'securityContainer'>
             <h3 class = 'securityTitle'>Change Password</h3>
             <p class = 'securityText'>Set a permanent password to login to your account.</p>
-            <button type = 'button' class = 'securityButton'>Change Password</button>
+            <button type = 'button' class = 'securityButton' id = 'changePassword'>Change Password</button>
          </div>
 
          <div class = 'securityContainer'>
@@ -77,6 +77,14 @@
 
          <button type="button" id = "logOutButton">Log Out</button>
       </form>
+
+      <div class = 'popup' id = 'passwordForm'>
+         <div class = 'iconContainer'>
+            <i class="fa-solid fa-key"></i>
+         </div>
+         <h1>CHANGE PASSWORD</h1>
+         <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Qui, natus.</p>
+      </div>
    </main>
 
    <footer>
@@ -84,6 +92,6 @@
    </footer>
 
    <script type="module" src="../resources/shared/scripts/shared.js"></script>
-   <script type="module" src="../resources/settings/scripts/settings.js"></script>
+   <script type="module" src="../resources/profile/scripts/profile.js"></script>
 </body>
 </html>
