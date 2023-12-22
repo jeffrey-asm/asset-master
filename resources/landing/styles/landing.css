@@ -1,12 +1,11 @@
 .mainPage{
    position: fixed;
-   display: grid;
    display: flex;
    flex-direction: column;
    align-items: center;
    justify-content: center;
    width: 100%;
-   height:80%;
+   height:100%;
    margin:auto;
    text-align: center;
 }
@@ -14,11 +13,17 @@
 .mainPage h1{
    font-size: 110px;
    margin: 0;
+   max-width: 90%;
 }
 
 .mainPage p{
    font-size: 22px;
    margin:auto;
+   max-width:80%;
+}
+
+.mainPage p.errorParagraph{
+   max-width: 60%;
 }
 
 .mainText p > a{
@@ -72,14 +77,20 @@
    background-color: #08B0FF;
 }
 
+
 @media only screen and (max-width:900px) {
-   #mainPage h1{
-      font-size: 4.6em;
+   .mainPage h1{
+      font-size: 70px;
    }
 
-   #mainPage p{
-      font-size: 1.4em;
-      max-width:70%;
+   .mainPage p{
+      font-size: 22px;
+      max-width:90%;
+   }
+
+   .mainPage{
+      height:90%;
+      gap:20px;
    }
 }
 
@@ -91,11 +102,17 @@
 
    #logInSignUpContainer button{
       width:220px;
+      font-size: 18px;
    }
 
-   #mainPage p{
-      font-size: 1.2em;
-      max-width:80%;
+   .mainPage h1{
+      font-size: 45px;
+      max-width: 100%;
+   }
+
+   .mainPage p{
+      font-size: 18px;
+      max-width: 85%;
    }
 
 }

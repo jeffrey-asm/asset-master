@@ -48,7 +48,7 @@ for(let i = 0; i < inputs.length;i++){
 signUpForm.onsubmit = function(event){
    removeError(errorMessage);
    //Try to make a POST request to add new user
-   let url = '../register_user';
+   let url = '../registerUser';
    let formData = new FormData(this);
 
    //Interesting loading animation inside button
@@ -66,18 +66,10 @@ signUpForm.onsubmit = function(event){
    })
       .then(response => response.json())
       .then(data => {
-         if(data.hasOwnProperty('status')){
+         if(data.hasOwnProperty('componentID')){
             //Display error message on specific component after verifying form on backend
             errorMessage = displayError(document.getElementById(data.componentID),errorMessage,data.message);
             submitButton.innerHTML = "Submit";
-         } else if(data.hasOwnProperty('error')){
-            if(data['error'] == 'Username already taken!'){
-               errorMessage = displayError(usernameInput,errorMessage, `${data['error']} <i class='fa-solid fa-lock'></i>`);
-               submitButton.innerHTML = "Submit";
-            } else{
-               errorMessage = displayError(emailInput,errorMessage, `${data['error']} <i class='fa-solid fa-lock'></i>`);
-               submitButton.innerHTML = "Submit";
-            }
          } else{
             submitButton.innerHTML = "";
             transitionToPage(submitButton,'/users/home');

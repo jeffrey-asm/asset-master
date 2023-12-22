@@ -34,7 +34,6 @@ function displayError(inputComponent, errorComponent, message){
 
 //Nav icon for user settings
 let settingsIcon = document.getElementById('settingsIcon');
-console.log(1);
 
 if(settingsIcon){
    settingsIcon.onclick = function(event){

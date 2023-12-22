@@ -1,23 +1,23 @@
 var express = require('express');
 var router = express.Router();
 
-const landingController = require("../controllers/landingController.js");
-const logInController = require("../controllers/logInController.js");
-const signUpController = require("../controllers/signUpController.js");
+const indexController = require("../controllers/index.js");
+const logInController = require("../controllers/login.js");
+const signUpController = require("../controllers/signup.js");
 
 //Landing Page
-router.get('/', landingController.landing);
+router.get('/', indexController.landing);
 
 //Login Page
-router.get('/login', landingController.login);
+router.get('/login', indexController.login);
 
 //Signup Page
-router.get('/signup', landingController.signup);
+router.get('/signup', indexController.signup);
 
 //Handling Register POST Request
-router.post('/register_user', signUpController.signup);
+router.post('/registerUser', signUpController.signup);
 
 //Handling Register POST Request
-router.post('/login_user', logInController.login);
+router.post('/loginUser', logInController.login);
 
 module.exports = router;

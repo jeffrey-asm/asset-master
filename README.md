@@ -12,4 +12,4 @@ Many thanks to database hosting services provided by [PlanetScale](https://plane
 
 
 > [!NOTE]
-> Project relies on a small database, hence lack of long-term analytics related pages, but improvised with essential productivity pages needed for tracking one's finances
+> Database is limited to 5GB, so long term analytics will be a future implementation as this database expands.
