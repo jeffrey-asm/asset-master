@@ -46,7 +46,15 @@ form input{
    line-height: 28px;
    padding: 8px 16px;
    font-size: 16px;
-   margin-bottom: 10px;
+   margin-bottom: 20px;
+}
+
+form input[disabled]{
+   background: #DCDAD1;
+}
+
+form button[disabled]{
+   background: #DCDAD1;
 }
 
 .fa-eye{
@@ -71,6 +79,34 @@ form a{
 }
 
 
+.editCategory{
+   outline:none;
+   border:none;
+   background:transparent;
+   color:#178eef;
+   font-size:16px;
+   font-weight: bolder;
+   text-align: right;
+   margin:0;
+   padding:0;
+}
+
+.editCategory:hover{
+   box-shadow: none;
+}
+
+.editCategory span{
+   cursor:pointer;
+}
+
+.editCategory:hover{
+   transform: translateY(-2px);
+}
+
+form hr{
+   width:100%;
+   color:black;
+}
 
  @keyframes popup {
    0%{
@@ -86,11 +122,6 @@ form a{
 .formContainer{
    position: absolute;
    transform: translate(50%,-200%);
-
-
-
-
-
    border:2px solid black;
    border-radius: 5px;
    color:black;

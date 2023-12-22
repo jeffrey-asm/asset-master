@@ -7,18 +7,22 @@ CREATE TABLE Users (
    UserID  VARCHAR(30) PRIMARY KEY NOT NULL,
    Username VARCHAR(30) NOT NULL UNIQUE,
    PasswordHash VARCHAR(255) NOT NULL,
-   Email VARCHAR(255) NOT NULL UNIQUE
+   Email VARCHAR(255) NOT NULL UNIQUE,
+   Verified CHAR(1) NOT NULL
 );
 
-INSERT INTO Users (UserID,Username,PasswordHash, Email)
+INSERT INTO Users (UserID,Username,PasswordHash, Email, Verified)
 VALUES (
    'sas904aj3139',
   'jeffreyC4',
   'passwordHASH',
-  'random@gmail.com'
+  'random@gmail.com',
+  'F'
 );
 
 SELECT * FROM Users;
+
+UPDATE Users Set Username='jeffrey', Email='cord@gmail.com' WHERE UserID='sas904aj3139';
 
 CREATE TABLE Accounts (
    AccountID VARCHAR(30) PRIMARY KEY NOT NULL,

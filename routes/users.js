@@ -1,27 +1,31 @@
 var express = require('express');
 var router = express.Router();
 
-const homeController = require("../controllers/usersController.js");
+const usersController = require("../controllers/users.js");
+const editUserController = require("../controllers/editUser.js");
 
 /* GET users listing. */
-router.get('/', homeController.redirect);
+router.get('/', usersController.redirect);
 
 // Handle home page routing
-router.get('/home', homeController.home);
+router.get('/home', usersController.home);
 
 // Handle budget page routing
-router.get('/budget', homeController.budget);
+router.get('/budget', usersController.budget);
 
 // Handle accounts page routing
-router.get('/accounts', homeController.accounts);
+router.get('/accounts', usersController.accounts);
 
 // Handle settings page routing
-router.get('/settings', homeController.settings);
+router.get('/settings', usersController.settings);
 
 // Get user information essential for settings page
-router.get('/getUserInfo', homeController.userInformation);
+router.get('/getUserInfo', usersController.userInformation);
+
+// Update user information essential for settings page
+router.post('/updateUser', editUserController.updateUser);
 
 // Logout method using express-session
-router.get('/logout', homeController.logout);
+router.get('/logout', usersController.logout);
 
 module.exports = router;

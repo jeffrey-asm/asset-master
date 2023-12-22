@@ -32,7 +32,7 @@ passwordIcon.onclick = function(){
 
 loginForm.onsubmit = function(event){
    removeError(errorMessage);
-   let url = '../login_user';
+   let url = '../loginUser';
    let formData = new FormData(this);
 
    //Interesting loading animation inside button
@@ -40,9 +40,6 @@ loginForm.onsubmit = function(event){
 
    // Manually encode the form data
    let encodedFormData = new URLSearchParams(formData).toString();
-
-   // Interesting animation
-   submitButton.innerHTML = `<div class="lds-facebook"><div></div><div></div><div></div></div>`;
 
    fetch(url,{
       method:"POST",

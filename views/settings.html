@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <link rel="stylesheet" href="../resources/shared/styles/style.css">
+   <link rel="stylesheet" href="../resources/shared/styles/form.css">
+   <link rel="stylesheet" href="../resources/settings/styles/settings.css">
+   <title>Asset Master</title>
+   <link rel="icon" href="../resources/images/logo.jpg">
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+<body>
+   <header>
+      <div class = "headerTitle">
+         <img src="../resources/shared/images/logo.jpg" alt="error-image">
+         <h1><a href="/users/home">Asset Master</a></h1>
+      </div>
+
+      <nav>
+         <a href = "/users/home">Home</a>
+         <a href = "/users/budget">Budget</a>
+         <a href = "/users/accounts">Accounts</a>
+         <i class="fa-solid fa-user-secret" id = "settingsIcon"></i>
+      </nav>
+
+   </header>
+
+   <main>
+      <div class = "sectionTitle">
+         <img src="../resources/settings/images/settings.jpg" alt="settings-image">
+         <h1>Settings</h1>
+      </div>
+
+
+
+      <form id = "detailsForm" novalidate>
+         <h2>Account Details</h2>
+         <hr>
+         <div class = "editingContainer">
+            <label for="username">Username</label>
+            <button type = "button" class = "editCategory" id = 'editUsername'>
+               <span>
+                  <i class = "fa-solid fa-pen-to-square"></i> Edit
+               </span>
+            </button>
+            <input type="text" name="username" id="username" value = "username" disabled>
+         </div>
+
+         <div class = "editingContainer">
+            <label for="email">Email</label> <br>
+            <button type = "button" class = "editCategory" id = 'editEmail'>
+               <span>
+                  <i class = "fa-solid fa-pen-to-square"></i> Edit
+               </span>
+            </button>
+            <input type="email" name="email" id="email" value = "email" disabled>
+         </div>
+
+         <button type="submit" id = "changesButton" disabled>Save Changes</button>
+      </form>
+
+      <form id = "securityForm" novalidate>
+         <h2>Account Security</h2>
+         <hr>
+         <div class = 'securityContainer'>
+            <h3 class = 'securityTitle'>Change Password</h3>
+            <p class = 'securityText'>Set a permanent password to login to your account.</p>
+            <button type = 'button' class = 'securityButton'>Change Password</button>
+         </div>
+
+         <div class = 'securityContainer'>
+            <h3 class = 'securityTitle'>Verify Email</h3>
+            <p class = 'securityText'>Keep your account secure via email verification</p>
+            <button type = 'button' class = 'securityButton' id = 'verifyEmailButton'>Verify Email</button>
+         </div>
+
+         <button type="button" id = "logOutButton">Log Out</button>
+      </form>
+   </main>
+
+   <footer>
+      Copyright &copy; 2023 Asset Master
+   </footer>
+
+   <script type="module" src="../resources/shared/scripts/shared.js"></script>
+   <script type="module" src="../resources/settings/scripts/settings.js"></script>
+</body>
+</html>
