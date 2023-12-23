@@ -1,4 +1,4 @@
-.env
-.env.example
-.env.local
-.env.staging
+*.env
+*.env.example
+*.env.local
+*.env.staging
