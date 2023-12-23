@@ -11,7 +11,6 @@ async function runQuery(query='',inputs=[]){
       const results = await asyncQuery(query,inputs);
       return results;
    } catch (error){
-      console.log(error);
       return {error: `Error running sql query: ${error}`};
    } finally{
       connection.end();

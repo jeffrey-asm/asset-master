@@ -7,28 +7,36 @@
    <link rel="stylesheet" href="../resources/shared/styles/form.css">
    <link rel="stylesheet" href="../resources/credentials/styles/credentials.css">
    <title>Asset Master</title>
-   <link rel="icon" href="../../resources/images/logo.jpg">
+   <link rel="icon" href="../resources/shared/images/logo.jpg">
    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </head>
 <body>
-   <form id = "signUpForm" novalidate>
-      <div class = "mainImage">
-         <img src="../resources/credentials/images/signup.jpg" alt="signup-image">
-      </div>
-      <h1>Sign up</h1>
-      <label for="username">Username</label> <br>
-      <input type="text" name="username" id="username"> <br>
-      <label for="password">Password</label>
-      <i class="fa-regular fa-eye" id = "showPassword"></i>
-      <input type="password" name="password" id="password">
-      <label for="additionalPassword">Confirm password</label>
-      <i class="fa-regular fa-eye" id = "showAdditionalPassword"></i>
-      <input type="password" name="additionalPassword" id="additionalPassword"> <br>
-      <label for="email">Email</label> <br>
-      <input type="email" name="email" id="email"> <br>
-      <button type="submit" id = "submitButton">Submit</button>
-      <p>Already have an account? <a href="/login">Log In</a></p>
-   </form>
+   <main>
+      <form id = "signUpForm" novalidate>
+         <div class = "mainImage">
+            <img src="../resources/credentials/images/signup.jpg" alt="signup-image">
+         </div>
+         <h1>Sign up</h1>
+         <label for="username">Username</label>
+         <input type="text" name="username" id="username">
+
+         <div class = 'passwordContainer'>
+            <label for="password">New Password</label>
+            <i class="fa-regular fa-eye" id = "showPassword"  data-container = "password"></i>
+            <input type="password" name="password" id="password">
+         </div>
+
+         <div class = 'passwordContainer'>
+            <label for="additionalPassword">Confirm password</label>
+            <i class="fa-regular fa-eye" id = "showAdditionalPassword" data-container = "additionalPassword"></i>
+            <input type="password" name="additionalPassword" id="additionalPassword">
+         </div>
+         <label for="email">Email</label>
+         <input type="email" name="email" id="email">
+         <button type="submit" id = "submitButton">Submit</button>
+         <p>Already have an account? <a href="/login">Log In</a></p>
+      </form>
+   </main>
 
    <footer>
       Copyright &copy; 2023 Asset Master

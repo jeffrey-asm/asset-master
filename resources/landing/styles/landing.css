@@ -85,7 +85,8 @@
 
    .mainPage p{
       font-size: 22px;
-      max-width:90%;
+      width:90%;
+      margin:0;
    }
 
    .mainPage{
@@ -111,7 +112,10 @@
 
    .mainPage p{
       font-size: 18px;
-      max-width: 85%;
+      max-width:90%;
    }
 
+   .mainPage p.errorParagraph{
+      max-width: 90%;
+   }
 }

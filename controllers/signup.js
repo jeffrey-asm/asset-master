@@ -3,39 +3,44 @@ const validation = require('../database/validation.js');
 const randomIdentification = require('../database/ID.js');
 const runQuery = require('../database/query.js');
 const hash = require('../database/hash.js');
+const sharedReturn = require('./message.js');
 
 exports.signup = asyncHandler(async(request,result,next)=>{
+  let trimmedInputs = validation.trimInputs(request.body);
+
    //First validate all form input on backend for safety of structured information on current database
-  let formValidation = validation.signUpFormValidation(request.body.username,request.body.password,request.body.additionalPassword,request.body.email);
-
-  if(formValidation.status && formValidation.status != 'pass'){
-    result.json(formValidation);
+   let usernameValidation = validation.validateUsername(trimmedInputs.username);
+   if (usernameValidation.status !== 'pass') {
+    result.json(usernameValidation);
     return;
-  }
+   }
 
+   let passwordValidation = validation.validatePasswords(trimmedInputs.password,trimmedInputs.additionalPassword);
+   if (passwordValidation.status !== 'pass'){
+    result.json(passwordValidation);
+    return;
+   }
+
+   let emailValidation = validation.validateEmail(trimmedInputs.email);
+   if (emailValidation.status !== 'pass'){
+    result.json(emailValidation);
+    return;
+   }
 
   try{
-    let passwordHash = hash(request.body.password);
+    let passwordHash = hash(trimmedInputs.password);
 
-    let usernameCheck = await runQuery(`SELECT * FROM Users WHERE Username = ?;`,[request.body.username])
+    let usernameCheck = await runQuery(`SELECT * FROM Users WHERE Username = ?;`,[trimmedInputs.username])
 
     if(usernameCheck.length >= 1){
-      result.json({
-        status:'fail',
-        componentID: 'username',
-        message:"Username already taken! <i class='fa-solid fa-database'></i>"
-      });
+      sharedReturn.sendError(result,'username',`Username already taken! <i class='fa-solid fa-database'></i>`);
       return;
     }
 
-    let emailCheck =  await runQuery(`SELECT * FROM Users WHERE Email = ?;`,[request.body.email])
+    let emailCheck =  await runQuery(`SELECT * FROM Users WHERE Email = ?;`,[trimmedInputs.email])
 
     if(emailCheck.length >= 1){
-      result.json({
-        status:'fail',
-        componentID: 'email',
-        message:"Email already taken! <i class='fa-solid fa-database'></i>"
-      });
+      sharedReturn.sendError(result,'email',`Email already taken! <i class='fa-solid fa-database'></i>`);
       return;
     }
 
@@ -53,21 +58,20 @@ exports.signup = asyncHandler(async(request,result,next)=>{
 
     const query = `INSERT INTO Users (UserID,Username,PasswordHash,Email,Verified) VALUES (?,?,?,?,?);`;
 
-    let queryResult = await runQuery(query,[randomID,request.body.username,passwordHash,request.body.email,verifiedChar]);
+    let queryResult = await runQuery(query,[randomID,trimmedInputs.username,passwordHash,trimmedInputs.email,verifiedChar]);
 
     //Store UserID in current express session to have a reference for loading user specific data on front end
     // Store Username and Email to display in user settings to not always run a Query to database
     request.session.UserID = randomID;
-    request.session.Username = request.body.username;
-    request.session.Email = request.body.email;
+    request.session.Username = trimmedInputs.username;
+    request.session.Email = trimmedInputs.email;
     request.session.Verified = verifiedChar;
 
-    result.json({ result: queryResult });
+    sharedReturn.sendSuccess(result,`Welcome <i class="fa-solid fa-door-open"></i>`);
+    return;
+    return;
   } catch (error){
-    result.json({
-      status:'fail',
-      componentID: 'email',
-      message:"Could not successfully process request <i class='fa-solid fa-database'></i>"
-    });
+    sharedReturn.sendError(result,'email',`Could not successfully process request <i class='fa-solid fa-database'></i>`);
+    return;
   }
 });

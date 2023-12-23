@@ -3,6 +3,7 @@ var router = express.Router();
 
 const usersController = require("../controllers/users.js");
 const updateUserController = require("../controllers/updateUser.js");
+const updatePasswordController = require("../controllers/updatePassword.js");
 
 /* GET users listing. */
 router.get('/', usersController.redirect);
@@ -24,6 +25,9 @@ router.get('/getUserInfo', usersController.userInformation);
 
 // Update user information essential for settings page
 router.post('/updateUser', updateUserController.updateUser);
+
+//Update user password
+router.post('/updatePassword',updatePasswordController.updatePassword);
 
 // Logout method using express-session
 router.get('/logout', usersController.logout);
