@@ -36,25 +36,67 @@ function displayMessage(inputComponent, currentMessage, message, classType){
    return container;
 }
 
-function trimInputs(components){
-   for(let i = 0; i < components.length; i++){
-      //Always trim inputs for valid form validation
-      components[i].value = components[i].value.trim();
+let headerTag = document.querySelector('header');
+let mainTag = document.querySelector('main');
+let footerTag = document.querySelector('footer');
+
+function openPopUp(component){
+
+   if(!component.classList.contains('popupShown')){
+      component.style.visibility = 'visible';
+      component.classList.remove('popupHidden');
+      //Apply blur to all other elements
+      headerTag.style.filter = mainTag.style.filter = footerTag.style.filter = 'blur(2px)';
+
+      //Add transition to button for smooth animation on hover
+      component.getElementsByTagName('button')[0].style.transition = '0.5s';
+
+      //Must hide elements behind
+      component.classList.add('popupShown');
    }
 }
 
+function exitPopUp(component,icon,button){
 
-
-function togglePopUp(component){
    if(component.classList.contains('popupShown')){
-      //Must hide elements behind
+      icon.classList.add('clicked');
+      button.disabled = true;
+
+      //Spin animation and make sure button fades out with the container by setting transition to initial
+      component.getElementsByTagName('button')[0].style.transition = 'initial';
+
+      //Remove all blur applications
+      headerTag.style.filter = mainTag.style.filter = footerTag.style.filter = 'initial';
+
       component.classList.remove('popupShown');
       component.classList.add('popupHidden');
-   } else{
-      component.classList.remove('popupHidden');
-      component.classList.add('popupShown');
-   }
 
+
+      setTimeout(()=>{
+         component.style.visibility = 'hidden';
+         icon.classList.remove('clicked');
+         //Ensure form fully fades out
+         button.disabled = false;
+      },1500);
+   }
+}
+
+//Shared function for password inputs
+let passwordIcons = document.querySelectorAll('.fa-regular.fa-eye');
+
+for(let i = 0; i < passwordIcons.length; i++){
+   passwordIcons[i].onclick = function(event){
+      //Target container in dataset to toggle visible or hidden password
+      let passwordContainer = document.getElementById(this.dataset.container);
+
+      if(passwordContainer.type == "password"){
+         passwordContainer.type = "text";
+         this.style.color = "#08B0FF";
+      } else{
+         passwordContainer.type = "password";
+         this.style.color = "black";
+      }
+   }
 }
 
 //Nav icon for user settings
@@ -66,4 +108,4 @@ if(profileIcon){
    }
 }
 
-export {transitionToPage,displayMessage,removeMessage,trimInputs,togglePopUp};
+export {transitionToPage,displayMessage,removeMessage,openPopUp,exitPopUp};

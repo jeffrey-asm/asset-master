@@ -8,17 +8,16 @@ body{
    margin: 0;
    padding: 0;
 
-   overflow-x: hidden;
-
    display: flex;
    flex-direction: column;
    align-items: flex-start;
    min-height: 100vh;
-   min-width:100vw;
+   width:100vw;
+   overflow-x: hidden;
 }
 
 main{
-   min-height:80vh;
+   min-height:90vh;
    width:90%;
    margin:20px auto 20px auto;
 }
@@ -117,6 +116,7 @@ button:hover {
 .buttonFade{
    transform: scale(100);
    transition: transform 1s ease-in;
+   z-index:1001;
 }
 
 .headerTitle{
@@ -138,7 +138,7 @@ footer{
    bottom: 0;
    text-align: center;
    width:100%;
-   margin:20px auto 20px auto;
+   margin:40px auto 20px auto;
    z-index: -1;
 }
 
@@ -182,14 +182,15 @@ nav a,nav i{
 nav a:hover{
    color:#07EA3A;
 }
-nav i{
+nav i {
    transition:transform 0.5s ease-in;
-   font-size: 55px;
+   font-size: 40px;
    font-weight: bolder;
+   cursor:pointer;
 }
 nav i:hover{
    color:#07EA3A;
-   transform: rotateY(180deg);
+   transform: rotateY(360deg);
 }
 
 .popup{
@@ -206,38 +207,59 @@ nav i:hover{
 
    border:2px solid black;
    border-radius:5px;
-   padding:50px;
+   box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px;
+   padding:50px 20px 50px 20px;
 
    width:800px;
-   height:600px;
+   max-width:90%;
+   box-sizing: border-box;
+   min-height:500px;
    z-index:1000;
    visibility: hidden;
-   opacity: 0.5;
-   transition:transform 1s,opacity 1s;
+   opacity: 0;
 }
 
+@keyframes popIn {
+   from {
+      opacity: 0;
+      transform:translate(-50%,-50%) scale(0.1);
+   }
+   to {
+      opacity: 1;
+      transform: translate(-50%,-50%) scale(1);
+   }
+ }
+
+ @keyframes popOut {
+   from {
+      opacity: 1;
+      transform: translate(-50%,-50%) scale(1);
+   }
+   to {
+      opacity: 0;
+      transform:translate(-50%,-50%) scale(0.1);
+   }
+ }
+
 .popupShown{
-   visibility: visible;
-   opacity: 1;
-   transform: translate(-50%,-50%) scale(1);
+   animation: popIn 1.5s forwards;
 }
 
 .popupHidden{
-   /* visibility: hidden; */
-   opacity: 0.5;
-   transform:translate(-50%,-50%) scale(1);
+   animation: popOut 1.5s forwards;
 }
 
-.popup .iconContainer{
-   position: fixed;
+.popupIconContainer{
+   position: absolute;
    top:-50px;
 
    display: flex;
    justify-content: center;
+   align-items: center;
 
    border:2px solid black;
    border-radius:50%;
-   box-shadow: 0 2px 10px #B3B6B4;
+   box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
    width:100px;
    height:100px;
    background:#08B0FF;
@@ -247,17 +269,36 @@ nav i:hover{
    font-size:40px;
 }
 
-.popup .iconContainer i{
-   position: relative;
-   height:50%;
-   margin:auto;
+
+.popupExitContainer{
+   position: absolute;
+   top:30px;
+   right:40px;
+   font-size:30px;
+   font-weight: bolder;
+}
+
+.popupExitContainer i{
+   transition:transform 0.5s ease-in;
+   font-size: 40px;
+   font-weight: bolder;
+   cursor:pointer;
+}
+
+.popupExitContainer i:hover{
+   color:red;
+}
+
+.popupExitContainer i.clicked{
+   color:red;
+   transform: rotate(360deg);
+}
+.popupForm h1{
+   font-size:45px;
 }
 
 
 @media only screen and (max-width:600px){
-   body{
-      width:100%;
-   }
    main{
       min-width: 95%;
       margin:auto;

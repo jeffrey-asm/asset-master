@@ -1,9 +1,8 @@
-import {transitionToPage, removeMessage, displayMessage,trimInputs}  from "../../shared/scripts/shared.js";
+import {transitionToPage, removeMessage, displayMessage}  from "../../shared/scripts/shared.js";
 
 let loginForm = document.getElementById("loginForm");
 let usernameInput = document.getElementById("username");
 let passwordInput = document.getElementById("password");
-let passwordIcon = document.getElementById("showPassword");
 let submitButton = document.getElementById("submitButton");
 
 let messageContainer;
@@ -19,19 +18,7 @@ for(let i = 0; i < inputs.length;i++){
    });
 }
 
-passwordIcon.onclick = function(){
-   //Switch between text and password type for user interactivity
-   if(passwordInput.type == "password"){
-      passwordInput.type = "text";
-      this.style.color = "#08B0FF";
-   } else{
-      passwordInput.type = "password";
-      this.style.color = "black";
-   }
-}
-
 loginForm.onsubmit = function(event){
-   trimInputs(inputs);
    removeMessage(messageContainer);
 
    let url = '../loginUser';
@@ -53,13 +40,15 @@ loginForm.onsubmit = function(event){
       .then(response => response.json())
       .then(data => {
          console.log(data);
-         if(data.hasOwnProperty('message')){
+         if(data.status != 'pass'){
             messageContainer = displayMessage(submitButton,messageContainer, data.message,'error');
             usernameInput.classList.add("errorInput");
             passwordInput.classList.add('errorInput');
             submitButton.innerHTML = "Submit";
          } else{
-            messageContainer = displayMessage(submitButton,messageContainer, 'Welcome <i class="fa-solid fa-door-open"></i>','informational');
+            usernameInput.classList.remove("errorInput");
+            passwordInput.classList.remove('errorInput');
+            messageContainer = displayMessage(submitButton,messageContainer, data.message,'informational');
             setTimeout(()=>{
                transitionToPage(submitButton,'../users/home');
             },500);

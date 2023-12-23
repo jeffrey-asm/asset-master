@@ -1,4 +1,3 @@
-
 const asyncHandler = require("express-async-handler");
 const path = require('path');
 
@@ -11,12 +10,12 @@ function renderOrRedirect(request,result,file){
   }
 }
 
-//TODO remove in deployement
+// Remove for deployment
 function developmentTest(request){
-  // request.session.UserID = 'gswkjupf1703253610914';
-  // request.session.Username = 'bro';
-  // request.session.Email = 'jeffrey@gmail.com';
-  // request.session.Verified = 'F';
+  request.session.UserID = 'gswkjupf1703253610914';
+  request.session.Username = 'bro31';
+  request.session.Email = 'jeffrey@gmail.com';
+  request.session.Verified = 'F';
 }
 
 exports.landing = asyncHandler(async(request,result,next)=>{

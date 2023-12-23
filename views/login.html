@@ -7,24 +7,30 @@
    <link rel="stylesheet" href="../resources/shared/styles/form.css">
    <link rel="stylesheet" href="../resources/credentials/styles/credentials.css">
    <title>Asset Master</title>
-   <link rel="icon" href="../resources/images/logo.jpg">
+   <link rel="icon" href="../resources/shared/images/logo.jpg">
    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </head>
 <body>
 
-   <form id = "loginForm" novalidate>
-      <div class = "mainImage">
-         <img src="../resources/credentials/images/login.jpg" alt="login-image">
-      </div>
-      <h1>Login</h1>
-      <label for="username">Username</label> <br>
-      <input type="text" name="username" id="username"> <br>
-      <label for="password">Password</label>
-      <i class="fa-regular fa-eye" id = "showPassword"></i>
-      <input type="password" name="password" id="password">
-      <button type="submit" id = "submitButton">Submit</button>
-      <p>Don't have an account? <a href="/signup">Sign Up</a></p>
-   </form>
+   <main>
+      <form id = "loginForm" novalidate>
+         <div class = "mainImage">
+            <img src="../resources/credentials/images/login.jpg" alt="login-image">
+         </div>
+         <h1>Login</h1>
+         <label for="username">Username</label>
+         <input type="text" name="username" id="username">
+
+         <div class = 'passwordContainer'>
+            <label for="password">Password</label>
+            <i class="fa-regular fa-eye" id = "showPassword" data-container = 'password'></i>
+            <input type="password" name="password" id="password">
+         </div>
+         <a href="/forgot">Forgot Password?</a>
+         <button type="submit" id = "submitButton">Submit</button>
+         <p>Don't have an account? <a href="/signup">Sign Up</a></p>
+      </form>
+   </main>
 
    <footer>
       Copyright &copy; 2023 Asset Master

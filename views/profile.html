@@ -32,8 +32,6 @@
          <h1>Profile</h1>
       </div>
 
-
-
       <form id = "detailsForm" novalidate>
          <h2>Account Details</h2>
          <hr>
@@ -66,26 +64,66 @@
          <div class = 'securityContainer'>
             <h3 class = 'securityTitle'>Change Password</h3>
             <p class = 'securityText'>Set a permanent password to login to your account.</p>
-            <button type = 'button' class = 'securityButton' id = 'changePassword'>Change Password</button>
+            <button type = 'button' class = 'securityButton' id = 'changePasswordPopUp'>Change Password</button>
          </div>
 
          <div class = 'securityContainer'>
             <h3 class = 'securityTitle'>Verify Email</h3>
             <p class = 'securityText'>Keep your account secure via email verification</p>
-            <button type = 'button' class = 'securityButton' id = 'verifyEmailButton'>Verify Email</button>
+            <button type = 'button' class = 'securityButton' id = 'verifyEmailPopUp'>Verify Email</button>
          </div>
 
-         <button type="button" id = "logOutButton">Log Out</button>
+         <div class = 'securityContainer'>
+            <h3 class = 'securityTitle'>Log Out</h3>
+            <p class = 'securityText'>End your current browser session, return when you please.</p>
+            <button type = 'button' class = 'securityButton' id = "logOutButton">Log Out</button>
+         </div>
+
+         <div class = 'securityContainer'>
+            <h3 class = 'securityTitle'>Delete Account</h3>
+            <p class = 'securityText'>Permanently delete your account, including all data.</p>
+            <button type = 'button' class = 'securityButton' id = "deleteButtonPopUp">Delete Account</button>
+         </div>
+
       </form>
 
-      <div class = 'popup' id = 'passwordForm'>
-         <div class = 'iconContainer'>
+
+   </main>
+
+   <div class = 'popupContainers'>
+      <div class = 'popup' id = 'popupPasswordContainer'>
+         <div class = 'popupIconContainer'>
             <i class="fa-solid fa-key"></i>
          </div>
-         <h1>CHANGE PASSWORD</h1>
-         <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Qui, natus.</p>
+         <div class = 'popupExitContainer'>
+            <i class="fa-solid fa-xmark exitFormIcon" id = 'exitPasswordIcon'></i>
+         </div>
+         <form id = "passwordForm" class = 'popupForm' novalidate>
+            <h1>Change Password</h1>
+
+            <div class = 'passwordContainer'>
+               <label for="oldPassword">Old Password</label>
+               <i class="fa-regular fa-eye" id = "showOldPassword" data-container = 'oldPassword'></i>
+               <input type="password" name="oldPassword" id="oldPassword">
+            </div>
+
+            <div class = 'passwordContainer'>
+               <label for="password">New Password</label>
+               <i class="fa-regular fa-eye" id = "showPassword" data-container = 'password'></i>
+               <input type="password" name="password" id="password">
+            </div>
+
+            <div class = 'passwordContainer'>
+               <label for="additionalPassword">Confirm password</label>
+               <i class="fa-regular fa-eye" id = "showAdditionalPassword"  data-container = 'additionalPassword'></i>
+               <input type="password" name="additionalPassword" id="additionalPassword">
+            </div>
+
+            <button type="submit" id = 'passwordSubmitButton'>Submit</button>
+         </form>
       </div>
-   </main>
+   </div>
+
 
    <footer>
       Copyright &copy; 2023 Asset Master

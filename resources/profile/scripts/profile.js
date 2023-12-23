@@ -1,14 +1,19 @@
-import {transitionToPage, removeMessage, displayMessage,trimInputs,togglePopUp}  from "../../shared/scripts/shared.js";
+import {transitionToPage, removeMessage, displayMessage,openPopUp,exitPopUp}  from "../../shared/scripts/shared.js";
 
 let username = document.getElementById('username');
 let email = document.getElementById('email');
 
 let editUsername = document.getElementById('editUsername');
 let editEmail = document.getElementById('editEmail');
-
-let editPassword = document.getElementById('changePassword');
-
 let changesButton = document.getElementById('changesButton');
+let detailsForm = document.getElementById('detailsForm');
+
+let passwordFormContainer = document.getElementById('popupPasswordContainer');
+let passwordForm = document.getElementById('passwordForm');
+let editPasswordPopUp = document.getElementById('changePasswordPopUp');
+let editPasswordButton = document.getElementById('passwordSubmitButton');
+let exitPasswordIcon = document.getElementById('exitPasswordIcon');
+
 let messageContainer;
 
 async function updateInfo(){
@@ -44,7 +49,6 @@ function enableInput(input){
    changesButton.disabled = false;
 }
 
-
 editUsername.onclick = function(event){
    enableInput(username);
 }
@@ -53,8 +57,13 @@ editEmail.onclick = function(event){
    enableInput(email);
 }
 
-editPassword.onclick = function(event){
-   togglePopUp(document.getElementById('passwordForm'));
+editPasswordPopUp.onclick = function(event){
+   passwordForm.reset();
+   openPopUp(passwordFormContainer);
+}
+
+exitPasswordIcon.onclick = function(event){
+   exitPopUp(passwordFormContainer,exitPasswordIcon,editPasswordPopUp);
 }
 
 let inputs = document.getElementsByTagName("input");
@@ -66,10 +75,8 @@ for(let i = 0; i < inputs.length;i++){
    });
 }
 
-
 // Send post request to handle validation and updating values
-document.getElementById('detailsForm').onsubmit = function(event){
-   trimInputs(inputs);
+detailsForm.onsubmit = function(event){
    removeMessage(messageContainer);
 
    let url = '../users/updateUser';
@@ -91,9 +98,8 @@ document.getElementById('detailsForm').onsubmit = function(event){
    })
       .then(response => response.json())
       .then(data => {
-         console.log(data);
-         if(data.hasOwnProperty('message')){
-            errorMessage = displayMessage(changesButton,messageContainer, `${data.message}`,'error');
+         if(data.status != 'pass'){
+            messageContainer = displayMessage(changesButton,messageContainer, data.message,'error');
             document.getElementById(`${data.componentID}`).classList.add('errorInput');
             changesButton.innerHTML = "Save Changes";
          } else{
@@ -103,29 +109,63 @@ document.getElementById('detailsForm').onsubmit = function(event){
             changesButton.innerHTML = "Save Changes";
 
             //Insert message before button
-            informational = displayMessage(changesButton,messageContainer,`Changes saved <i class="fa-solid fa-check"></i>`,'informational');
-            informational.style.animation = 'fadeOut 8s';
+            messageContainer = displayMessage(changesButton,messageContainer,data.message,'informational');
+            messageContainer.style.animation = 'fadeOut 8s';
 
             setTimeout(()=>{
                editUsername.disabled = editEmail.disabled = false;
-               informational.remove();
+               messageContainer.remove();
             },5000);
 
          }
       })
       .catch(error => {
          //In case of error, display before submit button
-         errorMessage = displayMessage(changesButton,messageContainer, `Could not successfully process request <i class='fa-solid fa-database'></i>`,'error');
+         messageContainer = displayMessage(changesButton,messageContainer, `Could not successfully process request <i class='fa-solid fa-database'></i>`,'error');
          changesButton.innerHTML = "Save Changes";
       });
-
-
-
-
-
-
-
 
    return false;
 }
 
+passwordForm.onsubmit = function(event){
+   removeMessage(messageContainer);
+
+   let url = '../users/updatePassword';
+   let formData = new FormData(this);
+   let encodedFormData = new URLSearchParams(formData).toString();
+
+   fetch(url,{
+      method:"POST",
+      body:encodedFormData,
+      headers: {
+         'Content-Type': 'application/x-www-form-urlencoded',
+      },
+   })
+      .then(response => response.json())
+      .then(data => {
+         if(data.status != 'pass'){
+            messageContainer = displayMessage(editPasswordButton,messageContainer, data.message,'error');
+            document.getElementById(`${data.componentID}`).classList.add('errorInput');
+            editPasswordButton.innerHTML = "Submit";
+         } else{
+            editPasswordButton.innerHTML = "Submit";
+
+            //Insert message before button
+            messageContainer = displayMessage(editPasswordButton,messageContainer,`Changes saved <i class="fa-solid fa-check"></i>`,'informational');
+            messageContainer.style.animation = 'fadeOut 8s';
+
+            setTimeout(()=>{
+               exitPasswordIcon.click();
+            },1500);
+         }
+      })
+      .catch(error => {
+         //In case of error, display before submit button
+         messageContainer = displayMessage(editPasswordButton,messageContainer, `Could not successfully process request <i class='fa-solid fa-database'></i>`,'error');
+         editPasswordButton.innerHTML = "Submit";
+      });
+
+   return false;
+
+}
