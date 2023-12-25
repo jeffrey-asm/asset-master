@@ -7,9 +7,10 @@ exports.sendError = function(result,component,text){
    });
 }
 
-exports.sendSuccess = function(result,text){
+exports.sendSuccess = function(result,text,returnInfo={}){
    result.json({
       status:'pass',
-      message: `${text}`
+      message: `${text}`,
+      render:returnInfo
    });
 }

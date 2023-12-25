@@ -1,17 +1,16 @@
 const asyncHandler = require("express-async-handler");
 const hash = require('../database/hash.js');
-const runQuery = require('../database/query.js');
+const query = require('../database/query.js');
 const validation = require("../database/validation.js");
 const sharedReturn = require('./message.js');
 
 exports.updatePassword = asyncHandler(async(request,result,next)=>{
-   let trimmedInputs = validation.trimInputs(request.body);
+   let trimmedInputs = validation.trimInputs(result,request.body);
 
    //Validate form first
-   let newPasswordValidation = validation.validatePasswords(trimmedInputs.password, trimmedInputs.additionalPassword);
+   let newPasswordValidation = validation.validatePasswords(result,trimmedInputs.password, trimmedInputs.additionalPassword);
 
    if(newPasswordValidation.status != 'pass'){
-      result.json(newPasswordValidation);
       return;
    }
 
@@ -21,7 +20,7 @@ exports.updatePassword = asyncHandler(async(request,result,next)=>{
       let newPasswordHash = hash(trimmedInputs.password);
 
 
-      let savedPasswordHash = await runQuery('SELECT PasswordHash FROM Users WHERE UserID = ?',[request.session.UserID]);
+      let savedPasswordHash = await query.runQuery('SELECT PasswordHash FROM Users WHERE UserID = ?',[request.session.UserID]);
 
       if(savedPasswordHash.hasOwnProperty('error')){
          throw error;
@@ -35,7 +34,7 @@ exports.updatePassword = asyncHandler(async(request,result,next)=>{
          return;
       }
 
-      await runQuery('UPDATE Users SET PasswordHash = ? WHERE UserID = ?;',[newPasswordHash,request.session.UserID]);
+      await query.runQuery('UPDATE Users SET PasswordHash = ? WHERE UserID = ?;',[newPasswordHash,request.session.UserID]);
 
       sharedReturn.sendSuccess(result,`Password successfully changed <i class="fa-solid fa-lock"></i>`);
       return;

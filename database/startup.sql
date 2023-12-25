@@ -2,7 +2,6 @@ CREATE DATABASE `assetmaster`;
 
 USE assetmaster;
 
--- FOREIGN KEY FOR USER ID FOR EACH TABLE
 CREATE TABLE Users (
    UserID  VARCHAR(30) PRIMARY KEY NOT NULL,
    Username VARCHAR(30) NOT NULL UNIQUE,
@@ -11,19 +10,31 @@ CREATE TABLE Users (
    Verified CHAR(1) NOT NULL
 );
 
-INSERT INTO Users (UserID,Username,PasswordHash, Email, Verified)
-VALUES (
-   'sas904aj3139',
-  'jeffreyC4',
-  'passwordHASH',
-  'random@gmail.com',
-  'F'
+CREATE TABLE `Budgets`(
+   UserID  VARCHAR(30) PRIMARY KEY NOT NULL,
+   IncomeCurrent DECIMAL(13, 2) NOT NULL,
+   IncomeTotal DECIMAL(13, 2) NOT NULL,
+   ExpensesCurrent DECIMAL(13, 2) NOT NULL,
+   ExpensesTotal DECIMAL(13, 2) NOT NULL,
+   Month DATE NOT NULL
 );
 
-SELECT * FROM Users;
+CREATE TABLE `Categories`(
+   CategoryID VARCHAR(30) PRIMARY KEY NOT NULL,
+   Name varchar(30) NOT NULL,
+   Type varchar(8) NOT NULL,
+   Current DECIMAL(13, 2) NOT NULL,
+   Total DECIMAL(13, 2) NOT NULL,
+   Month DATE NOT NULL,
+   UserID  VARCHAR(30) NOT NULL
+);
 
-UPDATE Users Set Username='jeffrey', Email='cord@gmail.com' WHERE UserID='sas904aj3139';
 
+
+
+
+-- TODO account for budget and transactions AND NEW VARIALBE NAMES
+-- TODO NO FOREIGN KEYS
 CREATE TABLE Accounts (
    AccountID VARCHAR(30) PRIMARY KEY NOT NULL,
    Name VARCHAR(20) NOT NULL,
@@ -43,17 +54,7 @@ VALUES (
 
 SELECT * FROM Accounts;
 
--- Select Basic Account Information via foreign key of User ID
-SELECT Users.UserID, Users.Username, Accounts.Name,Accounts.Type, Accounts.Balance FROM Accounts JOIN Users ON Accounts.UserID = Users.UserID WHERE Users.UserID = 'sas904aj3139';
 
-CREATE TABLE `Budget`(
-
-   User_ID INT NOT NULL,
-
-);
-
--- TODO account for budget and transactions AND NEW VARIALBE NAMES
--- TODO NO FOREIGN KEYS
 CREATE TABLE Transactions (
    Transaction_ID INT PRIMARY KEY NOT NULL UNIQUE,
    Description VARCHAR(50) NOT NULL,

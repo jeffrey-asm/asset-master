@@ -4,6 +4,7 @@
    <meta charset="UTF-8">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <link rel="stylesheet" href="../resources/shared/styles/style.css">
+   <link rel="stylesheet" href="../resources/shared/styles/form.css">
    <link rel="stylesheet" href="../resources/budget/styles/budget.css">
    <title>Asset Master</title>
    <link rel="icon" href="../resources/shared/images/logo.jpg">
@@ -25,13 +26,76 @@
 
    </header>
    <main>
-      <h1>Budget</h1>
+      <div id = "budgetSection">
+         <div id = 'dateContainer'>
+            <h2 id = 'dateText'></h2>
+         </div>
+
+         <div id = "Income" class = "budgetType">
+            <div class = "addButton">
+               <button class = "addCategoryButton" id = "addIncomeCategory" data-type = 'Income'>Add Category</button>
+            </div>
+         </div>
+
+         <div id = "Expenses" class = "budgetType">
+            <div class = "addButton">
+               <button class = " addCategoryButton" id = "addExpensesCategory" data-type = 'Expenses'>Add Category</button>
+            </div>
+         </div>
+      </div>
+
+      <div id = "statistics">
+        <!--
+
+         <div id = "summaryContainer">
+            <div class = "budgetChartTitle" id = "breakdownHeader">
+               <h1>Total Breakdown</h1>
+            </div>
+
+
+            <div id = "summaryCalculation">
+               <h2>Income: <span id = "incomeSpan">$</span></h2>
+            <h2>Expenses: <span id = "expensesSpan">$</span></h2>
+               <div id = "leftOverContainer">
+                  <h2>Left Over: <span id = "leftOverSpan">$</span></h2>
+               </div>
+
+            </div>
+         </div> -->
+
+      </div>
+
+
    </main>
+
+   <div class = 'popupContainers'>
+      <div class = 'popup' id = 'addCategoryContainer' novalidate>
+         <div class = 'popupIconContainer'>
+            <i class="fa-solid fa-chart-pie" ></i>
+         </div>
+         <div class = 'popupExitContainer'>
+            <i class="fa-solid fa-xmark exitFormIcon" id = "exitAddCategoryIcon"></i>
+         </div>
+         <form id = "addCategoryForm" class = 'popupForm' novalidate>
+            <h1>Add Category</h1>
+            <label for="name">Category Name</label>
+            <input type="text" name="name" id="name" placeholder="Name">
+            <label for="type">Category Type</label>
+            <select name="type" id="type">
+               <option value="Income">Income</option>
+               <option value="Expenses">Expenses</option>
+            </select>
+            <label for="amount">Category Amount</label>
+            <input type="number" name="amount" id="amount" step="0.01" placeholder="0.00">
+            <button type="submit" id = 'addCategorySubmitButton'>Submit</button>
+         </form>
+      </div>
 
    <footer>
       Copyright &copy; 2023 Asset Master
    </footer>
 
+   <script type="module" src="../resources/budget/scripts/construct.js"></script>
    <script type="module" src="../resources/shared/scripts/shared.js"></script>
    <script type="module" src="../resources/budget/scripts/budget.js"></script>
 </body>
