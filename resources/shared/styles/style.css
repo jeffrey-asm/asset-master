@@ -56,7 +56,7 @@ button{
 }
 
 button:hover {
-   box-shadow: 0 0 10px #B3B6B4;
+   box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 2px, rgba(0, 0, 0, 0.07) 0px 2px 4px, rgba(0, 0, 0, 0.07) 0px 4px 8px, rgba(0, 0, 0, 0.07) 0px 8px 16px, rgba(0, 0, 0, 0.07) 0px 16px 32px, rgba(0, 0, 0, 0.07) 0px 32px 64px;
 }
 
 .mainImage img{
@@ -67,34 +67,39 @@ button:hover {
 
 @keyframes fadeIn {
    0% {
+      transform:scale(0.1);
       opacity: 0;
    }
    100% {
       opacity: 1;
+      transform: scale(1);
    }
  }
 
  @keyframes fadeOut {
    from {
       opacity: 1;
+      transform:scale(1);
    }
    to {
       opacity: 0;
+      transform:scale(0.1);
    }
  }
 
 
 .error,.informational{
    color:red;
-   font-size: 18px;
+   font-size: 20px;
    font-weight: bolder;
    width:100%;
    text-align: center;
    margin:10px auto 10px auto;
-   animation: fadeIn 1s;
+   animation: fadeIn 0.5s;
 }
 .informational{
    color:#08B0FF;
+   animation: fadeOut 10s forwards;
 }
 
 .errorInput{
@@ -125,10 +130,11 @@ button:hover {
    align-items: center;
    justify-content: center;
    flex-wrap: wrap;
+   gap:20px;
 }
 
 .headerTitle img{
-   max-width: 100px;
+   max-width: 90px;
    transform:translateY(-4px);
    height:auto;
 }
@@ -180,7 +186,7 @@ nav a,nav i{
 }
 
 nav a:hover{
-   color:#07EA3A;
+   color:#08B0FF;
 }
 nav i {
    transition:transform 0.5s ease-in;
@@ -189,8 +195,8 @@ nav i {
    cursor:pointer;
 }
 nav i:hover{
-   color:#07EA3A;
-   transform: rotateY(360deg);
+   color:#08B0FF;
+   transform: rotateY(180deg);
 }
 
 .popup{
@@ -242,11 +248,11 @@ nav i:hover{
  }
 
 .popupShown{
-   animation: popIn 1.5s forwards;
+   animation: popIn 1s forwards;
 }
 
 .popupHidden{
-   animation: popOut 1.5s forwards;
+   animation: popOut 1s forwards;
 }
 
 .popupIconContainer{
@@ -266,7 +272,7 @@ nav i:hover{
    color:white;
 
    text-align: center;
-   font-size:40px;
+   font-size:50px;
 }
 
 
@@ -296,7 +302,6 @@ nav i:hover{
 .popupForm h1{
    font-size:45px;
 }
-
 
 @media only screen and (max-width:600px){
    main{

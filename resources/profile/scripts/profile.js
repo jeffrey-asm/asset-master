@@ -1,4 +1,5 @@
-import {transitionToPage, removeMessage, displayMessage,openPopUp,exitPopUp}  from "../../shared/scripts/shared.js";
+import {sendRequest,openPopUp,exitPopUp,removeMessage,updateProfileInfo}  from "../../shared/scripts/shared.js";
+import {updateProfileInfo} from "./construct.js";
 
 let username = document.getElementById('username');
 let email = document.getElementById('email');
@@ -16,27 +17,7 @@ let exitPasswordIcon = document.getElementById('exitPasswordIcon');
 
 let messageContainer;
 
-async function updateInfo(){
-   fetch('/users/getUserInfo',{
-      method:"GET",
-   })
-      .then(response => response.json())
-      .then(data => {
-         username.value = `${data.Username}`;
-         email.value = `${data.Email}`;
-
-         if(data.Verified !== 'F'){
-            let verifiedImage = Object.assign(document.createElement('img'), { src: '../resources/settings/images/verified.jpg', alt: 'verified-image', id: 'verifiedImage' });
-
-            // We replace verifying email with verified image for simplicity
-            let verifyButton = document.getElementById('verifyEmailButton');
-            verifyButton.parentNode.replaceChild(verifiedImage, verifyButton);
-         }
-      })
-      .catch(error => console.error(error));
-
-}
-updateInfo();
+updateProfileInfo();
 
 // Send request to log out method in built controllers
 document.getElementById('logOutButton').onclick = function(event){
@@ -63,109 +44,54 @@ editPasswordPopUp.onclick = function(event){
 }
 
 exitPasswordIcon.onclick = function(event){
-   exitPopUp(passwordFormContainer,exitPasswordIcon,editPasswordPopUp);
-}
-
-let inputs = document.getElementsByTagName("input");
-
-for(let i = 0; i < inputs.length;i++){
-   inputs[i].addEventListener("focus", function(event){
-      removeMessage(messageContainer);
-      this.classList.remove("errorInput");
-   });
+   exitPopUp(passwordFormContainer,passwordForm,exitPasswordIcon,editPasswordPopUp);
 }
 
 // Send post request to handle validation and updating values
-detailsForm.onsubmit = function(event){
-   removeMessage(messageContainer);
+detailsForm.onsubmit = async function(event){
+   event.preventDefault();
 
-   let url = '../users/updateUser';
+   let successFunction = (data) => {
+      let username = document.getElementById('username');
+      let email = document.getElementById('email');
+      let editUsername = document.getElementById('editUsername');
+      let editEmail = document.getElementById('editEmail');
+      let changesButton = document.getElementById('changesButton');
+
+       //Reset all form inputs
+       updateProfileInfo();
+       editUsername.disabled = editEmail.disabled = username.disabled = email.disabled = changesButton.disabled = true;
+
+      setTimeout(()=>{
+         document.getElementById('editUsername').disabled = document.getElementById('editEmail').disabled = false;
+         removeMessage(messageContainer)
+      },2800);
+   }
+
+   let failFunction =  () => {};
+
    let formData = new FormData(this);
    //Manually set request body parameters for form validation
    formData.set('username',username.value);
    formData.set('email',email.value);
+   let structuredFormData = new URLSearchParams(formData).toString();
 
-   changesButton.innerHTML = `<div class="lds-facebook"><div></div><div></div><div></div></div>`;
-
-   let encodedFormData = new URLSearchParams(formData).toString();
-
-   fetch(url,{
-      method:"POST",
-      body:encodedFormData,
-      headers: {
-         'Content-Type': 'application/x-www-form-urlencoded',
-      },
-   })
-      .then(response => response.json())
-      .then(data => {
-         if(data.status != 'pass'){
-            messageContainer = displayMessage(changesButton,messageContainer, data.message,'error');
-            document.getElementById(`${data.componentID}`).classList.add('errorInput');
-            changesButton.innerHTML = "Save Changes";
-         } else{
-            //Reset all form inputs
-            updateInfo();
-            editUsername.disabled = editEmail.disabled = username.disabled = email.disabled = changesButton.disabled = true;
-            changesButton.innerHTML = "Save Changes";
-
-            //Insert message before button
-            messageContainer = displayMessage(changesButton,messageContainer,data.message,'informational');
-            messageContainer.style.animation = 'fadeOut 8s';
-
-            setTimeout(()=>{
-               editUsername.disabled = editEmail.disabled = false;
-               messageContainer.remove();
-            },5000);
-
-         }
-      })
-      .catch(error => {
-         //In case of error, display before submit button
-         messageContainer = displayMessage(changesButton,messageContainer, `Could not successfully process request <i class='fa-solid fa-database'></i>`,'error');
-         changesButton.innerHTML = "Save Changes";
-      });
-
-   return false;
+   await sendRequest('../users/updateUser',structuredFormData,changesButton,'Save Changes',successFunction,failFunction);
 }
 
-passwordForm.onsubmit = function(event){
-   removeMessage(messageContainer);
+passwordForm.onsubmit = async function(event){
+   event.preventDefault();
 
-   let url = '../users/updatePassword';
+   let successFunction = (data) => {
+      setTimeout(()=>{
+         document.getElementById('exitPasswordIcon').click();
+      },2000);
+   }
+
+   let failFunction =  () => {};
+
    let formData = new FormData(this);
-   let encodedFormData = new URLSearchParams(formData).toString();
+   let structuredFormData = new URLSearchParams(formData).toString();
 
-   fetch(url,{
-      method:"POST",
-      body:encodedFormData,
-      headers: {
-         'Content-Type': 'application/x-www-form-urlencoded',
-      },
-   })
-      .then(response => response.json())
-      .then(data => {
-         if(data.status != 'pass'){
-            messageContainer = displayMessage(editPasswordButton,messageContainer, data.message,'error');
-            document.getElementById(`${data.componentID}`).classList.add('errorInput');
-            editPasswordButton.innerHTML = "Submit";
-         } else{
-            editPasswordButton.innerHTML = "Submit";
-
-            //Insert message before button
-            messageContainer = displayMessage(editPasswordButton,messageContainer,`Changes saved <i class="fa-solid fa-check"></i>`,'informational');
-            messageContainer.style.animation = 'fadeOut 8s';
-
-            setTimeout(()=>{
-               exitPasswordIcon.click();
-            },1500);
-         }
-      })
-      .catch(error => {
-         //In case of error, display before submit button
-         messageContainer = displayMessage(editPasswordButton,messageContainer, `Could not successfully process request <i class='fa-solid fa-database'></i>`,'error');
-         editPasswordButton.innerHTML = "Submit";
-      });
-
-   return false;
-
+   await sendRequest('../users/updatePassword',structuredFormData,editPasswordButton,'Submit',successFunction,failFunction);
 }

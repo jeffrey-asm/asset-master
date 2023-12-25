@@ -1,12 +1,12 @@
 const asyncHandler = require("express-async-handler");
-const runQuery = require('../database/query.js');
+const query = require('../database/query.js');
 const validation = require("../database/validation.js");
 const sharedReturn = require('./message.js');
 
 
 async function searchDuplicates(result,query,itemID,item,message){
    try{
-      let duplicateCheck = await runQuery(query,[item]);
+      let duplicateCheck = await query.runQuery(query,[item]);
       if(duplicateCheck.length >= 1){
          sharedReturn.sendError(result,itemID,message);
          return true;
@@ -20,23 +20,21 @@ async function searchDuplicates(result,query,itemID,item,message){
 }
 
 async function updateDatabase(result,query='',items=[]){
-   await runQuery(query,items);
+   await query.runQuery(query,items);
    sharedReturn.sendSuccess(result,`Changes saved <i class="fa-solid fa-check"></i>`);
 }
 
 exports.updateUser = asyncHandler(async(request,result,next)=>{
-   let trimmedInputs = validation.trimInputs(request.body);
+   let trimmedInputs = validation.trimInputs(result,request.body);
 
    //Validate form first
-   let usernameValidation = validation.validateUsername(trimmedInputs.username);
+   let usernameValidation = validation.validateUsername(result,trimmedInputs.username);
    if (usernameValidation.status !== 'pass') {
-    result.json(usernameValidation);
     return;
    }
 
-   let emailValidation = validation.validateEmail(trimmedInputs.email);
+   let emailValidation = validation.validateEmail(result,trimmedInputs.email);
    if (emailValidation.status !== 'pass'){
-    result.json(emailValidation);
     return;
    }
 

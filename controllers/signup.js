@@ -1,64 +1,58 @@
 const asyncHandler = require("express-async-handler");
 const validation = require('../database/validation.js');
-const randomIdentification = require('../database/ID.js');
-const runQuery = require('../database/query.js');
+const query = require('../database/query.js');
 const hash = require('../database/hash.js');
 const sharedReturn = require('./message.js');
 
 exports.signup = asyncHandler(async(request,result,next)=>{
-  let trimmedInputs = validation.trimInputs(request.body);
+  let trimmedInputs = validation.trimInputs(result,request.body);
 
    //First validate all form input on backend for safety of structured information on current database
-   let usernameValidation = validation.validateUsername(trimmedInputs.username);
+   let usernameValidation = validation.validateUsername(result,trimmedInputs.username);
    if (usernameValidation.status !== 'pass') {
-    result.json(usernameValidation);
     return;
    }
 
-   let passwordValidation = validation.validatePasswords(trimmedInputs.password,trimmedInputs.additionalPassword);
+   let passwordValidation = validation.validatePasswords(result,trimmedInputs.password,trimmedInputs.additionalPassword);
    if (passwordValidation.status !== 'pass'){
-    result.json(passwordValidation);
     return;
    }
 
-   let emailValidation = validation.validateEmail(trimmedInputs.email);
+   let emailValidation = validation.validateEmail(result,trimmedInputs.email);
    if (emailValidation.status !== 'pass'){
-    result.json(emailValidation);
     return;
    }
 
   try{
     let passwordHash = hash(trimmedInputs.password);
 
-    let usernameCheck = await runQuery(`SELECT * FROM Users WHERE Username = ?;`,[trimmedInputs.username])
+    let usernameCheck = await query.runQuery(`SELECT * FROM Users WHERE Username = ?;`,[trimmedInputs.username])
 
     if(usernameCheck.length >= 1){
       sharedReturn.sendError(result,'username',`Username already taken! <i class='fa-solid fa-database'></i>`);
       return;
     }
 
-    let emailCheck =  await runQuery(`SELECT * FROM Users WHERE Email = ?;`,[trimmedInputs.email])
+    let emailCheck =  await query.runQuery(`SELECT * FROM Users WHERE Email = ?;`,[trimmedInputs.email])
 
     if(emailCheck.length >= 1){
       sharedReturn.sendError(result,'email',`Email already taken! <i class='fa-solid fa-database'></i>`);
       return;
     }
 
-    let randomID = randomIdentification();
-
-    let randomIDCheck =  await runQuery(`SELECT * FROM Users WHERE UserID = ?;`,[randomID]);
-
-    while(randomIDCheck.length != 0){
-      //Ensure all ID's are unique
-      randomID = randomIdentification();
-      randomIDCheck =  await runQuery(`SELECT * FROM Users WHERE UserID = ?;`,[randomID]);
-    }
+    let randomID = await query.retrieveRandomID(`SELECT * FROM Users WHERE UserID = ?;`);
 
     const verifiedChar = 'F';
 
-    const query = `INSERT INTO Users (UserID,Username,PasswordHash,Email,Verified) VALUES (?,?,?,?,?);`;
+    const insertQuery = `INSERT INTO Users (UserID,Username,PasswordHash,Email,Verified) VALUES (?,?,?,?,?);`;
 
-    let queryResult = await runQuery(query,[randomID,trimmedInputs.username,passwordHash,trimmedInputs.email,verifiedChar]);
+    //Must add to users account, then add instances for the budget
+    await query.runQuery(insertQuery,[randomID,trimmedInputs.username,passwordHash,trimmedInputs.email,verifiedChar]);
+
+    let currentDate = query.getCurrentDate();
+
+    // Create a income and expenses budget for user
+    await query.runQuery('INSERT INTO Budgets (UserID,IncomeCurrent,IncomeTotal,ExpensesCurrent,ExpensesTotal,Month) VALUES (?,?,?,?,?,?);',[randomID,0.00,1600.00,0.00,500.00,currentDate]);
 
     //Store UserID in current express session to have a reference for loading user specific data on front end
     // Store Username and Email to display in user settings to not always run a Query to database
@@ -68,8 +62,6 @@ exports.signup = asyncHandler(async(request,result,next)=>{
     request.session.Verified = verifiedChar;
 
     sharedReturn.sendSuccess(result,`Welcome <i class="fa-solid fa-door-open"></i>`);
-    return;
-    return;
   } catch (error){
     sharedReturn.sendError(result,'email',`Could not successfully process request <i class='fa-solid fa-database'></i>`);
     return;

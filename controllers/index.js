@@ -12,8 +12,8 @@ function renderOrRedirect(request,result,file){
 
 // Remove for deployment
 function developmentTest(request){
-  request.session.UserID = 'gswkjupf1703253610914';
-  request.session.Username = 'bro31';
+  request.session.UserID = 'qeaeomr1703376705615';
+  request.session.Username = 'root';
   request.session.Email = 'jeffrey@gmail.com';
   request.session.Verified = 'F';
 }
@@ -21,7 +21,6 @@ function developmentTest(request){
 exports.landing = asyncHandler(async(request,result,next)=>{
    developmentTest(request);
    renderOrRedirect(request, result, 'landing.html')
-
 });
 
 exports.login = asyncHandler(async(request,result,next)=>{

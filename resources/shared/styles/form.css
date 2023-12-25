@@ -33,7 +33,7 @@ form p{
    font-size: 20px;
 }
 
-form input{
+form input, form select{
    box-sizing: border-box;
 
    border:0;
@@ -44,9 +44,9 @@ form input{
    border-radius: 3px;
    color:black;
    width:100%;
-   line-height: 28px;
+   height: 50px;
    padding: 8px 16px;
-   font-size: 16px;
+   font-size: 18px;
    margin-bottom: 20px;
 }
 
@@ -75,7 +75,7 @@ form button[disabled]{
 
 .fa-eye{
    position: absolute;
-   top:58px;
+   top:60px;
    right:20px;
    cursor: pointer;
    color:black;
@@ -85,7 +85,6 @@ form button[disabled]{
 form input:focus{
    border: 2px solid #08B0FF;
 }
-
 
 form a{
    font-size:20px;
@@ -135,74 +134,6 @@ form hr{
  }
 
 
-
-.formContainer{
-   position: absolute;
-   transform: translate(50%,-200%);
-   border:2px solid black;
-   border-radius: 5px;
-   color:black;
-   background-color: white;
-   min-height: 500px;
-   text-align: center;
-   padding:25px;
-   z-index:1000;
-}
-
-.formContainer.visible {
-   transition: all 3s ease-in-out;
-   display: fixed;
-   animation: popup 1s;
-}
-.formContainer.hidden {
-   display: none;
-   animation: popout 10s;
-}
-.formContainer > form{
-   padding:25px;
-}
-
-.formContainer h1{
-   font-size: 55px;
-   margin-bottom:20px;
-   margin-top:0;
-}
-
-.formContainer label{
-   font-size: 18px;
-}
-
-.formContainer button{
-   background-color: #EC2EFF;
-}
-
-.formContainer input, .formContainer select{
-   background:#f5f5f5;
-   font-weight: bolder;
-}
-
-.formContainer button > i{
-   margin-left:5px;
-}
-
-.formContainer input[type="date"]{
-   font-weight: bolder;
-   font-size:20px;
-}
-
-.formContainer > .exitFormButton{
-   position: relative;
-   cursor: pointer;
-   top:5%;
-   right:5%;
-   width: 60px;
-   border-radius:25px ;
-   background:none;
-   border:0;
-   margin:0;
-   font-size: 30px;
-   color:red;
-}
 /* https://loading.io/css/ */
 .lds-facebook {
    display: inline-block;
