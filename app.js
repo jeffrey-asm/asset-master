@@ -5,7 +5,9 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const cors = require('cors');
 const helmet = require('helmet');
-const session = require("express-session")
+const session = require("express-session");
+const redis = require('redis');
+const connectRedis = require('connect-redis');
 require("dotenv").config();
 
 var indexRouter = require('./routes/index');
@@ -13,13 +15,23 @@ var usersRouter = require('./routes/users');
 
 var app = express();
 
+//Configure redis client
+const RedisStore = connectRedis.default;
+const redisClient = redis.createClient({
+  host: 'localhost',
+  port: 6379
+});
+
+redisClient.connect().catch(console.error);
+
 app.use(cookieParser());
 //Change cookie to secure on HTTPS
 app.use(session({
+  store: new RedisStore({ client: redisClient  }),
   secret:process.env.SESSION_SECRET,
-  resave:true,
-  saveUninitialized:true,
-  cookie: { secure: false }
+  resave:false,
+  saveUninitialized:false,
+  cookie: { secure: false, httpOnly: false, maxAge: 1000 * 60 * 10 }
 }));
 
 app.use(cors());

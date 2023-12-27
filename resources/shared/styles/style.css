@@ -20,6 +20,7 @@ main{
    min-height:90vh;
    width:90%;
    margin:20px auto 20px auto;
+   transition: opacity 1s ease-in-out;
 }
 
 button{

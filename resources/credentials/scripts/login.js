@@ -6,7 +6,7 @@ let submitButton = document.getElementById("submitButton");
 loginForm.onsubmit = async function(event){
    event.preventDefault();
 
-   let successFunction = (data) => {
+   let successFunction = (data,messageContainer) => {
       submitButton.innerHTML = '';
       setTimeout(()=>{
          transitionToPage(submitButton,'../users/home');

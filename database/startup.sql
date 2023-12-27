@@ -32,9 +32,18 @@ CREATE TABLE `Categories`(
 
 
 
+-- Handle budget category remove in the future
+CREATE TABLE Transactions (
+   Transaction_ID INT PRIMARY KEY NOT NULL UNIQUE,
+   Description VARCHAR(50) NOT NULL,
+   Category VARCHAR(50) NOT NULL,
+   Date DATE NOT NULL,
+   Amount DECIMAL(13, 2) NOT NULL,
+   User_ID INT NOT NULL,
+   Account_ID INT NOT NULL,
+);
 
--- TODO account for budget and transactions AND NEW VARIALBE NAMES
--- TODO NO FOREIGN KEYS
+
 CREATE TABLE Accounts (
    AccountID VARCHAR(30) PRIMARY KEY NOT NULL,
    Name VARCHAR(20) NOT NULL,
@@ -55,15 +64,6 @@ VALUES (
 SELECT * FROM Accounts;
 
 
-CREATE TABLE Transactions (
-   Transaction_ID INT PRIMARY KEY NOT NULL UNIQUE,
-   Description VARCHAR(50) NOT NULL,
-   Category VARCHAR(50) NOT NULL,
-   Date DATE NOT NULL,
-   Amount DECIMAL(13, 2) NOT NULL,
-   User_ID INT NOT NULL,
-   Account_ID INT NOT NULL,
-);
 
 INSERT INTO Transactions (Transaction_ID,Account_ID,Description,Category,Date,Amount,User_ID)
 VALUES (

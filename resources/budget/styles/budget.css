@@ -1,6 +1,7 @@
 main{
    display: grid;
    grid-template-columns: 4fr 2fr;
+   opacity: 0;
 }
 
 #budgetSection{
@@ -89,14 +90,12 @@ main{
    text-align: right;
    margin:0;
    cursor:initial;
+   max-width:65px;
+   margin-left: auto;
 }
 
-.editCategory:hover{
-   box-shadow: none;
-}
-
-.editCategory span{
-   margin-right:10px;
+.editCategory[disabled]{
+   color: #ccc;
 }
 
 .editCategory span:hover{
@@ -121,7 +120,7 @@ main{
    background: #08B0FF;
 }
 .addButton button[disabled]{
-   background: #DCDAD1;
+   background: #ccc;
 }
 
 

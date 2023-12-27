@@ -16,19 +16,23 @@ function developmentTest(request){
   request.session.Username = 'root';
   request.session.Email = 'jeffrey@gmail.com';
   request.session.Verified = 'F';
+  delete request.session['budget'];
 }
 
 exports.landing = asyncHandler(async(request,result,next)=>{
    developmentTest(request);
-   renderOrRedirect(request, result, 'landing.html')
+   await request.session.save();
+   renderOrRedirect(request, result, 'landing.html');
 });
 
 exports.login = asyncHandler(async(request,result,next)=>{
   developmentTest(request);
-  renderOrRedirect(request, result, 'login.html')
+  await request.session.save();
+  renderOrRedirect(request, result, 'login.html');
 });
 
 exports.signup = asyncHandler(async(request,result,next)=>{
   developmentTest(request);
-  renderOrRedirect(request, result, 'signup.html')
+  await request.session.save();
+  renderOrRedirect(request, result, 'signup.html');
 });

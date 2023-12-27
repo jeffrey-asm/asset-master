@@ -19,6 +19,8 @@ router.get('/getUserBudget',budgetController.getUserBudget);
 
 router.post('/addCategory',budgetController.addCategory);
 
+router.post('/updateCategory',budgetController.updateCategory);
+
 // Handle accounts page routing
 router.get('/accounts', usersController.accounts);
 

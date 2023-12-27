@@ -1,4 +1,4 @@
-import {sendRequest,openPopUp,exitPopUp,removeMessage,updateProfileInfo}  from "../../shared/scripts/shared.js";
+import {sendRequest,openPopUp,exitPopUp,removeMessage}  from "../../shared/scripts/shared.js";
 import {updateProfileInfo} from "./construct.js";
 
 let username = document.getElementById('username');
@@ -14,8 +14,6 @@ let passwordForm = document.getElementById('passwordForm');
 let editPasswordPopUp = document.getElementById('changePasswordPopUp');
 let editPasswordButton = document.getElementById('passwordSubmitButton');
 let exitPasswordIcon = document.getElementById('exitPasswordIcon');
-
-let messageContainer;
 
 updateProfileInfo();
 
@@ -51,7 +49,8 @@ exitPasswordIcon.onclick = function(event){
 detailsForm.onsubmit = async function(event){
    event.preventDefault();
 
-   let successFunction = (data) => {
+   let successFunction = (data,messageContainer) => {
+      console.log(data);
       let username = document.getElementById('username');
       let email = document.getElementById('email');
       let editUsername = document.getElementById('editUsername');
@@ -63,9 +62,9 @@ detailsForm.onsubmit = async function(event){
        editUsername.disabled = editEmail.disabled = username.disabled = email.disabled = changesButton.disabled = true;
 
       setTimeout(()=>{
-         document.getElementById('editUsername').disabled = document.getElementById('editEmail').disabled = false;
          removeMessage(messageContainer)
-      },2800);
+         document.getElementById('editUsername').disabled = document.getElementById('editEmail').disabled = false;
+      },2500);
    }
 
    let failFunction =  () => {};
@@ -82,7 +81,7 @@ detailsForm.onsubmit = async function(event){
 passwordForm.onsubmit = async function(event){
    event.preventDefault();
 
-   let successFunction = (data) => {
+   let successFunction = (data,messageContainer) => {
       setTimeout(()=>{
          document.getElementById('exitPasswordIcon').click();
       },2000);

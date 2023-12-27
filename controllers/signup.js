@@ -1,7 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const validation = require('../database/validation.js');
 const query = require('../database/query.js');
-const hash = require('../database/hash.js');
 const sharedReturn = require('./message.js');
 
 exports.signup = asyncHandler(async(request,result,next)=>{
@@ -9,26 +8,21 @@ exports.signup = asyncHandler(async(request,result,next)=>{
 
    //First validate all form input on backend for safety of structured information on current database
    let usernameValidation = validation.validateUsername(result,trimmedInputs.username);
-   if (usernameValidation.status !== 'pass') {
-    return;
-   }
+   if (usernameValidation.status !== 'pass') return;
 
    let passwordValidation = validation.validatePasswords(result,trimmedInputs.password,trimmedInputs.additionalPassword);
-   if (passwordValidation.status !== 'pass'){
-    return;
-   }
+   if (passwordValidation.status !== 'pass') return;
 
    let emailValidation = validation.validateEmail(result,trimmedInputs.email);
-   if (emailValidation.status !== 'pass'){
-    return;
-   }
+   if (emailValidation.status !== 'pass') return;
 
   try{
-    let passwordHash = hash(trimmedInputs.password);
+    let passwordHash = query.hash(trimmedInputs.password);
 
     let usernameCheck = await query.runQuery(`SELECT * FROM Users WHERE Username = ?;`,[trimmedInputs.username])
 
     if(usernameCheck.length >= 1){
+      result.status(409);
       sharedReturn.sendError(result,'username',`Username already taken! <i class='fa-solid fa-database'></i>`);
       return;
     }
@@ -36,6 +30,7 @@ exports.signup = asyncHandler(async(request,result,next)=>{
     let emailCheck =  await query.runQuery(`SELECT * FROM Users WHERE Email = ?;`,[trimmedInputs.email])
 
     if(emailCheck.length >= 1){
+      result.status(409);
       sharedReturn.sendError(result,'email',`Email already taken! <i class='fa-solid fa-database'></i>`);
       return;
     }
@@ -60,10 +55,14 @@ exports.signup = asyncHandler(async(request,result,next)=>{
     request.session.Username = trimmedInputs.username;
     request.session.Email = trimmedInputs.email;
     request.session.Verified = verifiedChar;
-
+    result.status(200);
     sharedReturn.sendSuccess(result,`Welcome <i class="fa-solid fa-door-open"></i>`);
   } catch (error){
+    result.status(500);
     sharedReturn.sendError(result,'email',`Could not successfully process request <i class='fa-solid fa-database'></i>`);
     return;
-  }
+  } finally{
+    await request.session.save();
+    return;
+ }
 });

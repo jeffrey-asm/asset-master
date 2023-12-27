@@ -91,6 +91,36 @@
          </form>
       </div>
 
+      <div class = 'popup' id = 'editCategoryContainer' novalidate>
+         <div class = 'popupIconContainer'>
+            <i class = "fa-solid fa-pen-to-square"></i>
+         </div>
+         <div class = 'popupExitContainer'>
+            <i class="fa-solid fa-xmark exitFormIcon" id = "exitEditCategoryIcon"></i>
+         </div>
+         <form id = "editCategoryForm" class = 'popupForm' novalidate>
+            <h1>Edit Category</h1>
+            <label for="name">Category Name</label>
+            <input type="text" name="name" id="editName" placeholder="Name">
+            <label for="type">Category Type</label>
+            <select name="type" id="editType">
+               <option value="Income" id = 'incomeSelect'>Income</option>
+               <option value="Expenses" id = 'expensesSelect'>Expenses</option>
+            </select>
+            <label for="amount">Category Amount</label>
+            <input type="number" name="amount" id="editAmount" step="0.01" placeholder="0.00">
+            <div class = 'sliderContainer'>
+               <label for="remove">Remove Category</label>
+               <label class="switch">
+                  <input type="checkbox" name = 'remove' id = 'remove'>
+                  <span class="slider"></span>
+                </label>
+            </div>
+            <button type="submit" id = 'editCategorySubmitButton'>Submit</button>
+         </form>
+      </div>
+   </div>
+
    <footer>
       Copyright &copy; 2023 Asset Master
    </footer>

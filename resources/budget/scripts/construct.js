@@ -1,3 +1,5 @@
+import {openPopUp}  from "../../shared/scripts/shared.js";
+
 export const positiveGradient = [
    "#FF0000", // Red
    "#FF1A00",
@@ -44,6 +46,31 @@ export function constructCategory(mainOrSub,type,ID,name,current,total){
          </span>
       </button>
    `;
+   //Store ID in edit category button for form popup setup
+   let editContainer = container.querySelector('.editCategory');
+
+   //Store relevant information for specific category in dataset for efficient input into edit form
+   editContainer.onclick = function(event){
+      //Update form accordingly given the input
+      let editName = document.getElementById('editName');
+      let editType = document.getElementById('editType');
+      let remove = document.getElementById('remove');
+
+      if(name == 'Income' || name == 'Expenses'){
+         //Main types have unique identifier of their type and name
+         editName.disabled = editType.disabled = remove.disabled  = true;
+      } else{
+         editName.disabled = editType.disabled = remove.disabled  = false;
+      }
+      editName.value = name;
+      editType.value = type;
+
+      document.getElementById('editAmount').value = total;
+      //Store ID in form dataset to make adjustments on backend
+      document.getElementById('editCategoryForm').dataset.identification = ID;
+
+      openPopUp(document.getElementById('editCategoryContainer'));
+   }
 
    let color;
    let colorIndex = 0;
@@ -72,6 +99,48 @@ export function constructCategory(mainOrSub,type,ID,name,current,total){
 }
 
 
+export async function getBudget(){
+   //Hide main tag till fetching user data
+   let mainTag = document.getElementsByTagName('main')[0];
+
+   try {
+      const response = await fetch('../users/getUserBudget', {
+        method: "GET",
+      });
+
+      let data = await response.json();
+      //Render object holds all variables essential to constructing front end data
+      data = data.render;
+
+      let formattedDate = data.Month.split('-');
+      //Assume form YY-MM-DD
+      let dateText = document.getElementById('dateText');
+      dateText.innerHTML = `Budget for ${formattedDate[1]}/${formattedDate[0]}`;
+
+
+      mainTag.style.opacity = '1';
+      //Construct data for income and expenses
+      constructCategory('main', 'Income','mainIncome', 'Income', data.Income.current, data.Income.total);
+      let incomeCategories = data.Income.categories;
+      let incomeKeys = Object.keys(data.Income.categories);
+
+      for(let i = 0; i < incomeKeys.length;i++){
+         //Construct sub categories
+         constructCategory('sub', 'Income',incomeKeys[i], incomeCategories[incomeKeys[i]].name, incomeCategories[incomeKeys[i]].current, incomeCategories[incomeKeys[i]].total);
+      }
+
+      constructCategory('main', 'Expenses','mainExpenses', 'Expenses', data.Expenses.current, data.Expenses.total);
+      let expensesCategories = data.Expenses.categories;
+      let expensesKeys = Object.keys(data.Expenses.categories);
+
+      for(let i = 0; i < expensesKeys.length;i++){
+         //Construct sub categories
+         constructCategory('sub', 'Expenses',expensesKeys[i], expensesCategories[expensesKeys[i]].name, expensesCategories[expensesKeys[i]].current, expensesCategories[expensesKeys[i]].total);
+      }
+    } catch (error) {
+      console.error(error)
+    }
+}
 
 
 export function updateCategory(){

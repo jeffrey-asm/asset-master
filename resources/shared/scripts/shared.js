@@ -18,15 +18,15 @@ function transitionToPage(component,link){
 
 let inputs = document.getElementsByTagName('input');
 let messageContainer;
+let editingContainer;
 
 function removeMessage(){
-    //remove all other error inputs
-    for(let i = 0; i < inputs.length; i++){
-      inputs[i].classList.remove('errorInput');
-    }
+   if(document.body.contains(editingContainer)){
+      editingContainer.classList.remove('errorInput');
+   }
 
    if(document.body.contains(messageContainer)){
-   messageContainer.style.animation = 'fadeOut 0.5s';
+      messageContainer.style.animation = 'fadeOut 1.5s forwards';
 
       setTimeout(()=>{
          messageContainer.remove();
@@ -112,15 +112,15 @@ async function sendRequest(url,structuredFormData,formButton,formButtonText,succ
 
       if (data.status !== 'pass') {
         displayMessage(formButton, data.message, 'error');
-        document.getElementById(data.componentID).classList.add('errorInput');
+        editingContainer = document.getElementById(data.componentID);
+        editingContainer.classList.add('errorInput');
         formButton.innerHTML = formButtonText;
-      //   failFunction.call();
-      console.log(data);
-        return data;
+        failFunction();
       } else {
         displayMessage(formButton, data.message, 'informational');
         formButton.innerHTML = formButtonText;
-        successFunction.call(data);
+        //Success functions may need data from request or current message container in scope of current module
+        successFunction(data,messageContainer);
         return data;
       }
     } catch (error) {
@@ -128,7 +128,7 @@ async function sendRequest(url,structuredFormData,formButton,formButtonText,succ
       console.log(error);
       displayMessage(formButton, `Could not successfully process request <i class='fa-solid fa-database'></i>`, 'error');
       formButton.innerHTML = formButtonText;
-      failFunction.call();
+      failFunction();
     }
 }
 
