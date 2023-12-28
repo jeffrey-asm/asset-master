@@ -25,12 +25,12 @@ main{
 
 button{
    cursor: pointer;
-   background-color: #08B0FF;
+   box-sizing: border-box;
+   background-color: #178eef;
    border:0;
    border-radius: 5px;
-   padding: 5px;
    width:100%;
-   font-size: 20px;
+   font-size: 18px;
    font-weight: bold;
    color:white;
    margin-top: 10px;
@@ -50,6 +50,7 @@ button{
 
 .sectionTitle img{
    width:500px;
+   max-width:90%;
 }
 
 .sectionTitle h1{
@@ -57,7 +58,7 @@ button{
 }
 
 button:hover {
-   box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 2px, rgba(0, 0, 0, 0.07) 0px 2px 4px, rgba(0, 0, 0, 0.07) 0px 4px 8px, rgba(0, 0, 0, 0.07) 0px 8px 16px, rgba(0, 0, 0, 0.07) 0px 16px 32px, rgba(0, 0, 0, 0.07) 0px 32px 64px;
+   box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px;
 }
 
 .mainImage img{
@@ -80,11 +81,9 @@ button:hover {
  @keyframes fadeOut {
    from {
       opacity: 1;
-      transform:scale(1);
    }
    to {
       opacity: 0;
-      transform:scale(0.1);
    }
  }
 
@@ -96,11 +95,9 @@ button:hover {
    width:100%;
    text-align: center;
    margin:10px auto 10px auto;
-   animation: fadeIn 0.5s;
 }
 .informational{
-   color:#08B0FF;
-   animation: fadeOut 10s forwards;
+   color:#178eef;
 }
 
 .errorInput{
@@ -145,7 +142,7 @@ footer{
    bottom: 0;
    text-align: center;
    width:100%;
-   margin:40px auto 20px auto;
+   margin:50px auto 20px auto;
    z-index: -1;
 }
 
@@ -196,11 +193,11 @@ nav i {
    cursor:pointer;
 }
 nav i:hover{
-   color:#08B0FF;
+   color:#178eef;
    transform: rotateY(180deg);
 }
 
-.popup{
+.popup,.popupNotification{
    position:fixed;
    top:50%;
    left:50%;
@@ -269,11 +266,15 @@ nav i:hover{
    box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
    width:100px;
    height:100px;
-   background:#08B0FF;
+   background:#178eef;
    color:white;
 
    text-align: center;
    font-size:50px;
+}
+
+.popupIconContainer.errorType{
+   background-color: red;
 }
 
 
@@ -303,6 +304,93 @@ nav i:hover{
 .popupForm h1{
    font-size:45px;
 }
+
+
+@keyframes notificationShow {
+   from {
+      top:-50%;
+      transform:translate(-50%,-50%) scale(0.1);
+   }
+   to {
+      top:13%;
+      transform: translate(-50%,-50%) scale(1);
+   }
+}
+
+@keyframes notificationHide {
+   from {
+      top:13%;
+      transform: translate(-50%,-50%) scale(1);
+   }
+   to {
+      top:-50%;
+      transform:translate(-50%,-50%) scale(0.1);
+   }
+}
+.popupNotification{
+   position: fixed;
+   top: -50%;
+   left: 50%;
+   transform: translate(-50%, -50%) scale(1);
+   visibility: visible;
+   opacity:1;
+   min-height:180px;
+   max-height:190px;
+   width:500px;
+   max-width: 90%;
+}
+
+.notificationShown {
+   animation: notificationShow 2s ease-in-out forwards;
+}
+
+.notificationHidden {
+   animation: notificationHide 2s ease-in-out forwards;
+}
+
+.popupNotification p{
+   font-size:16px;
+   font-weight: bolder;
+   margin:0;
+}
+
+.popupNotification p:first-child{
+   margin-bottom:0;
+   margin-top:20px;
+}
+
+.popupNotification button{
+   width:100%;
+   margin:auto;
+   padding:0;
+   max-width:120px;
+   font-size:16px;
+   height:35px;
+}
+
+.popupNotification .popupIconContainer{
+   width:50px;
+   height:50px;
+   top:-25px;
+}
+
+.popupNotification .popupIconContainer{
+   font-size:25px;
+}
+
+.popupNotification .popupExitContainer{
+   top:10px;
+   right:20px;
+}
+
+.popupNotification .popupExitContainer i{
+   font-size:25px;
+}
+
+.popupNotification form{
+   max-height:200px;
+}
+
 
 @media only screen and (max-width:600px){
    main{

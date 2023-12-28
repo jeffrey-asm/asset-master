@@ -1,4 +1,4 @@
-import {openPopUp}  from "../../shared/scripts/shared.js";
+import {openPopUp,exitPopUp}  from "../../shared/scripts/shared.js";
 
 export const positiveGradient = [
    "#FF0000", // Red
@@ -27,8 +27,8 @@ export const positiveGradient = [
 export const negativeGradient = [...positiveGradient].reverse();
 
 export function constructCategory(mainOrSub,type,ID,name,current,total){
-   let formattedCurrent = parseFloat(current).toLocaleString("en-US",{ minimumFractionDigits: 2, maximumFractionDigits: 2 });
-   let formattedTotal = parseFloat(total).toLocaleString("en-US",{ minimumFractionDigits: 2, maximumFractionDigits: 2 });
+   let formattedCurrent = current.toLocaleString("en-US",{ minimumFractionDigits: 2, maximumFractionDigits: 2 });
+   let formattedTotal = total.toLocaleString("en-US",{ minimumFractionDigits: 2, maximumFractionDigits: 2 });
    let mainContainer = document.getElementById(`${type}`);
 
    let container = document.createElement('div');
@@ -101,7 +101,42 @@ export function constructCategory(mainOrSub,type,ID,name,current,total){
 
 export async function getBudget(){
    //Hide main tag till fetching user data
-   let mainTag = document.getElementsByTagName('main')[0];
+   let mainTag = document.querySelector('main');
+   mainTag.style.opacity = 0;
+
+   //Reset current HTML and reload data
+   document.getElementById('Income').innerHTML = `
+      <div class = "addButton">
+         <button class = "addCategoryButton" id = "addIncomeCategory" data-type = 'Income'>Add Category</button>
+      </div>`;
+
+   document.getElementById('Expenses').innerHTML = `
+      <div class = "addButton">
+         <button class = "addCategoryButton" id = "addExpensesCategory" data-type = 'Expenses'>Add Category</button>
+      </div>`;
+
+
+   let categoryType = document.getElementById('type');
+   let addCategoryContainer = document.getElementById('addCategoryContainer');
+   let addCategoryButtons = document.querySelectorAll('.addCategoryButton');
+
+   for(let i = 0; i < addCategoryButtons.length; i++){
+      addCategoryButtons[i].onclick = function(event){
+         categoryType.value = this.dataset.type;
+         openPopUp(addCategoryContainer);
+      }
+   }
+
+   let addCategoryForm = document.getElementById('addCategoryForm');
+   let exitAddCategoryIcon = document.getElementById('exitAddCategoryIcon');
+
+   exitAddCategoryIcon.onclick = function(event){
+      addCategoryButtons[0].disabled = addCategoryButtons[1].disabled = true;
+      setTimeout(()=>{
+         addCategoryButtons[0].disabled = addCategoryButtons[1].disabled = false;
+      },1500);
+      exitPopUp(addCategoryContainer,addCategoryForm,exitAddCategoryIcon);
+   }
 
    try {
       const response = await fetch('../users/getUserBudget', {
@@ -137,12 +172,52 @@ export async function getBudget(){
          //Construct sub categories
          constructCategory('sub', 'Expenses',expensesKeys[i], expensesCategories[expensesKeys[i]].name, expensesCategories[expensesKeys[i]].current, expensesCategories[expensesKeys[i]].total);
       }
+
+      let leftOverSpan = document.getElementById('leftOverSpan');
+
+      //Update summary section
+      document.getElementById('incomeSpan').innerHTML = `$` + data.Income.current.toLocaleString("en-US",{ minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      document.getElementById('expensesSpan').innerHTML = `$` + data.Expenses.current.toLocaleString("en-US",{ minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+      //Differentiate between positive and negative left over amounts
+      if(data.leftOver < 0){
+         leftOverSpan.style.color = 'red';
+         leftOverSpan.innerHTML = `-$` + (data.leftOver * -1).toLocaleString("en-US",{ minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+      } else{
+         leftOverSpan.style.color = '#178eef';
+         leftOverSpan.innerHTML = `$` + data.leftOver.toLocaleString("en-US",{ minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      }
+
+      //Final check to notify user if they should reset their monthly budget to reflect current date
+      if(data.notify){
+         let resetNotification = openNotification('fa-solid fa-arrows-rotate',`<form id = 'resetBudgetForm' class = 'notificationForm'>
+         <p>Please reset current budget to account for current date. Only transactions are saved for analytics.</p>
+         <button type = 'submit' id = 'resetBudgetButton'>Reset</button>
+         </form>`,'informational');
+
+         resetNotification.querySelector('form').onsubmit = async function(event){
+            event.preventDefault();
+
+            let formData = new FormData(this);
+            let structuredFormData = new URLSearchParams(formData).toString();
+
+            let successFunction = (data,messageContainer)=>{
+               //Simple reconstruction of data to reflect new budget
+               getBudget();
+
+               setTimeout(()=>{
+                  document.querySelector('.exitNotificationIcon').click();
+               },1000);
+
+            }
+            let failFunction =  () => {};
+
+            await sendRequest('../users/resetBudget',structuredFormData,this.querySelector('button'),'Reset',successFunction,failFunction);
+         }
+      }
+
     } catch (error) {
       console.error(error)
     }
-}
-
-
-export function updateCategory(){
-   // Implement later
 }

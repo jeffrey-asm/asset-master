@@ -44,10 +44,10 @@ exports.signup = asyncHandler(async(request,result,next)=>{
     //Must add to users account, then add instances for the budget
     await query.runQuery(insertQuery,[randomID,trimmedInputs.username,passwordHash,trimmedInputs.email,verifiedChar]);
 
-    let currentDate = query.getCurrentDate();
+    let currentMonth = query.getCurrentMonth();
 
     // Create a income and expenses budget for user
-    await query.runQuery('INSERT INTO Budgets (UserID,IncomeCurrent,IncomeTotal,ExpensesCurrent,ExpensesTotal,Month) VALUES (?,?,?,?,?,?);',[randomID,0.00,1600.00,0.00,500.00,currentDate]);
+    await query.runQuery('INSERT INTO Budgets (UserID,IncomeCurrent,IncomeTotal,ExpensesCurrent,ExpensesTotal,Month) VALUES (?,?,?,?,?,?);',[randomID,0.00,1600.00,0.00,500.00,currentMonth]);
 
     //Store UserID in current express session to have a reference for loading user specific data on front end
     // Store Username and Email to display in user settings to not always run a Query to database

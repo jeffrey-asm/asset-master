@@ -50,20 +50,20 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function(request, result, next) {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function(error, request, result, next) {
   // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+  result.locals.message = error.message;
+  result.locals.error = request.app.get('env') === 'development' ? error : {};
 
   // render the error page
-  res.status(err.status || 500);
+  result.status(error.status || 500);
   //
-  res.sendFile(path.join(__dirname,'views','error.html'));
+  result.sendFile(path.join(__dirname,'views','error.html'));
 });
 
 module.exports = app;

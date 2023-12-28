@@ -20,10 +20,10 @@ async function runQuery(query='',inputs=[]){
    }
 }
 
-async function updateDatabase(result,query='',items=[]){
+async function updateDatabase(result,query='',items=[],returnInfo={}){
    await runQuery(query,items);
    result.status(200);
-   sharedReturn.sendSuccess(result,`Changes saved <i class="fa-solid fa-check"></i>`);
+   sharedReturn.sendSuccess(result,`Changes saved <i class="fa-solid fa-check"></i>`,returnInfo);
 }
 
 async function searchDuplicates(result,query,items,componentID,message){
@@ -63,11 +63,12 @@ async function retrieveRandomID(query){
    return randomID;
 }
 
-function getCurrentDate(){
+function getCurrentMonth(){
    let currentDate = new Date();
    let year = currentDate.getFullYear();
    let month = (currentDate.getMonth() + 1).toString().padStart(2,'0');
-   let day = (currentDate.getDay()).toString().padStart(2,'0');
+   //Set to one as budgets are reset on the first;
+   let day = 1;
    return year + '-' + month + '-' + day;
 }
 
@@ -77,4 +78,4 @@ function hash(password){
 }
 
 
-module.exports = {runQuery,retrieveRandomID,getCurrentDate,searchDuplicates,updateDatabase,hash};
+module.exports = {runQuery,retrieveRandomID,getCurrentMonth,searchDuplicates,updateDatabase,hash};

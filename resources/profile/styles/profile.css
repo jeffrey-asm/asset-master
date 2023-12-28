@@ -3,7 +3,8 @@ form{
    max-width: 95%;
 }
 form h2{
-   font-size:30px;
+   font-size:35px;
+   margin-bottom:0;
 }
 
 .editingContainer{
@@ -23,11 +24,6 @@ form h2{
    grid-row:1;
    grid-column: 3/4;
    font-size:20px;
-}
-
-.editingContainer .editCategory[disabled]{
-   background:white;
-   color:#E6E5DF;
 }
 
 .editingContainer .error{
@@ -53,8 +49,9 @@ form label{
    display: grid;
    grid-template-columns: 5fr 1fr;
    grid-template-rows: 40px;
+   row-gap:5px;
    column-gap: 5px;
-   margin:25px 0 25px 0;
+   margin:15px 0 15px 0;
    text-align: left;
    width:100%;
 }
@@ -78,7 +75,7 @@ form label{
    color:red;
 }
 
-#deleteButton{
+#deleteButtonPopUp{
    background-color: red;
    color:white;
    border:0;
@@ -90,19 +87,48 @@ form label{
    border:2px solid black;
    color:black;
    background-color: white;
-   width:150px;
-   font-size:18px;
+   width:130px;
+   font-size:16px;
    padding:0;
-   height:55px;
+   height:60px;
+   margin-left:auto;
 }
 
 #verifiedImage{
    grid-row:1/2;
    grid-column: 2/4;
-   max-width: 150px;
+   max-width: 130px;
+}
 
-   position: relative;
-   left:50%;
-   top:50%;
-   transform: translate(-55%,-50%);
+@media only screen and (max-width:500px){
+   form h2{
+      font-size:28px;
+      margin:10px auto 0 auto;
+   }
+   form label, form .editingContainer {
+      font-size:18px;
+   }
+   #securityForm{
+      text-align: center;
+      margin-top:40px;
+      margin-bottom:0;
+   }
+   .securityContainer{
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      gap:15px;
+   }
+
+   .securityButton{
+      grid-row:3;
+      margin:auto;
+   }
+   .securityText,.securityTitle{
+      width:100%;
+      margin:auto;
+   }
+
 }

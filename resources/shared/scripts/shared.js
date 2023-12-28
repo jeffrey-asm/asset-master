@@ -1,5 +1,6 @@
 import {positiveGradient,negativeGradient,constructCategory} from "../../budget/scripts/construct.js";
 import {updateProfileInfo} from "../../profile/scripts/construct.js";
+import {getBudget} from "../../budget/scripts/construct.js";
 
 function transitionToPage(component,link){
    setTimeout(()=>{
@@ -26,11 +27,11 @@ function removeMessage(){
    }
 
    if(document.body.contains(messageContainer)){
-      messageContainer.style.animation = 'fadeOut 1.5s forwards';
+      messageContainer.style.animation = 'fadeOut 0.5s ease-in-out forwards';
 
       setTimeout(()=>{
          messageContainer.remove();
-      },150);
+      },500);
 
    }
 }
@@ -94,6 +95,39 @@ function exitPopUp(component,form,icon,button){
    }
 }
 
+function openNotification(iconClass, notificationHTML, notificationType){
+   let notification = document.createElement('div');
+   notification.className = `popupNotification`
+
+   notification.innerHTML = `
+      <div class = 'popupIconContainer ${notificationType} '>
+         <i class='${iconClass}'></i>
+      </div>
+      <div class = 'popupExitContainer'>
+         <i class="fa-solid fa-xmark exitNotificationIcon" ></i>
+      </div>
+
+      ${notificationHTML}
+   `;
+
+   document.body.append(notification);
+   notification.classList.add('notificationShown');
+
+   notification.querySelector('.exitNotificationIcon').onclick = function(event){
+      this.classList.add('clicked');
+   }
+
+   notification.querySelector('.popupExitContainer').onclick = function(event){
+      notification.classList.remove('notificationShown');
+      notification.classList.add('notificationHidden');
+      setTimeout(()=>{
+         notification.remove();
+      },2000)
+   };
+
+   return notification;
+}
+
 async function sendRequest(url,structuredFormData,formButton,formButtonText,successFunction=()=>{},failFunction=()=>{}){
    //Interesting loading animation inside button
    formButton.innerHTML = `<div class="lds-facebook"><div></div><div></div><div></div></div>`;
@@ -110,6 +144,10 @@ async function sendRequest(url,structuredFormData,formButton,formButtonText,succ
 
       const data = await response.json();
 
+      if(data.error){
+         throw error;
+      }
+
       if (data.status !== 'pass') {
         displayMessage(formButton, data.message, 'error');
         editingContainer = document.getElementById(data.componentID);
@@ -125,8 +163,7 @@ async function sendRequest(url,structuredFormData,formButton,formButtonText,succ
       }
     } catch (error) {
       // Handle errors if the request fails
-      console.log(error);
-      displayMessage(formButton, `Could not successfully process request <i class='fa-solid fa-database'></i>`, 'error');
+      openNotification("fa-solid fa-triangle-exclamation", '<p>Could not successfully process request</p>', 'errorType');
       formButton.innerHTML = formButtonText;
       failFunction();
     }
@@ -166,4 +203,4 @@ if(profileIcon){
    }
 }
 
-export {transitionToPage,displayMessage,removeMessage,openPopUp,exitPopUp,sendRequest};
+export {transitionToPage,displayMessage,removeMessage,openPopUp,exitPopUp,openNotification,sendRequest};

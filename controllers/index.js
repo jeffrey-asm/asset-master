@@ -6,6 +6,7 @@ function renderOrRedirect(request,result,file){
   if(request.session.UserID !== undefined){
     result.redirect('/users/home');
   } else{
+    result.status(200);
     result.sendFile(path.join(__dirname,'../views',`${file}`));
   }
 }
@@ -16,7 +17,10 @@ function developmentTest(request){
   request.session.Username = 'root';
   request.session.Email = 'jeffrey@gmail.com';
   request.session.Verified = 'F';
-  delete request.session['budget'];
+  if(request.session.budget){
+    delete request.session.budget;
+
+  }
 }
 
 exports.landing = asyncHandler(async(request,result,next)=>{

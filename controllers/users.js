@@ -7,6 +7,7 @@ function renderOrRedirect(request,result,file){
   if(request.session.UserID === undefined){
     result.redirect('/');
   } else{
+    result.status(200);
     result.sendFile(path.join(__dirname,'../views',`${file}`));
   }
 }
@@ -47,7 +48,8 @@ exports.userInformation = asyncHandler(async(request,result,next)=>{
 exports.logout = asyncHandler(async(request,result,next)=>{
    request.session.destroy((error)=>{
       if(error){
-         console.error(`Error destroying user session ${error}`);
+         result.status(500);
+         result.json({error:true});
        }
      });
      result.redirect('/');

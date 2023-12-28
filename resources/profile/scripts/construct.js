@@ -19,7 +19,7 @@ export async function updateProfileInfo(){
       if(data.Verified !== 'F'){
          newContainer = Object.assign(document.createElement('img'), { src: '../resources/profile/images/verified.jpg', alt: 'verified-image', id: 'verifiedImage'});
       } else{
-         newContainer = Object.assign(document.createElement('button'), { type:'button',className: 'securityButton',id: 'changePasswordPopUp', innerHTML:'Change Password'});
+         newContainer = Object.assign(document.createElement('button'), { type:'button',className: 'securityButton',id: 'changePasswordPopUp', innerHTML:'Verify Email'});
       }
 
       // We replace previous verified state node with new container

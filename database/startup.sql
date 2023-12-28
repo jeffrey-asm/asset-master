@@ -30,13 +30,11 @@ CREATE TABLE `Categories`(
 );
 
 
-
-
 -- Handle budget category remove in the future
 CREATE TABLE Transactions (
    Transaction_ID INT PRIMARY KEY NOT NULL UNIQUE,
-   Description VARCHAR(50) NOT NULL,
-   Category VARCHAR(50) NOT NULL,
+   Title VARCHAR(50) NOT NULL,
+   CategoryID VARCHAR(30) NOT NULL,
    Date DATE NOT NULL,
    Amount DECIMAL(13, 2) NOT NULL,
    User_ID INT NOT NULL,

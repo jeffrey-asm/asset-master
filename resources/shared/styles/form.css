@@ -1,5 +1,6 @@
 form{
    position: relative;
+   box-sizing: border-box;
    width:600px;
    max-width: 90%;
    margin: 20px auto 20px auto;
@@ -80,7 +81,7 @@ input[disabled], select[disabled], select:disabled option,form button[disabled]{
  }
 
 form input:focus{
-   border: 2px solid #08B0FF;
+   border: 2px solid #178eef;
 }
 
 form a{
@@ -116,9 +117,16 @@ form a{
    transform: translateY(-2px);
 }
 
+.editingContainer .editCategory[disabled]{
+   background:white;
+   color:#CCCCCC;
+}
+
 form hr{
    width:100%;
-   color:black;
+   border:none;
+   height:2px;
+   background-color:black;
 }
 
  @keyframes popup {

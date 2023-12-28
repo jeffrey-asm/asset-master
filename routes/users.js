@@ -2,8 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 const usersController = require("../controllers/users.js");
-const updateUserController = require("../controllers/updateUser.js");
-const updatePasswordController = require("../controllers/updatePassword.js");
+const updateController = require("../controllers/update.js");
 const budgetController = require("../controllers/budget.js");
 
 /* GET users listing. */
@@ -21,6 +20,8 @@ router.post('/addCategory',budgetController.addCategory);
 
 router.post('/updateCategory',budgetController.updateCategory);
 
+router.post('/resetBudget',budgetController.resetBudget);
+
 // Handle accounts page routing
 router.get('/accounts', usersController.accounts);
 
@@ -31,10 +32,10 @@ router.get('/profile', usersController.profile);
 router.get('/getUserInfo', usersController.userInformation);
 
 // Update user information essential for settings page
-router.post('/updateUser', updateUserController.updateUser);
+router.post('/updateUser', updateController.updateUser);
 
 //Update user password
-router.post('/updatePassword',updatePasswordController.updatePassword);
+router.post('/updatePassword',updateController.updatePassword);
 
 // Logout method using express-session
 router.get('/logout', usersController.logout);

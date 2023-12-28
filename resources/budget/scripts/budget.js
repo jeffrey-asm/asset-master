@@ -1,32 +1,13 @@
-import {displayMessage,openPopUp,exitPopUp,sendRequest}  from "../../shared/scripts/shared.js";
+import {openNotification,exitPopUp,sendRequest}  from "../../shared/scripts/shared.js";
 import { constructCategory,getBudget } from "./construct.js";
 
-let addCategoryContainer = document.getElementById('addCategoryContainer');
 let addCategoryForm = document.getElementById('addCategoryForm');
-let categoryType = document.getElementById('type');
 let addCategorySubmitButton = document.getElementById('addCategorySubmitButton');
-let exitAddCategoryIcon = document.getElementById('exitAddCategoryIcon');
-let addCategoryButtons = document.querySelectorAll('.addCategoryButton');
 
 let editCategoryContainer = document.getElementById('editCategoryContainer');
 let editCategoryForm = document.getElementById('editCategoryForm');
 let editCategorySubmitButton = document.getElementById('editCategorySubmitButton');
 let exitEditCategoryIcon = document.getElementById('exitEditCategoryIcon');
-
-for(let i = 0; i < addCategoryButtons.length; i++){
-   addCategoryButtons[i].onclick = function(event){
-      categoryType.value = this.dataset.type;
-      openPopUp(addCategoryContainer);
-   }
-}
-
-exitAddCategoryIcon.onclick = function(event){
-   addCategoryButtons[0].disabled = addCategoryButtons[1].disabled = true;
-   setTimeout(()=>{
-      addCategoryButtons[0].disabled = addCategoryButtons[1].disabled = false;
-   },1500);
-   exitPopUp(addCategoryContainer,addCategoryForm,exitAddCategoryIcon);
-}
 
 exitEditCategoryIcon.onclick = function(event){
    let editButtons = document.body.querySelectorAll('.editCategory');
@@ -45,7 +26,6 @@ exitEditCategoryIcon.onclick = function(event){
 }
 
 getBudget();
-
 
 addCategoryForm.onsubmit = async function(event){
    event.preventDefault();
@@ -71,18 +51,32 @@ editCategoryForm.onsubmit = async function(event){
    let successFunction = (data,messageContainer) => {
       setTimeout(()=>{
          document.getElementById('exitEditCategoryIcon').click();
+         if(data.render.changes){
+
+            if(data.render.mainOrSub == 'reload'){
+               let mainTag = document.querySelector('main');
+
+               getBudget();
+            } else{
+                //Only update current category if changes were made on backend signaled by type(main or sub)
+               document.getElementById(data.render.ID).remove();
+
+               if(data.render.remove == "false"){
+                  constructCategory(data.render.mainOrSub, data.render.type,data.render.ID, data.render.name, data.render.current, data.render.total);
+               }
+            }
+         }
       },1100);
    }
 
-   let failFunction =  () => {
-
-   };
+   let failFunction =  () => {};
 
    let formData = new FormData(this);
    //Set name since it could be disabled for main types
    formData.set('name',document.getElementById('editName').value);
    //mainIncome or mainExpenses should be the dataset ID variable for current form
    formData.set('ID', (this.dataset.identification));
+   formData.set('type', document.getElementById('editType').value);
    formData.set('remove', document.getElementById('remove').checked);
 
    let structuredFormData = new URLSearchParams(formData).toString();

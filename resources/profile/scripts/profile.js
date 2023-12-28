@@ -1,4 +1,4 @@
-import {sendRequest,openPopUp,exitPopUp,removeMessage}  from "../../shared/scripts/shared.js";
+import {sendRequest,openPopUp,exitPopUp,removeMessage,transitionToPage}  from "../../shared/scripts/shared.js";
 import {updateProfileInfo} from "./construct.js";
 
 let username = document.getElementById('username');

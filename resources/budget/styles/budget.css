@@ -117,7 +117,7 @@ main{
 }
 
 .addButton button{
-   background: #08B0FF;
+   background: #178eef;
 }
 .addButton button[disabled]{
    background: #ccc;
@@ -125,19 +125,43 @@ main{
 
 
 #statistics{
-   grid-row:1;
+   position: relative;
+   grid-row:1/-1;
    grid-column:2/-1;
 
    display: flex;
    flex-direction: column;
    flex-wrap: nowrap;
+   justify-content: flex-start;
    align-items:center;
-   justify-content:flex-start;
-   gap:50px;
-
-   border:1px solid black;
+   max-width:90%;
+   height:70%;
+   margin:auto;
 }
 
+#incomeSpan{
+   color:green;
+}
+
+#expensesSpan{
+   color:red;
+}
+
+#leftOverSpan{
+   color:#178eef;
+}
+
+.budgetChartTitle{
+   text-align: center;
+   font-size: 20px;
+   margin-bottom:10px;
+}
+
+#leftOverContainer{
+   border-top:2px dotted black;
+   margin-top:5px;
+   padding-top:5px;
+}
 @media only screen and (max-width:1000px) {
 
    main{
@@ -161,7 +185,7 @@ main{
       align-items: center;
 
       width:90%;
-      margin:20px auto 20px auto;
+      margin:50px auto 20px auto;
 
       padding:0;
 
