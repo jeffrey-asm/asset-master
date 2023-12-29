@@ -21,5 +21,5 @@ loginForm.onsubmit = async function(event){
    let formData = new FormData(this);
    let structuredFormData = new URLSearchParams(formData).toString();
 
-   await sendRequest('../loginUser',structuredFormData,submitButton,'Submit',successFunction,failFunction);
+   await sendRequest('./loginUser',structuredFormData,submitButton,'Submit',successFunction,failFunction);
 }

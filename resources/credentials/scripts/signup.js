@@ -18,5 +18,5 @@ signUpForm.onsubmit = async function(event){
       let formData = new FormData(this);
       let structuredFormData = new URLSearchParams(formData).toString();
 
-      await sendRequest('../registerUser',structuredFormData,submitButton,'Submit',successFunction,failFunction);
+      await sendRequest('./registerUser',structuredFormData,submitButton,'Submit',successFunction,failFunction);
 }

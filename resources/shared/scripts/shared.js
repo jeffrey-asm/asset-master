@@ -1,6 +1,32 @@
 import {positiveGradient,negativeGradient,constructCategory} from "../../budget/scripts/construct.js";
 import {updateProfileInfo} from "../../profile/scripts/construct.js";
 import {getBudget} from "../../budget/scripts/construct.js";
+import {constructAccount} from "../../accounts/scripts/construct.js";
+
+let mode = localStorage.getItem('mode');
+let toggle = document.querySelector("#mode");
+if(mode && toggle){
+   if(mode == 'dark'){
+      toggle.click();
+      document.body.classList.add('dark-mode')
+   }
+
+   document.body.style.opacity = '1';
+
+   toggle.onchange = ()=> {
+
+      if(document.body.classList.contains('dark-mode')){
+         localStorage.mode = 'light';
+         document.body.classList.remove('dark-mode');
+      } else{
+         localStorage.mode =  'dark';
+         document.body.classList.add('dark-mode');
+      }
+   };
+} else{
+   localStorage.mode = 'light';
+}
+
 
 function transitionToPage(component,link){
    setTimeout(()=>{
@@ -45,7 +71,7 @@ function displayMessage(inputComponent, message, classType){
    },200);
 }
 
-let headerTag = document.querySelector('header');
+let headerTitle = document.querySelector('.headerTitle');
 let mainTag = document.querySelector('main');
 let footerTag = document.querySelector('footer');
 
@@ -54,7 +80,7 @@ function openPopUp(component){
       component.style.visibility = 'visible';
       component.classList.remove('popupHidden');
       //Apply blur to all other elements
-      headerTag.style.filter = mainTag.style.filter = footerTag.style.filter = 'blur(2px)';
+      headerTitle.style.filter = mainTag.style.filter = footerTag.style.filter = 'blur(3px)';
 
       //Add transition to button for smooth animation on hover
       component.getElementsByTagName('button')[0].style.transition = '0.5s';
@@ -76,7 +102,7 @@ function exitPopUp(component,form,icon,button){
       component.getElementsByTagName('button')[0].style.transition = 'initial';
 
       //Remove all blur applications
-      headerTag.style.filter = mainTag.style.filter = footerTag.style.filter = 'initial';
+      headerTitle.style.filter = mainTag.style.filter = footerTag.style.filter = 'initial';
 
       component.classList.remove('popupShown');
       component.classList.add('popupHidden');
@@ -163,7 +189,7 @@ async function sendRequest(url,structuredFormData,formButton,formButtonText,succ
       }
     } catch (error) {
       // Handle errors if the request fails
-      openNotification("fa-solid fa-triangle-exclamation", '<p>Could not successfully process request</p>', 'errorType');
+      openNotification("fa-solid fa-layer-group", '<p>Could not successfully process request</p>', 'errorType');
       formButton.innerHTML = formButtonText;
       failFunction();
     }
@@ -194,12 +220,36 @@ for(let i = 0; i < passwordIcons.length; i++){
    }
 }
 
-//Nav icon for user settings
-let profileIcon = document.getElementById('profileIcon');
+// navbar
+let sideBarIcon = document.getElementById('sidebarIcon');
+let exitSideBarIcon = document.getElementById('exitSideBarIcon');
+let navbar = document.querySelector('nav');
 
-if(profileIcon){
-   profileIcon.onclick = function(event){
-      window.location.assign('../users/profile');
+if(sideBarIcon){
+   //Only apply to valid component on user pages
+   sideBarIcon.onclick = function(event){
+      if(!navbar.classList.contains('navbarShown')){
+         navbar.classList.remove('navbarHidden');
+         navbar.classList.add('navbarShown');
+      }
+   }
+   exitSideBarIcon.onclick = function(event){
+      if(!navbar.classList.contains('navbarHidden')){
+         navbar.classList.remove('navbarShown');
+         navbar.classList.add('navbarHidden');
+      }
+   }
+
+}
+
+
+
+
+let logoIcon = document.getElementById('logoIcon');
+
+if(logoIcon){
+   logoIcon.onclick = function(event){
+      window.location.assign('./home');
    }
 }
 

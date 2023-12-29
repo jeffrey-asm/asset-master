@@ -4,6 +4,7 @@
    <meta charset="UTF-8">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <link rel="stylesheet" href="../resources/shared/styles/style.css">
+   <link rel="stylesheet" href="../resources/shared/styles/form.css">
    <link rel="stylesheet" href="../resources/accounts/styles/accounts.css">
    <title>Asset Master</title>
    <link rel="icon" href="../resources/shared/images/logo.jpg">
@@ -11,27 +12,149 @@
 </head>
 <body>
    <header>
+      <i class="fas fa-bars" id="sidebarIcon"></i>
       <div class = "headerTitle">
-         <img src="../resources/shared/images/logo.jpg" alt="error-image">
-         <h1><a href="/users/home">Asset Master</a></h1>
+         <i class="fa-solid fa-layer-group fa-xl" id = 'logoIcon'></i>
+         <h1>Asset Master</h1>
       </div>
 
       <nav>
-         <a href = "/users/home">Home</a>
-         <a href = "/users/budget">Budget</a>
-         <a href = "/users/accounts">Accounts</a>
-         <i class="fa-solid fa-user-secret" id = "profileIcon"></i>
-      </nav>
+         <i class="fa-solid fa-angles-left" id = 'exitSideBarIcon'></i>
+         <a href = "./home">Home</a>
+         <a href = "./budget">Budget</a>
+         <a href = "./accounts">Accounts</a>
+         <a href = "./profile">Profile</a>
 
+         <div class = 'sliderContainer'>
+            <label class="switch mode">
+               <input type="checkbox" name = 'mode' id = 'mode' >
+               <span class="slider mode"></span>
+             </label>
+         </div>
+      </nav>
    </header>
    <main>
-      <h1>Accounts</h1>
+
+      <div id = "accountsSection">
+         <div id = "accountsContainers">
+
+            <div id = "accounts">
+               <!-- <div class = "specificAccountsContainer">
+                  <div class="imageContainer">
+                     <img src="../resources/accounts/images/checking.png" alt="">
+                  </div>
+
+                  <div class = "accountDetails">
+                     <h1 class = "accountName">Name</h1>
+                     <h3 class = "accountValue" >$12.00</h3>
+                     <button type = 'button' class = 'editAccountButton'><i class = "fa-solid fa-pen-to-square"></i> Edit</button>
+                  </div>
+               </div> -->
+            </div>
+         </div>
+
+         <button type="button" id = "addAccountButton" class = "addButton">Add an account <i class="fa-solid fa-plus"></i>  </button>
+      </div>
+<!--
+      <div id = "transactionsSection">
+
+         <div id = "noTransactions">
+
+         </div>
+
+         <div id = "transactionsTable">
+            <table>
+               <tr class = 'headingRow'>
+                  <th>Account</th>
+                  <th>Title</th>
+                  <th>Category</th>
+                  <th>Date</th>
+                  <th>Total</th>
+                  <th></th>
+               </tr>
+               <tr class = 'dataRow'>
+                  <td>Savings Account</td>
+                  <td>Deposit</td>
+                  <td>Income - Investments</td>
+                  <td>2023-10-10</td>
+                  <td>$1200</td>
+                  <td><i class = "fa-solid fa-pen-to-square"></i></td>
+               </tr>
+
+            </table>
+         </div>
+
+         <div>
+            <button type="button" id = "addTransactionButton" class = "addButton"> Add Transaction <i class="fa-solid fa-plus"></i> </button>
+         </div>
+
+      </div> -->
+
    </main>
+
+   <div class = 'popupContainers'>
+      <div class = 'popup' id = 'addAccountContainer'>
+         <div class = 'popupIconContainer'>
+            <i class="fa-solid fa-building-columns"></i>
+         </div>
+         <div class = 'popupExitContainer'>
+            <i class="fa-solid fa-xmark exitFormIcon" id = "exitAddAccountIcon"></i>
+         </div>
+         <form id = "addAccountForm" class = 'popupForm' novalidate>
+            <h1>Add Account</h1>
+            <label for="name">Account Name</label>
+            <input type="text" name="name" id="name" placeholder="Name">
+            <label for="type">Account Type</label>
+            <select name="type" id="type">
+               <option value="Checking">Checking</option>
+               <option value="Savings">Savings</option>
+               <option value="Credit Card">Credit Card</option>
+               <option value="Retirement">Retirement</option>
+               <option value="Investment">Investment</option>
+               <option value="Loan">Loan</option>
+               <option value="Property">Property</option>
+               <option value="Other">Other</option>
+             </select>
+            <label for="balance">Account Balance</label>
+            <input type="number" name="balance" id="balance" step="0.01" placeholder="0.00">
+            <button type="submit" id = 'addAccountSubmitButton'>Submit</button>
+         </form>
+      </div>
+
+      <div class = 'popup' id = 'editAccountContainer'>
+         <div class = 'popupIconContainer'>
+            <i class="fa-solid fa-building-columns"></i>
+         </div>
+         <div class = 'popupExitContainer'>
+            <i class="fa-solid fa-xmark exitFormIcon" id = "exitEditAccountIcon"></i>
+         </div>
+         <form id = "editAccountForm" class = 'popupForm' novalidate>
+            <h1>Edit Account</h1>
+            <label for="name">Account Name</label>
+            <input type="text" name="name" id="editName" placeholder="Name">
+            <label for="type">Account Type</label>
+            <select name="type" id="editType">
+               <option value="Checking">Checking</option>
+               <option value="Savings">Savings</option>
+               <option value="Credit Card">Credit Card</option>
+               <option value="Retirement">Retirement</option>
+               <option value="Investment">Investment</option>
+               <option value="Loan">Loan</option>
+               <option value="Property">Property</option>
+               <option value="Other">Other</option>
+             </select>
+            <label for="balance">Account Balance</label>
+            <input type="number" name="balance" id="editBalance" step="0.01" placeholder="0.00">
+            <button type="submit" id = 'editAccountSubmitButton'>Submit</button>
+         </form>
+      </div>
+   </div>
 
    <footer>
       Copyright &copy; 2023 Asset Master
    </footer>
 
+   <script type="module" src="../resources/accounts/scripts/construct.js"></script>
    <script type="module" src="../resources/shared/scripts/shared.js"></script>
    <script type="module" src="../resources/accounts/scripts/accounts.js"></script>
 </body>

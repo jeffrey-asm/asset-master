@@ -40,13 +40,13 @@ function validatePasswords(result,password,secondPassword){
    return { status: 'pass' };
 }
 
-function trimInputs(result,inputs = {}){
+function trimInputs(result,inputs = {},decimalComponentID='amount'){
    let keys = Object.keys(inputs);
    let trimmedInputs = {};
 
    for(let i = 0; i < keys.length; i++){
       //Only trim inputs of type string
-     if(keys[i] == 'amount'){
+     if(keys[i] == 'amount' || keys[i] == 'balance'){
          //Amount inputs all have names of amount in request.body
          try{
             trimmedInputs[keys[i]] = new Decimal(`${parseFloat(inputs[keys[i]]).toFixed(2)}`);
@@ -57,12 +57,12 @@ function trimInputs(result,inputs = {}){
             let lowLimit = new Decimal('0.00');
 
             if(trimmedInputs[keys[i]].gt(highLimit) ||  trimmedInputs[keys[i]].lessThanOrEqualTo(lowLimit)){
-               sharedReturn.sendError(result,'amount',"Amount must be greater than $0.00, but less than $99,999,999,999.99 <i class='fa-brands fa-stack-overflow;'></i>");
+               sharedReturn.sendError(result,decimalComponentID,"Amount must be greater than $0.00, but less than $99,999,999,999.99 <i class='fa-brands fa-stack-overflow;'></i>");
                return { status: 'fail' };
             }
          } catch(error){
             result.status(400);
-            sharedReturn.sendError(result,'amount',"The category amount should represent a legitimate dollar value <i class='fa-solid fa-money-check-dollar'></i>");
+            sharedReturn.sendError(result,decimalComponentID,"The category amount should represent a legitimate dollar value <i class='fa-solid fa-money-check-dollar'></i>");
             return { status: 'fail' };
          }
       } else if(typeof inputs[keys[i]] == 'string'){
@@ -73,19 +73,19 @@ function trimInputs(result,inputs = {}){
    return trimmedInputs;
 }
 
-function validateBudgetForm(result,name,type,editingMainCategory=false){
+function validateBudgetForm(result,name,nameComponentID,type,typeComponentID,editingMainCategory=false){
    if(name.length == 0 || name.length > 30){
       result.status(400);
-      sharedReturn.sendError(result,'name',"Category names must be between 1 and 30 characters <i class='fa-solid fa-signature'></i>");
+      sharedReturn.sendError(result,nameComponentID,"Category names must be between 1 and 30 characters <i class='fa-solid fa-signature'></i>");
       return { status: 'fail' };
    } else if(editingMainCategory == false && (name == 'Income' || name == 'Expenses')){
       result.status(400);
-      sharedReturn.sendError(result,'name',"Category cannot be 'Income' or 'Expenses' <i class='fa-solid fa-signature'></i>");
+      sharedReturn.sendError(result,typeComponentID,"Category cannot be 'Income' or 'Expenses' <i class='fa-solid fa-signature'></i>");
       return { status: 'fail' };
    } else if(type != "Income" && type != 'Expenses'){
       result.status(400);
       //Rare case that user edits frontend form to return a type not supported by database
-      sharedReturn.sendError(result,'type',"Category type must be Income or Expenses<i class='fa-solid fa-coins'></i>");
+      sharedReturn.sendError(result,typeComponentID,"Category type must be Income or Expenses<i class='fa-solid fa-coins'></i>");
       return { status: 'fail' };
    }
 
@@ -93,4 +93,29 @@ function validateBudgetForm(result,name,type,editingMainCategory=false){
    return { status: 'pass' };
 }
 
-module.exports = {validateUsername,validateEmail,validatePasswords,trimInputs,validateBudgetForm};
+function validateAccountForm(result,name,nameComponentID,type,typeComponentID){
+   let options = {
+      "Checking": 1,
+      "Savings": 1,
+      "Credit Card": 1,
+      "Retirement": 1,
+      "Investment": 1,
+      "Loan": 1,
+      "Property": 1,
+      "Other": 1
+    };
+
+   if(name.length == 0 || name.length > 30){
+      result.status(400);
+      sharedReturn.sendError(result,nameComponentID,"Account names must be between 1 and 30 characters <i class='fa-solid fa-signature'></i>");
+      return { status: 'fail' };
+   } else if(!options[type]){
+      result.status(400);
+      sharedReturn.sendError(result,typeComponentID,"Invalid account type <i class='fa-solid fa-building-columns'></i>");
+      return { status: 'fail' };
+   }
+
+   return { status: 'pass' };
+}
+
+module.exports = {validateUsername,validateEmail,validatePasswords,trimInputs,validateBudgetForm,validateAccountForm};

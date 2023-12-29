@@ -4,6 +4,7 @@
    <meta charset="UTF-8">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <link rel="stylesheet" href="../resources/shared/styles/style.css">
+   <link rel="stylesheet" href="../resources/shared/styles/form.css">
    <link rel="stylesheet" href="../resources/home/styles/home.css">
    <title>Asset Master</title>
    <link rel="icon" href="../resources/shared/images/logo.jpg">
@@ -11,18 +12,26 @@
 </head>
 <body>
    <header>
+      <i class="fas fa-bars" id="sidebarIcon"></i>
       <div class = "headerTitle">
-         <img src="../resources/shared/images/logo.jpg" alt="error-image">
-         <h1><a href="/users/home">Asset Master</a></h1>
+         <i class="fa-solid fa-layer-group fa-xl" id = 'logoIcon'></i>
+         <h1>Asset Master</h1>
       </div>
 
       <nav>
-         <a href = "/users/home">Home</a>
-         <a href = "/users/budget">Budget</a>
-         <a href = "/users/accounts">Accounts</a>
-         <i class="fa-solid fa-user-secret" id = "profileIcon"></i>
-      </nav>
+         <i class="fa-solid fa-angles-left" id = 'exitSideBarIcon'></i>
+         <a href = "./home">Home</a>
+         <a href = "./budget">Budget</a>
+         <a href = "./accounts">Accounts</a>
+         <a href = "./profile">Profile</a>
 
+         <div class = 'sliderContainer'>
+            <label class="switch mode">
+               <input type="checkbox" name = 'mode' id = 'mode' >
+               <span class="slider mode"></span>
+             </label>
+         </div>
+      </nav>
    </header>
    <main>
       <h1>HOME!!!</h1>

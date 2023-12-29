@@ -12,23 +12,31 @@
 </head>
 <body>
    <header>
+      <i class="fas fa-bars" id="sidebarIcon"></i>
       <div class = "headerTitle">
-         <img src="../resources/shared/images/logo.jpg" alt="error-image">
-         <h1><a href="/users/home">Asset Master</a></h1>
+         <i class="fa-solid fa-layer-group fa-xl" id = 'logoIcon'></i>
+         <h1>Asset Master</h1>
       </div>
 
       <nav>
-         <a href = "/users/home">Home</a>
-         <a href = "/users/budget">Budget</a>
-         <a href = "/users/accounts">Accounts</a>
-         <i class="fa-solid fa-user-secret" id = "profileIcon"></i>
-      </nav>
+         <i class="fa-solid fa-angles-left" id = 'exitSideBarIcon'></i>
+         <a href = "./home">Home</a>
+         <a href = "./budget">Budget</a>
+         <a href = "./accounts">Accounts</a>
+         <a href = "./profile">Profile</a>
 
+         <div class = 'sliderContainer'>
+            <label class="switch mode">
+               <input type="checkbox" name = 'mode' id = 'mode' >
+               <span class="slider mode"></span>
+             </label>
+         </div>
+      </nav>
    </header>
 
    <main>
       <div class = "sectionTitle">
-         <img src="../resources/profile/images/profile.jpg" alt="profile-image">
+         <!-- <img src="../resources/profile/images/profile.jpg" alt="profile-image"> -->
          <h1>Profile</h1>
       </div>
 

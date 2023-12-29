@@ -1,4 +1,4 @@
-import {openPopUp,exitPopUp}  from "../../shared/scripts/shared.js";
+import {openPopUp,exitPopUp,openNotification}  from "../../shared/scripts/shared.js";
 
 export const positiveGradient = [
    "#FF0000", // Red
@@ -37,8 +37,8 @@ export function constructCategory(mainOrSub,type,ID,name,current,total){
    container.innerHTML = `
       <h2 class = "categoryHeading">${name}</h2>
       <h3 class = "categoryTotal">$${formattedCurrent}/ $${formattedTotal}</h3>
-      <div class = "progressBar">
-         <div class = "currentProgress"></div>
+      <div class = "progressBar" >
+         <div class = "currentProgress" class = '${type}'></div>
       </div>
       <button class = "editCategory">
          <span>
@@ -218,6 +218,7 @@ export async function getBudget(){
       }
 
     } catch (error) {
-      console.error(error)
+      mainTag.style.opacity = '1';
+      openNotification("fa-solid fa-triangle-exclamation", '<p>Could not successfully process request</p>', 'errorType');
     }
 }

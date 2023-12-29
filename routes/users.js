@@ -4,6 +4,7 @@ var router = express.Router();
 const usersController = require("../controllers/users.js");
 const updateController = require("../controllers/update.js");
 const budgetController = require("../controllers/budget.js");
+const accountsController = require("../controllers/accounts.js");
 
 /* GET users listing. */
 router.get('/', usersController.redirect);
@@ -24,6 +25,10 @@ router.post('/resetBudget',budgetController.resetBudget);
 
 // Handle accounts page routing
 router.get('/accounts', usersController.accounts);
+
+router.get('/getUserAccounts', accountsController.getUserAccounts);
+
+router.post('/addAccount', accountsController.addAccount);
 
 // Handle settings page routing
 router.get('/profile', usersController.profile);

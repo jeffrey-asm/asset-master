@@ -29,26 +29,28 @@ CREATE TABLE `Categories`(
    UserID  VARCHAR(30) NOT NULL
 );
 
+CREATE TABLE Accounts (
+   AccountID VARCHAR(30) PRIMARY KEY NOT NULL,
+   Name VARCHAR(30) NOT NULL,
+   Type VARCHAR(20) NOT NULL,
+   Balance DECIMAL(13, 2) NOT NULL,
+   UserID VARCHAR(30) NOT NULL
+);
+
+
 
 -- Handle budget category remove in the future
 CREATE TABLE Transactions (
-   Transaction_ID INT PRIMARY KEY NOT NULL UNIQUE,
+   TransactionID VARCHAR(30) PRIMARY KEY NOT NULL,
    Title VARCHAR(50) NOT NULL,
    CategoryID VARCHAR(30) NOT NULL,
-   Date DATE NOT NULL,
+   Month DATE NOT NULL,
    Amount DECIMAL(13, 2) NOT NULL,
    User_ID INT NOT NULL,
    Account_ID INT NOT NULL,
 );
 
 
-CREATE TABLE Accounts (
-   AccountID VARCHAR(30) PRIMARY KEY NOT NULL,
-   Name VARCHAR(20) NOT NULL,
-   Type VARCHAR(20) NOT NULL,
-   Balance DECIMAL(13, 2) NOT NULL,
-   UserID VARCHAR(30) NOT NULL
-);
 
 INSERT INTO Accounts (AccountID,Name,Type,Balance,UserID)
 VALUES (

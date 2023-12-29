@@ -75,7 +75,7 @@ detailsForm.onsubmit = async function(event){
    formData.set('email',email.value);
    let structuredFormData = new URLSearchParams(formData).toString();
 
-   await sendRequest('../users/updateUser',structuredFormData,changesButton,'Save Changes',successFunction,failFunction);
+   await sendRequest('./updateUser',structuredFormData,changesButton,'Save Changes',successFunction,failFunction);
 }
 
 passwordForm.onsubmit = async function(event){
@@ -92,5 +92,5 @@ passwordForm.onsubmit = async function(event){
    let formData = new FormData(this);
    let structuredFormData = new URLSearchParams(formData).toString();
 
-   await sendRequest('../users/updatePassword',structuredFormData,editPasswordButton,'Submit',successFunction,failFunction);
+   await sendRequest('./updatePassword',structuredFormData,editPasswordButton,'Submit',successFunction,failFunction);
 }

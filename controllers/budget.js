@@ -99,13 +99,13 @@ exports.getUserBudget = asyncHandler(async(request,result,next)=>{
 });
 
 exports.addCategory = asyncHandler(async(request,result,next)=>{
-   let trimmedInputs = validation.trimInputs(result,request.body);
+   let trimmedInputs = validation.trimInputs(result,request.body,'amount');
 
    //Must have gotten an incorrect input like invalid decimal for dollar representation
    if(trimmedInputs.status != undefined) return;
 
    //Use precise decimal arithmetic via decimal.js
-   let validationCheck = validation.validateBudgetForm(result,trimmedInputs.name,trimmedInputs.type,false);
+   let validationCheck = validation.validateBudgetForm(result,trimmedInputs.name,'name',trimmedInputs.type,'type',false);
 
    if(validationCheck.status != 'pass') return;
 
@@ -120,7 +120,7 @@ exports.addCategory = asyncHandler(async(request,result,next)=>{
       trimmedInputs['ID'] = randomID;
       trimmedInputs.amount = parseFloat(trimmedInputs.amount.toString());
       result.status(200);
-      sharedReturn.sendSuccess(result,'Category added <i class="fa-solid fa-chart-pie" ></i>',trimmedInputs);
+      sharedReturn.sendSuccess(result,'Successfully added category <i class="fa-solid fa-chart-pie" ></i>',trimmedInputs);
       await updateBudgetCache(request);
    } catch(error){
       result.status(500);
@@ -130,12 +130,12 @@ exports.addCategory = asyncHandler(async(request,result,next)=>{
 
 exports.updateCategory = asyncHandler(async(request,result,next)=>{
    try{
-      let trimmedInputs = validation.trimInputs(result,request.body);
+      let trimmedInputs = validation.trimInputs(result,request.body,'editAmount');
       if(trimmedInputs.status != undefined) return;
 
       let editingMainCategory = trimmedInputs.ID == 'mainIncome' || trimmedInputs.ID == 'mainExpenses';
 
-      let validationCheck = validation.validateBudgetForm(result,trimmedInputs.name,trimmedInputs.type,editingMainCategory);
+      let validationCheck = validation.validateBudgetForm(result,trimmedInputs.name,'editName',trimmedInputs.type,'editType',editingMainCategory);
       if(validationCheck.status != 'pass') return;
 
       let previousCategory,previousCurrent,previousTotal;

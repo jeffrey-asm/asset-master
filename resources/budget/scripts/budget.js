@@ -42,7 +42,7 @@ addCategoryForm.onsubmit = async function(event){
    let formData = new FormData(this);
    let structuredFormData = new URLSearchParams(formData).toString();
 
-   await sendRequest('../users/addCategory',structuredFormData,addCategorySubmitButton,'Submit',successFunction,failFunction);
+   await sendRequest('./addCategory',structuredFormData,addCategorySubmitButton,'Submit',successFunction,failFunction);
 }
 
 editCategoryForm.onsubmit = async function(event){
@@ -81,5 +81,5 @@ editCategoryForm.onsubmit = async function(event){
 
    let structuredFormData = new URLSearchParams(formData).toString();
 
-   await sendRequest('../users/updateCategory',structuredFormData,editCategorySubmitButton,'Submit',successFunction,failFunction);
+   await sendRequest('./updateCategory',structuredFormData,editCategorySubmitButton,'Submit',successFunction,failFunction);
 }
