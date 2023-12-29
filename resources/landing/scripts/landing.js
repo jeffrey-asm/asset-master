@@ -1,7 +1,8 @@
 import { transitionToPage } from "../../shared/scripts/shared.js";
 
 let loginButton = document.getElementById("loginButton");
-let signUpButton = document.getElementById("registerButton")
+let signUpButton = document.getElementById("registerButton");
+
 
 loginButton.onclick = function (event) {
    transitionToPage(this, '/login');

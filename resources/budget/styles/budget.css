@@ -68,9 +68,8 @@ main{
    grid-row:2;
    grid-column: 1/-1;
    overflow:hidden;
-   box-shadow: var(--shadow-color) 0px 10px 20px, var(--shadow-color) 0px 6px 6px;
+   box-shadow: 0px 2px 5px var(--shadow-color);
 }
-
 .currentProgress{
    height:35px;
    width:100%;
@@ -99,6 +98,7 @@ main{
    cursor:initial;
    max-width:65px;
    margin-left: auto;
+   margin-right:10px;
 }
 
 .editCategory[disabled]{
@@ -170,7 +170,7 @@ main{
    margin-top:5px;
    padding-top:5px;
 }
-@media only screen and (max-width:1000px) {
+@media only screen and (max-width:1200px) {
 
    main{
       width: 100%;
@@ -225,5 +225,9 @@ main{
    }
    .editCategory{
       grid-row: 4;
+   }
+   #dateText{
+      max-width: 90%;
+      font-size:32px;
    }
 }

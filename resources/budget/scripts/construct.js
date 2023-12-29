@@ -1,4 +1,4 @@
-import {openPopUp,exitPopUp,openNotification}  from "../../shared/scripts/shared.js";
+import {openPopUp,exitPopUp,openNotification,sendRequest}  from "../../shared/scripts/shared.js";
 
 export const positiveGradient = [
    "#FF0000", // Red
@@ -144,10 +144,10 @@ export async function getBudget(){
       });
 
       let data = await response.json();
+      console.log(data);
       //Render object holds all variables essential to constructing front end data
-      data = data.render;
 
-      let formattedDate = data.Month.split('-');
+      let formattedDate = data.render.Month.split('-');
       //Assume form YY-MM-DD
       let dateText = document.getElementById('dateText');
       dateText.innerHTML = `Budget for ${formattedDate[1]}/${formattedDate[0]}`;
@@ -155,18 +155,18 @@ export async function getBudget(){
 
       mainTag.style.opacity = '1';
       //Construct data for income and expenses
-      constructCategory('main', 'Income','mainIncome', 'Income', data.Income.current, data.Income.total);
-      let incomeCategories = data.Income.categories;
-      let incomeKeys = Object.keys(data.Income.categories);
+      constructCategory('main', 'Income','mainIncome', 'Income', data.render.Income.current, data.render.Income.total);
+      let incomeCategories = data.render.Income.categories;
+      let incomeKeys = Object.keys(data.render.Income.categories);
 
       for(let i = 0; i < incomeKeys.length;i++){
          //Construct sub categories
          constructCategory('sub', 'Income',incomeKeys[i], incomeCategories[incomeKeys[i]].name, incomeCategories[incomeKeys[i]].current, incomeCategories[incomeKeys[i]].total);
       }
 
-      constructCategory('main', 'Expenses','mainExpenses', 'Expenses', data.Expenses.current, data.Expenses.total);
-      let expensesCategories = data.Expenses.categories;
-      let expensesKeys = Object.keys(data.Expenses.categories);
+      constructCategory('main', 'Expenses','mainExpenses', 'Expenses', data.render.Expenses.current, data.render.Expenses.total);
+      let expensesCategories = data.render.Expenses.categories;
+      let expensesKeys = Object.keys(data.render.Expenses.categories);
 
       for(let i = 0; i < expensesKeys.length;i++){
          //Construct sub categories
@@ -176,23 +176,23 @@ export async function getBudget(){
       let leftOverSpan = document.getElementById('leftOverSpan');
 
       //Update summary section
-      document.getElementById('incomeSpan').innerHTML = `$` + data.Income.current.toLocaleString("en-US",{ minimumFractionDigits: 2, maximumFractionDigits: 2 });
-      document.getElementById('expensesSpan').innerHTML = `$` + data.Expenses.current.toLocaleString("en-US",{ minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      document.getElementById('incomeSpan').innerHTML = `$` + data.render.Income.current.toLocaleString("en-US",{ minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      document.getElementById('expensesSpan').innerHTML = `$` + data.render.Expenses.current.toLocaleString("en-US",{ minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
       //Differentiate between positive and negative left over amounts
-      if(data.leftOver < 0){
+      if(data.render.leftOver < 0){
          leftOverSpan.style.color = 'red';
-         leftOverSpan.innerHTML = `-$` + (data.leftOver * -1).toLocaleString("en-US",{ minimumFractionDigits: 2, maximumFractionDigits: 2 });
+         leftOverSpan.innerHTML = `-$` + (data.render.render.leftOver * -1).toLocaleString("en-US",{ minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
       } else{
          leftOverSpan.style.color = '#178eef';
-         leftOverSpan.innerHTML = `$` + data.leftOver.toLocaleString("en-US",{ minimumFractionDigits: 2, maximumFractionDigits: 2 });
+         leftOverSpan.innerHTML = `$` + data.render.leftOver.toLocaleString("en-US",{ minimumFractionDigits: 2, maximumFractionDigits: 2 });
       }
 
       //Final check to notify user if they should reset their monthly budget to reflect current date
-      if(data.notify){
+      if(data.render.notify){
          let resetNotification = openNotification('fa-solid fa-arrows-rotate',`<form id = 'resetBudgetForm' class = 'notificationForm'>
-         <p>Please reset current budget to account for current date. Only transactions are saved for analytics.</p>
+         <p>Please reset current budget to account for current month.</p>
          <button type = 'submit' id = 'resetBudgetButton'>Reset</button>
          </form>`,'informational');
 
@@ -218,6 +218,7 @@ export async function getBudget(){
       }
 
     } catch (error) {
+      console.log(error);
       mainTag.style.opacity = '1';
       openNotification("fa-solid fa-triangle-exclamation", '<p>Could not successfully process request</p>', 'errorType');
     }

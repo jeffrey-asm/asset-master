@@ -1,4 +1,4 @@
-import {sendRequest,openPopUp,exitPopUp,removeMessage,transitionToPage}  from "../../shared/scripts/shared.js";
+import {sendRequest,openPopUp,exitPopUp,removeMessage}  from "../../shared/scripts/shared.js";
 import {updateProfileInfo} from "./construct.js";
 
 let username = document.getElementById('username');
@@ -18,8 +18,8 @@ let exitPasswordIcon = document.getElementById('exitPasswordIcon');
 updateProfileInfo();
 
 // Send request to log out method in built controllers
-document.getElementById('logOutButton').onclick = function(event){
-   transitionToPage(this, '/users/logout');
+document.getElementById('logOutIcon').onclick = function(event){
+   window.location.href = './logOut';
 }
 
 //Handling removing disabled inputs individually

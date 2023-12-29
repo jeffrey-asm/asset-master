@@ -17,10 +17,10 @@ function developmentTest(request){
   request.session.Username = 'root';
   request.session.Email = 'jeffrey@gmail.com';
   request.session.Verified = 'F';
-  if(request.session.budget){
-    delete request.session.budget;
+  // if(request.session.budget){
+  //   delete request.session.budget;
 
-  }
+  // }
 }
 
 exports.landing = asyncHandler(async(request,result,next)=>{

@@ -1,5 +1,5 @@
 import {positiveGradient,negativeGradient,constructCategory} from "../../budget/scripts/construct.js";
-import {updateProfileInfo} from "../../profile/scripts/construct.js";
+import {updateProfileInfo} from "../../settings/scripts/construct.js";
 import {getBudget} from "../../budget/scripts/construct.js";
 import {constructAccount} from "../../accounts/scripts/construct.js";
 
@@ -25,6 +25,7 @@ if(mode && toggle){
    };
 } else{
    localStorage.mode = 'light';
+   document.body.style.opacity = '1';
 }
 
 
@@ -34,6 +35,7 @@ function transitionToPage(component,link){
    },300);
 
    setTimeout(()=>{
+      component.style.borderRadius = '100px';
       component.style.transition = "2.5s";
       component.classList.add("buttonFade");
    },400);
@@ -116,6 +118,13 @@ function exitPopUp(component,form,icon,button){
          }
          //reset form and remove any message containers
          form.reset();
+
+         let possibleSwitch = document.querySelector('#remove');
+
+         if(possibleSwitch){
+            possibleSwitch.checked = false;
+         }
+
          removeMessage();
       },1100);
    }
@@ -225,7 +234,7 @@ let sideBarIcon = document.getElementById('sidebarIcon');
 let exitSideBarIcon = document.getElementById('exitSideBarIcon');
 let navbar = document.querySelector('nav');
 
-if(sideBarIcon){
+if(document.contains(sideBarIcon)){
    //Only apply to valid component on user pages
    sideBarIcon.onclick = function(event){
       if(!navbar.classList.contains('navbarShown')){

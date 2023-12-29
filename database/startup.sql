@@ -29,7 +29,20 @@ CREATE TABLE `Categories`(
    UserID  VARCHAR(30) NOT NULL
 );
 
-CREATE TABLE Accounts (
+UPDATE Budgets B
+JOIN Categories C ON B.UserID = C.UserID
+SET B.IncomeCurrent = 0.00,
+    B.ExpensesCurrent = 0.00,
+    B.Month = '2023-12-01',
+    C.Current = 0.00,
+    C.Month = '2023-12-01'
+WHERE B.UserID = ?;
+
+update Categories set Current = '1100.00' WHERE CategoryID = 'ljgbgnw1703722449891';
+
+update Budgets set IncomeCurrent = '120.00' WHERE UserID = 'qeaeomr1703376705615';
+
+CREATE TABLE `Accounts` (
    AccountID VARCHAR(30) PRIMARY KEY NOT NULL,
    Name VARCHAR(30) NOT NULL,
    Type VARCHAR(20) NOT NULL,
@@ -38,39 +51,39 @@ CREATE TABLE Accounts (
 );
 
 
-
--- Handle budget category remove in the future
-CREATE TABLE Transactions (
+CREATE TABLE `Transactions` (
    TransactionID VARCHAR(30) PRIMARY KEY NOT NULL,
    Title VARCHAR(50) NOT NULL,
-   CategoryID VARCHAR(30) NOT NULL,
    Month DATE NOT NULL,
+   Type varchar(8) NOT NULL,
    Amount DECIMAL(13, 2) NOT NULL,
-   User_ID INT NOT NULL,
-   Account_ID INT NOT NULL,
+   UserID VARCHAR(30)  NOT NULL,
+   AccountID VARCHAR(30)  NOT NULL,
+   CategoryID VARCHAR(30)
 );
 
 
+-- Handle budget category remove in the future
 
-INSERT INTO Accounts (AccountID,Name,Type,Balance,UserID)
-VALUES (
-   'dsad2374184',
-   'Chase Savings',
-   'Savings Account',
-   250.50,
-   'sas904aj3139'
-);
-
-SELECT * FROM Accounts;
+UPDATE Budgets B
+JOIN Categories C ON B.UserID = C.UserID
+SET B.IncomeCurrent = ?,
+    B.ExpensesCurrent = ?,
+    C.Current = ?,
+WHERE B.UserID = ?;
 
 
 
-INSERT INTO Transactions (Transaction_ID,Account_ID,Description,Category,Date,Amount,User_ID)
-VALUES (
-   12344043,
-   'Treats',
-   'Food',
-   250.50,
-   904123139,
-   2374184
-);
+
+-- EDIT ACCOUNT
+UPDATE Transactions T
+JOIN Budgets B ON T.UserID = B.UserID
+JOIN Categories C ON T.CategoryID = C.CategoryID
+SET
+    B.IncomeCurrent = ?,
+    B.ExpensesCurrent = ?,
+    C.Current = ?,
+    T.Column1 = new_value1,
+    T.Column2 = new_value2,
+    T.Column3 = new_value3
+WHERE T.UserID = ?;

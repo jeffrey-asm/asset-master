@@ -30,8 +30,10 @@ router.get('/getUserAccounts', accountsController.getUserAccounts);
 
 router.post('/addAccount', accountsController.addAccount);
 
+router.post('/editAccount', accountsController.editAccount);
+
 // Handle settings page routing
-router.get('/profile', usersController.profile);
+router.get('/settings', usersController.settings);
 
 // Get user information essential for settings page
 router.get('/getUserInfo', usersController.userInformation);

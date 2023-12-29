@@ -126,7 +126,7 @@ form hr{
    width:100%;
    border:none;
    height:2px;
-   background-color:black;
+   background-color:var(--text-color);
 }
 
  @keyframes popup {

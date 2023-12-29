@@ -23,11 +23,29 @@ export function constructAccount(name,type,balance,ID){
    let editAccountForm = document.getElementById('editAccountForm');
 
    editAccountButton.onclick = function(event){
-      editAccountForm.querySelector('editName').value = name;
-      editAccountForm.querySelector('editType').value = type;
-      editAccountForm.querySelector('editBalance').value = balance;
+      editAccountForm.querySelector('#editName').value = name;
+      editAccountForm.querySelector('#editType').value = type;
+      editAccountForm.querySelector('#editBalance').value = balance;
+      editAccountForm.dataset.identification = ID;
       openPopUp(editAccountContainer);
    }
+}
+
+export function constructTransaction(account,title,type,category,date,amount){
+   let transactionContainer = document.createElement('tr');
+   transactionContainer.className = 'dataRow';
+
+   transactionContainer.innerHTML = `
+      <td>Savings Account</td>
+      <td>Deposit</td>
+      <td>Incomessss</td>
+      <td>2023-10-10</td>
+      <td>$1200</td>
+      <td><i class = "fa-solid fa-pen-to-square editTransaction"></i></td>
+   `;
+   document.querySelector('table').append(transactionContainer);
+
+   return transactionContainer;
 }
 
 export async function getUserAccounts(){
@@ -40,18 +58,65 @@ export async function getUserAccounts(){
       });
 
       let data = await response.json();
-      //Render object holds all variables essential to constructing front end data
-      data = data.render;
-
       console.log(data);
-
-
+      //Render object holds all variables essential to constructing front end data
       mainTag.style.opacity = '1';
 
-      let accountKeys = Object.keys(data.accounts);
+      let accountKeys = Object.keys(data.render.accounts);
+      let accountFormOptions = ``;
+
 
       for(let i = 0; i < accountKeys.length; i++){
-         constructAccount(data.accounts[accountKeys[i]].name, data.accounts[accountKeys[i]].type, data.accounts[accountKeys[i]].balance, data.accounts[accountKeys[i]].ID);
+         constructAccount(data.render.accounts[accountKeys[i]].name, data.render.accounts[accountKeys[i]].type, data.render.accounts[accountKeys[i]].balance, accountKeys[i]);
+         accountFormOptions += `<option value = ${accountKeys[i]}>${data.render.accounts[accountKeys[i]].name}</option>`;
+      }
+
+      if(data.render.netWorth < 0) {
+         document.getElementById('netWorthText').innerHTML =
+         `Net Worth: <span class = 'negativeNetWorth'>-$${(parseFloat(data.render.netWorth)*-1).toLocaleString("en-US",{ minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>`;
+      } else{
+         document.getElementById('netWorthText').innerHTML =
+         `Net Worth: <span class = 'positiveNetWorth'>$${parseFloat(data.render.netWorth).toLocaleString("en-US",{ minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>`;
+      }
+
+      //Work on transactions
+      console.log(accountFormOptions);
+      let categoryOptions = `<option value = 'Income'>Income</option>`;
+
+      let incomeCategories = Object.keys(data.render.budget['Income'].categories);
+      for(let i = 0; i < incomeCategories.length; i++){
+         //Option contains value of ID and text of actual name
+         categoryOptions += `<option value = ${incomeCategories[i]}>Income - ${data.render.budget['Income'].categories[incomeCategories[i]].name}</option>`;
+      }
+
+      let expensesCategories = Object.keys(data.render.budget['Expenses'].categories);
+      categoryOptions +=  `<option value = 'Expenses'>Expenses</option>`;
+      for(let i = 0; i < expensesCategories.length; i++){
+         //Option contains value of ID and text of actual name
+         categoryOptions += `<option value = ${incomeCategories[i]}>Expenses - ${data.render.budget['Expenses'].categories[expensesCategories[i]].name}</option>`;
+      }
+
+      let transactionKeys = Object.keys(data.render.transactions);
+
+      for(let i = 0; i < expensesCategories.length; i++){
+         let incomeOrExpense;
+
+         let transactionType = data.render.transactions[transactionKeys[i]].type;
+         let possibleCategory = data.render.transactions[transactionKeys[i]].categoryID;
+
+
+
+         //Must reduce later
+         constructAccount(
+            data.render.transactions[transactionKeys[i]].account,
+            data.render.transactions[transactionKeys[i]].name,
+            data.render.transactions[transactionKeys[i]].type,
+            data.render.budget[data.render.transactions[transactionKeys[i]].type].categories[transactionKeys[i]].name,
+            data.render.transactions[transactionKeys[i]].balance,
+            transactionKeys[i]);
+
+
+
       }
 
     } catch (error) {

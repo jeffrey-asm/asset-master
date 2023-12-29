@@ -21,19 +21,19 @@ function testNewMonth(oldDate){
    }
 }
 
-async function grabBudgetInformation(request){
+exports.grabBudgetInformation =  async function(request){
    try{
       let returnData = {};
       let userBudget = await query.runQuery('SELECT * FROM Budgets WHERE UserID = ?;',[request.session.UserID]);
       let userCategories = await query.runQuery('SELECT * FROM Categories WHERE UserID = ?;',[request.session.UserID]);
 
-      returnData['Income'] = {
+      returnData.Income = {
          'current' : parseFloat(userBudget[0].IncomeCurrent),
          'total' : parseFloat(userBudget[0].IncomeTotal),
          'categories' : {}
       }
 
-      returnData['Expenses'] = {
+      returnData.Expenses = {
          'current' : parseFloat(userBudget[0].ExpensesCurrent),
          'total' : parseFloat(userBudget[0].ExpensesTotal),
          'categories' : {}
@@ -50,33 +50,26 @@ async function grabBudgetInformation(request){
       }
 
 
-      returnData['Month'] = userBudget[0].Month;
+      returnData.Month = userBudget[0].Month;
 
-      let resetBudgetTest = testNewMonth(returnData['Month']);
+      let resetBudgetTest = testNewMonth(returnData.Month);
 
       if(resetBudgetTest){
          //Show user pop up that they should reset budget and note down current budget as database space is limited
          // All transactions are still saved
-         returnData['notify'] = true;
+         returnData.notify = true;
       }
 
       let incomeFixed = new Decimal(userBudget[0].IncomeCurrent);
       let expensesFixed = new Decimal(userBudget[0].ExpensesCurrent);
 
-      returnData['leftOver'] = parseFloat(String(incomeFixed.minus(expensesFixed)));
+      returnData.leftOver = parseFloat((incomeFixed.minus(expensesFixed).toString()));
 
       return returnData;
    } catch(error){
+      console.log(error);
       throw error;
    }
-}
-
-async function updateBudgetCache(request){
-   //Update cached user data
-   let updatedBudget = await grabBudgetInformation(request);
-   request.session.budget = updatedBudget;
-   await request.session.save();
-   return updatedBudget;
 }
 
 exports.getUserBudget = asyncHandler(async(request,result,next)=>{
@@ -84,7 +77,7 @@ exports.getUserBudget = asyncHandler(async(request,result,next)=>{
       let returnData = {};
 
       if(!request.session.budget){
-         returnData = await updateBudgetCache(request);
+         returnData = request.session.budget = await exports.grabBudgetInformation(request);
       } else{
          //Use cached data using redis for quicker accessing of temporary user data
          returnData = JSON.parse(JSON.stringify(request.session.budget));
@@ -93,6 +86,8 @@ exports.getUserBudget = asyncHandler(async(request,result,next)=>{
       result.status(200);
       sharedReturn.sendSuccess(result,'Data for displaying user budget',returnData);
    } catch(error){
+      console.log(error);
+
       result.status(500);
       sharedReturn.sendError(result,'N/A',`Could not successfully process request <i class='fa-solid fa-database'></i>`);
    }
@@ -117,11 +112,20 @@ exports.addCategory = asyncHandler(async(request,result,next)=>{
       [randomID,trimmedInputs.name,trimmedInputs.type,0.00, trimmedInputs.amount.toString(), formattedDate,request.session.UserID]);
 
       //Returned trimmed inputs for constructing front end components
-      trimmedInputs['ID'] = randomID;
+      trimmedInputs.ID = randomID;
       trimmedInputs.amount = parseFloat(trimmedInputs.amount.toString());
+
+      //Update cache
+      request.session.budget[trimmedInputs.type].categories[trimmedInputs.ID] = {
+         'name': trimmedInputs.name,
+         'current' : 0.00,
+         'total' : trimmedInputs.amount
+      }
+
+      await request.session.save();
+
       result.status(200);
       sharedReturn.sendSuccess(result,'Successfully added category <i class="fa-solid fa-chart-pie" ></i>',trimmedInputs);
-      await updateBudgetCache(request);
    } catch(error){
       result.status(500);
       sharedReturn.sendError(result,'addCategoryName',"Could not successfully process request <i class='fa-solid fa-database'></i>");
@@ -144,13 +148,18 @@ exports.updateCategory = asyncHandler(async(request,result,next)=>{
          //Handle remove (income/expenses is not changed at all because all transactions are moved to main types)
          await query.runQuery(`DELETE FROM Categories WHERE CategoryID = ?;`,[trimmedInputs.ID]);
          // await query.runQuery(`UPDATE Transactions SET CategoryID = NULL WHERE CategoryID = ?;`,[trimmedInputs.ID]);
+         trimmedInputs.changes = true;
+         trimmedInputs.mainOrSub = 'main';
+         trimmedInputs.current =  request.session.budget[`${trimmedInputs.type}`].current
+         trimmedInputs.total = request.session.budget[`${trimmedInputs.type}`].total;
+
+
+         //Update cache
+         delete request.session.budget[trimmedInputs.type].categories[trimmedInputs.ID];
+         await request.session.save();
+
          result.status(200);
-         trimmedInputs['changes'] = true;
-         trimmedInputs['mainOrSub'] = 'main';
-         trimmedInputs['current'] =  request.session.budget[`${trimmedInputs.type}`].current
-         trimmedInputs['total'] = request.session.budget[`${trimmedInputs.type}`].total;
          sharedReturn.sendSuccess(result,'Successfully removed category <i class="fa-solid fa-trash"></i>',trimmedInputs);
-         await updateBudgetCache(request);
          return;
       }
 
@@ -164,13 +173,18 @@ exports.updateCategory = asyncHandler(async(request,result,next)=>{
             let updateMainBudgetQuery = `UPDATE Budgets SET ${trimmedInputs.type}Total = ? WHERE UserID = ?;`;
 
             await query.runQuery(updateMainBudgetQuery,[trimmedInputs.amount.toString(),request.session.UserID]);
+
+            trimmedInputs.mainOrSub = 'main';
+            trimmedInputs.total = parseFloat(trimmedInputs.amount.toString());
+            trimmedInputs.current = parseFloat(previousCurrent.toString());
+            trimmedInputs.changes = true;
+
+
+            request.session.budget[trimmedInputs.type].total = trimmedInputs.total;
+            await request.session.save();
+
             result.status(200);
-            trimmedInputs['mainOrSub'] = 'main';
-            trimmedInputs['total'] = parseFloat(trimmedInputs.amount.toString());
-            trimmedInputs['current'] = parseFloat(previousCurrent.toString());
-            trimmedInputs['changes'] = true;
             sharedReturn.sendSuccess(result,'Successfully updated category <i class="fa-solid fa-chart-pie" ></i>',trimmedInputs);
-            await updateBudgetCache(request);
             return;
          } else{
             result.status(200);
@@ -191,13 +205,13 @@ exports.updateCategory = asyncHandler(async(request,result,next)=>{
          previousTotal = new Decimal(`${previousCategory.total}`);
          previousCurrent = new Decimal(`${previousCategory.current}`);
 
-         trimmedInputs['current'] = parseFloat(previousCurrent.toString());
+         trimmedInputs.current = parseFloat(previousCurrent.toString());
 
          let changesMade = false;
 
          if(!(previousTotal).equals(trimmedInputs.amount)){
             changesMade = true;
-            trimmedInputs['mainOrSub'] = 'sub';
+            trimmedInputs.mainOrSub = 'sub';
          }
 
          if(trimmedInputs.name != previousCategory.name){
@@ -206,8 +220,8 @@ exports.updateCategory = asyncHandler(async(request,result,next)=>{
 
          if(previousType != trimmedInputs.type){
             //Swapping between Income and Expenses, must update both current trackers
-            let newIncomeTotal = new Decimal(`${request.session.budget['Income'].current}`);
-            let newExpensesTotal = new Decimal(`${request.session.budget['Expenses'].current}`);
+            let newIncomeTotal = new Decimal(`${request.session.budget['Income'].total}`);
+            let newExpensesTotal = new Decimal(`${request.session.budget['Expenses'].total}`);
 
             //Transfer of values in terms of income/expenses totals given swapping category current
             if(trimmedInputs.type == 'Income'){
@@ -218,6 +232,9 @@ exports.updateCategory = asyncHandler(async(request,result,next)=>{
                newExpensesTotal = newExpensesTotal.plus(previousCurrent);
             }
 
+            request.session.budget['Income'].total  = parseFloat(newIncomeTotal.toString());
+            request.session.budget['Expenses'].total  = parseFloat(newExpensesTotal.toString());
+
 
             await query.runQuery('UPDATE Budgets SET IncomeCurrent = ?, ExpensesCurrent = ? WHERE UserID = ?;',
             [newIncomeTotal.toString(),newExpensesTotal.toString(),request.session.UserID]);
@@ -225,19 +242,25 @@ exports.updateCategory = asyncHandler(async(request,result,next)=>{
 
             //Will need to re-construct containers for changes in several categories
             changesMade = true;
-            trimmedInputs['mainOrSub'] = 'reload';
+            trimmedInputs.mainOrSub = 'reload';
          }
-
-         result.status(200);
 
          if(changesMade){
             await query.runQuery('UPDATE Categories SET Name = ?, Type = ?, Total = ? WHERE CategoryID = ?;',[trimmedInputs.name, trimmedInputs.type,trimmedInputs.amount.toString(),trimmedInputs.ID]);
-            trimmedInputs['changes'] = true;
-            trimmedInputs['total'] = parseFloat(trimmedInputs.amount.toString());
+            trimmedInputs.changes = true;
+            trimmedInputs.total = parseFloat(trimmedInputs.amount.toString());
+
+            request.session.budget[trimmedInputs.type].categories[trimmedInputs.ID] = {
+               'name': trimmedInputs.name,
+               'current' : trimmedInputs.current,
+               'total' : trimmedInputs.total
+            }
+
+            result.status(200);
             sharedReturn.sendSuccess(result,'Changes saved <i class="fa-solid fa-check"></i>',trimmedInputs);
-            await updateBudgetCache(request);
          } else{
-            trimmedInputs['changes'] = false;
+            trimmedInputs.changes = false;
+            result.status(200);
             sharedReturn.sendSuccess(result,`No changes <i class="fa-solid fa-circle-info"></i>`);
          }
       }
@@ -252,18 +275,42 @@ exports.resetBudget = asyncHandler(async(request,result,next)=>{
       let validRequest = testNewMonth(request.session.budget.Month);
       let currentMonth = query.getCurrentMonth();
 
-      if(!validRequest){
+      if(validRequest){
          throw error;
       }
 
-      await query.runQuery('UPDATE Budgets Set IncomeCurrent = 0.00, ExpensesCurrent = 0.00, Month = ? WHERE UserID = ?',[currentMonth,request.session.UserID]);
-      await query.runQuery('UPDATE Categories Set Current = 0.00, Month = ? WHERE UserID = ?',[currentMonth,request.session.UserID]);
+      let resetQuery = `UPDATE Budgets B
+                        JOIN Categories C ON B.UserID = C.UserID
+                        SET B.IncomeCurrent = 0.00,
+                           B.ExpensesCurrent = 0.00,
+                           B.Month = ?,
+                           C.Current = 0.00,
+                           C.Month = ?
+                        WHERE B.UserID = ?;`
+
+      await query.runQuery(resetQuery,[currentMonth,currentMonth,request.session.UserID]);
 
       //Await for cache to store data first for proper rendering
-      await updateBudgetCache(request);
+      request.session.budget['Income'].current = request.session.budget['Expenses'].current = 0.00;
+
+      let incomeCategories = Object.keys(request.session.budget['Income'].categories);
+      let expensesCategories = Object.keys(request.session.budget['Expenses'].categories);
+
+      for(let i = 0; i < incomeCategories.length; i++){
+         request.session.budget['Income'].categories[incomeCategories[i]].current = 0.00;
+      }
+
+      for(let i = 0; i < expensesCategories.length; i++){
+         request.session.budget['Expenses'].categories[expensesCategories[i]].current = 0.00;
+      }
+
+      request.session.budget.leftOver = 0.00;
+      await request.session.save();
+
       result.status(200);
       sharedReturn.sendSuccess(result,'Budget reset for the month <i class="fa-solid fa-check"></i>');
    }catch(error){
+      console.log(error);
       result.status(500);
       sharedReturn.sendError(result,'editCategoryName',"Could not successfully process request <i class='fa-solid fa-database'></i>");
       return;

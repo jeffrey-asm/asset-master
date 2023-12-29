@@ -70,10 +70,7 @@ form label{
    margin:0;
 }
 
-#logOutButton{
-   border:2px solid red;
-   color:red;
-}
+
 
 #deleteButtonPopUp{
    background-color: red;
@@ -88,10 +85,21 @@ form label{
    color:black;
    background-color: white;
    width:130px;
+   margin:auto;
    font-size:16px;
    padding:0;
    height:60px;
-   margin-left:auto;
+}
+
+#logOutIcon{
+   cursor:pointer;
+   font-size:30px;
+   text-align: center;
+   color:red;
+}
+
+#logOutIcon:hover{
+   color:var(--text-color);
 }
 
 #verifiedImage{
