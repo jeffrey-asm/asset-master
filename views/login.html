@@ -19,14 +19,13 @@
          </div>
          <h1>Login</h1>
          <label for="username">Username</label>
-         <input type="text" name="username" id="username">
+         <input type="text" name="username" id="username" autocomplete = 'username'>
 
          <div class = 'passwordContainer'>
             <label for="password">Password</label>
             <i class="fa-regular fa-eye" id = "showPassword" data-container = 'password'></i>
-            <input type="password" name="password" id="password">
+            <input type="password" name="password" id="password" autocomplete = 'current-password'>
          </div>
-         <a href="/forgot">Forgot Password?</a>
          <button type="submit" id = "submitButton">Submit</button>
          <p>Don't have an account? <a href="/signup">Sign Up</a></p>
       </form>

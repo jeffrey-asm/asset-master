@@ -40,7 +40,7 @@ function validatePasswords(result,password,secondPassword){
    return { status: 'pass' };
 }
 
-function trimInputs(result,inputs = {},decimalComponentID='amount'){
+function trimInputs(result,inputs = {},decimalComponentID='amount',dateComponentID='date'){
    let keys = Object.keys(inputs);
    let trimmedInputs = {};
 
@@ -62,10 +62,40 @@ function trimInputs(result,inputs = {},decimalComponentID='amount'){
             }
          } catch(error){
             result.status(400);
-            sharedReturn.sendError(result,decimalComponentID,"The category amount should represent a legitimate dollar value <i class='fa-solid fa-money-check-dollar'></i>");
+            sharedReturn.sendError(result,decimalComponentID,"Amount should represent a legitimate dollar value <i class='fa-solid fa-money-check-dollar'></i>");
             return { status: 'fail' };
          }
-      } else if(typeof inputs[keys[i]] == 'string'){
+      } else if(keys[i] == 'date'){
+         let parts = inputs[keys[i]].split('-');
+
+         if (parts.length !== 3) {
+            result.status(400);
+            sharedReturn.sendError(result,dateComponentID,"Invalid date <i class='fa-solid fa-calendar-days'></i>");
+            return { status: 'fail' };
+         }
+
+         let year = parseInt(parts[0]);
+         let month = parseInt(parts[1]) - 1;
+         let day = parseInt(parts[2]);
+
+         let inputDate = new Date(year, month, day);
+
+         if(isNaN(inputDate)){
+            result.status(400);
+            sharedReturn.sendError(result,dateComponentID,"Invalid date <i class='fa-solid fa-calendar-days'></i>");
+            return { status: 'fail' };
+         } else{
+            let currentDate = new Date();
+            currentDate.setHours(0, 0, 0, 0);
+
+            if(inputDate > currentDate){
+               result.status(400);
+               sharedReturn.sendError(result,dateComponentID,"Date cannot be in the future <i class='fa-solid fa-calendar-days'></i>");
+               return { status: 'fail' };
+            }
+
+         }
+      }else if(typeof inputs[keys[i]] == 'string'){
          trimmedInputs[keys[i]] = inputs[keys[i]].trim();
       }
    }
@@ -116,6 +146,25 @@ function validateAccountForm(result,name,nameComponentID,type,typeComponentID){
    }
 
    return { status: 'pass' };
+}
+
+function validateTransactionForm(request,result,account,accountComponentID,title,titleComponentID,category,categoryComponentID){
+   //Test that ID's exist within request
+   //Amount and date is validated in the trim inputs function
+   if(title.length == 0 || title.length > 50){
+      result.status(400);
+      sharedReturn.sendError(result,titleComponentID,"Transaction title's must be between 1 and 50 characters <i class='fa-solid fa-signature'></i>");
+      return { status: 'fail' };
+   } else if(!request.session.accounts[account]){
+      //Always test for a valid request using current cache for altering of form on frontend
+      result.status(400);
+      sharedReturn.sendError(result,accountComponentID,"Invalid account <i class='fa-solid fa-building-columns'></i>");
+      return { status: 'fail' };
+   } else if((category != 'Income' && category != 'Expenses') && !request.session.budget.categories[category]){
+      result.status(400);
+      sharedReturn.sendError(result,categoryComponentID,"Invalid category <i class='fa-solid fa-building-columns'></i>");
+      return { status: 'fail' };
+   }
 }
 
 module.exports = {validateUsername,validateEmail,validatePasswords,trimInputs,validateBudgetForm,validateAccountForm};

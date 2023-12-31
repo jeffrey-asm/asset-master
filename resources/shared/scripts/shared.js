@@ -28,21 +28,46 @@ if(mode && toggle){
    document.body.style.opacity = '1';
 }
 
+function checkDimensions(component,link) {
+   let viewportWidth = window.innerWidth || document.documentElement.clientWidth;
+   let viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+   let componentDimensions = component.getBoundingClientRect()
+   let elementWidth = componentDimensions.width;
+   let elementHeight = componentDimensions.height;
+
+   if (elementWidth >= viewportWidth || elementHeight >= viewportHeight) {
+      setTimeout(()=>{
+         window.location.assign(link);
+      },400);
+   }
+
+}
+
+let dimensionInterval;
 
 function transitionToPage(component,link){
    setTimeout(()=>{
       component.innerHTML = "";
-   },300);
-
-   setTimeout(()=>{
-      component.style.borderRadius = '100px';
-      component.style.transition = "2.5s";
       component.classList.add("buttonFade");
    },400);
 
+   setTimeout(()=>{
+      component.classList.add("overtaken");
+   },500);
+
+   dimensionInterval = setInterval(()=>{
+      checkDimensions(component, link)
+   },100);
+
+   window.addEventListener('beforeunload', function() {
+      //Always clear interval on page leave
+      clearInterval(dimensionInterval);
+   });
+
+   //Rare care of very large screen view ports, end the animation early
    setTimeout(() => {
       window.location.assign(link);
-   },1000);
+   },5000);
 }
 
 let inputs = document.getElementsByTagName('input');
@@ -59,7 +84,7 @@ function removeMessage(){
 
       setTimeout(()=>{
          messageContainer.remove();
-      },500);
+      },250);
 
    }
 }
@@ -70,7 +95,7 @@ function displayMessage(inputComponent, message, classType){
    setTimeout(()=>{
       messageContainer = Object.assign(document.createElement('p'),{className:classType,innerHTML:message});
       inputComponent.before(messageContainer);
-   },200);
+   },300);
 }
 
 let headerTitle = document.querySelector('.headerTitle');
@@ -166,6 +191,7 @@ function openNotification(iconClass, notificationHTML, notificationType){
 async function sendRequest(url,structuredFormData,formButton,formButtonText,successFunction=()=>{},failFunction=()=>{}){
    //Interesting loading animation inside button
    formButton.innerHTML = `<div class="lds-facebook"><div></div><div></div><div></div></div>`;
+   console.log(formButton);
    removeMessage();
 
    try {
@@ -182,6 +208,8 @@ async function sendRequest(url,structuredFormData,formButton,formButtonText,succ
       if(data.error){
          throw error;
       }
+
+      console.log(data);
 
       if (data.status !== 'pass') {
         displayMessage(formButton, data.message, 'error');

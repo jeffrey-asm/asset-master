@@ -54,14 +54,12 @@ editCategoryForm.onsubmit = async function(event){
          if(data.render.changes){
 
             if(data.render.mainOrSub == 'reload'){
-               let mainTag = document.querySelector('main');
-
                getBudget();
             } else{
                 //Only update current category if changes were made on backend signaled by type(main or sub)
                document.getElementById(data.render.ID).remove();
 
-               if(data.render.remove == "false"){
+               if(data.render.mainOrSub != 'remove'){
                   constructCategory(data.render.mainOrSub, data.render.type,data.render.ID, data.render.name, data.render.current, data.render.total);
                }
             }

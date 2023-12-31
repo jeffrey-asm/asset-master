@@ -32,6 +32,8 @@ router.post('/addAccount', accountsController.addAccount);
 
 router.post('/editAccount', accountsController.editAccount);
 
+router.post('/addTransaction', accountsController.addTransaction);
+
 // Handle settings page routing
 router.get('/settings', usersController.settings);
 

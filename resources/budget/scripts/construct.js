@@ -27,6 +27,7 @@ export const positiveGradient = [
 export const negativeGradient = [...positiveGradient].reverse();
 
 export function constructCategory(mainOrSub,type,ID,name,current,total){
+   console.log(ID);
    let formattedCurrent = current.toLocaleString("en-US",{ minimumFractionDigits: 2, maximumFractionDigits: 2 });
    let formattedTotal = total.toLocaleString("en-US",{ minimumFractionDigits: 2, maximumFractionDigits: 2 });
    let mainContainer = document.getElementById(`${type}`);
@@ -156,22 +157,20 @@ export async function getBudget(){
       mainTag.style.opacity = '1';
       //Construct data for income and expenses
       constructCategory('main', 'Income','mainIncome', 'Income', data.render.Income.current, data.render.Income.total);
-      let incomeCategories = data.render.Income.categories;
-      let incomeKeys = Object.keys(data.render.Income.categories);
-
-      for(let i = 0; i < incomeKeys.length;i++){
-         //Construct sub categories
-         constructCategory('sub', 'Income',incomeKeys[i], incomeCategories[incomeKeys[i]].name, incomeCategories[incomeKeys[i]].current, incomeCategories[incomeKeys[i]].total);
-      }
-
       constructCategory('main', 'Expenses','mainExpenses', 'Expenses', data.render.Expenses.current, data.render.Expenses.total);
-      let expensesCategories = data.render.Expenses.categories;
-      let expensesKeys = Object.keys(data.render.Expenses.categories);
 
-      for(let i = 0; i < expensesKeys.length;i++){
+      let categories = data.render.categories;
+      let categoriesKeys = Object.keys(categories);
+
+      categoriesKeys.sort(function(a, b) {
+         return categories[a].name.localeCompare(categories[b].name);
+       });
+
+      for(let i = 0; i < categoriesKeys.length;i++){
          //Construct sub categories
-         constructCategory('sub', 'Expenses',expensesKeys[i], expensesCategories[expensesKeys[i]].name, expensesCategories[expensesKeys[i]].current, expensesCategories[expensesKeys[i]].total);
+         constructCategory('sub', categories[categoriesKeys[i]].type,categoriesKeys[i], categories[categoriesKeys[i]].name, categories[categoriesKeys[i]].current, categories[categoriesKeys[i]].total);
       }
+
 
       let leftOverSpan = document.getElementById('leftOverSpan');
 
@@ -182,7 +181,7 @@ export async function getBudget(){
       //Differentiate between positive and negative left over amounts
       if(data.render.leftOver < 0){
          leftOverSpan.style.color = 'red';
-         leftOverSpan.innerHTML = `-$` + (data.render.render.leftOver * -1).toLocaleString("en-US",{ minimumFractionDigits: 2, maximumFractionDigits: 2 });
+         leftOverSpan.innerHTML = `-$` + (data.render.leftOver * -1).toLocaleString("en-US",{ minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
       } else{
          leftOverSpan.style.color = '#178eef';

@@ -4,6 +4,8 @@ export function constructAccount(name,type,balance,ID){
    let container = document.createElement('div');
    container.className = 'specificAccountsContainer';
    container.id = ID;
+   //Store name in dataset to grab value for transaction table
+   container.dataset.name = name;
 
    container.innerHTML = `
       <div class="imageContainer">
@@ -16,6 +18,13 @@ export function constructAccount(name,type,balance,ID){
          <button type = 'button' class = 'editAccountButton'><i class = "fa-solid fa-pen-to-square"></i> Edit</button>
       </div>
    `;
+
+   let accountsContainer = document.getElementById('accounts');
+   if(document.querySelectorAll('.specificAccountsContainer').length == 0) {
+      //Remove no accounts message
+      accountsContainer.innerHTML = '';
+   }
+
    document.getElementById('accounts').append(container);
 
    let editAccountButton = container.querySelector('.editAccountButton');
@@ -31,24 +40,28 @@ export function constructAccount(name,type,balance,ID){
    }
 }
 
-export function constructTransaction(account,title,type,category,date,amount){
+
+export function constructTransaction(accountID,title,type,categoryID,date,amount,ID){
+   let currentAmountFixed = amount.toLocaleString("en-US",{ minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
    let transactionContainer = document.createElement('tr');
-   transactionContainer.className = 'dataRow';
+   transactionContainer.className = 'transaction';
+   transactionContainer.ID = ID;
 
    transactionContainer.innerHTML = `
-      <td>Savings Account</td>
-      <td>Deposit</td>
-      <td>Incomessss</td>
-      <td>2023-10-10</td>
-      <td>$1200</td>
-      <td><i class = "fa-solid fa-pen-to-square editTransaction"></i></td>
+      <h3>${account}</h3>
+      <h3>${title}</h3>
+      <h3 class = 'category${type}'>${category}</h3>
+      <h3>${date}</h3>
+      <h3 class = '${type}'>$${currentAmountFixed}</h3>
+      <i class = "fa-solid fa-pen-to-square editTransactionIcon"></i>
    `;
    document.querySelector('table').append(transactionContainer);
 
    return transactionContainer;
 }
 
-export async function getUserAccounts(){
+export async function getUserData(){
    let mainTag = document.querySelector('main');
    mainTag.style.opacity = 0;
 
@@ -65,11 +78,20 @@ export async function getUserAccounts(){
       let accountKeys = Object.keys(data.render.accounts);
       let accountFormOptions = ``;
 
+      if(accountKeys.length == 0) {
+         //Show no accounts available
+         document.getElementById('accounts').innerHTML = '<h2>No accounts available</h2>';
+      }
+
 
       for(let i = 0; i < accountKeys.length; i++){
          constructAccount(data.render.accounts[accountKeys[i]].name, data.render.accounts[accountKeys[i]].type, data.render.accounts[accountKeys[i]].balance, accountKeys[i]);
          accountFormOptions += `<option value = ${accountKeys[i]}>${data.render.accounts[accountKeys[i]].name}</option>`;
       }
+      //Empty option
+      accountFormOptions += `<option value =''></option>`;
+
+      document.getElementById('account').innerHTML = document.getElementById('editAccount').innerHTML = accountFormOptions;
 
       if(data.render.netWorth < 0) {
          document.getElementById('netWorthText').innerHTML =
@@ -80,44 +102,49 @@ export async function getUserAccounts(){
       }
 
       //Work on transactions
-      console.log(accountFormOptions);
-      let categoryOptions = `<option value = 'Income'>Income</option>`;
+      let categoryOptions = `<option data-type = 'Income' value = 'Income'>Income</option>`;
 
-      let incomeCategories = Object.keys(data.render.budget['Income'].categories);
-      for(let i = 0; i < incomeCategories.length; i++){
-         //Option contains value of ID and text of actual name
-         categoryOptions += `<option value = ${incomeCategories[i]}>Income - ${data.render.budget['Income'].categories[incomeCategories[i]].name}</option>`;
+      let categories = data.render.budget.categories;
+      let categoriesKeys = Object.keys(categories);
+
+      categoriesKeys.sort(function(a, b) {
+         return categories[b].type.localeCompare(categories[a].type);
+       });
+
+      let expensesShown = false;
+
+
+      for(let i = 0; i < categoriesKeys.length;i++){
+         //Option contains value of ID and   text of actual name
+         if(categories[categoriesKeys[i]].type != 'Income' && !expensesShown) {
+            //Sorted by Income -> Expenses
+            categoryOptions +=  `<option data-type = 'Expenses' value = 'Expenses'>Expenses</option>`;
+            expensesShown = true;
+         }
+
+         categoryOptions += `<option data-type = '${categories[categoriesKeys[i]].name}' value = ${categoriesKeys[i]}>${categories[categoriesKeys[i]].name}</option>`;
       }
 
-      let expensesCategories = Object.keys(data.render.budget['Expenses'].categories);
-      categoryOptions +=  `<option value = 'Expenses'>Expenses</option>`;
-      for(let i = 0; i < expensesCategories.length; i++){
-         //Option contains value of ID and text of actual name
-         categoryOptions += `<option value = ${incomeCategories[i]}>Expenses - ${data.render.budget['Expenses'].categories[expensesCategories[i]].name}</option>`;
+      if(!expensesShown){
+         //Case of no expenses categories
+         categoryOptions +=  `<option data-type = 'Expenses' value = 'Expenses'>Expenses</option>`;
       }
+
+      document.getElementById('category').innerHTML = document.getElementById('editCategory').innerHTML = categoryOptions;
+
 
       let transactionKeys = Object.keys(data.render.transactions);
 
-      for(let i = 0; i < expensesCategories.length; i++){
-         let incomeOrExpense;
-
-         let transactionType = data.render.transactions[transactionKeys[i]].type;
-         let possibleCategory = data.render.transactions[transactionKeys[i]].categoryID;
-
-
-
-         //Must reduce later
-         constructAccount(
-            data.render.transactions[transactionKeys[i]].account,
-            data.render.transactions[transactionKeys[i]].name,
-            data.render.transactions[transactionKeys[i]].type,
-            data.render.budget[data.render.transactions[transactionKeys[i]].type].categories[transactionKeys[i]].name,
-            data.render.transactions[transactionKeys[i]].balance,
-            transactionKeys[i]);
-
-
-
+      for(let i = 0; i < transactionKeys.length; i++){
+         let title = data.render.transactions[transactionKeys[i]].title;
+         let type = data.render.transactions[transactionKeys[i]].type;
+         let date = data.render.transactions[transactionKeys[i]].date;
+         let amount = data.render.transactions[transactionKeys[i]].amount;
+         let categoryID = data.render.transactions[transactionKeys[i]].CategoryID;
+         let accountID = data.render.transactions[transactionKeys[i]].AccountID;
+         constructTransaction(accountID, title, type, categoryID, date, amount, transactionKeys[i]);
       }
+
 
     } catch (error) {
       console.log(error);

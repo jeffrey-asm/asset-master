@@ -5,7 +5,7 @@ main{
 }
 
 main button{
-   max-width: 200px;
+   width: 15rem;
    margin:40px auto 40px auto;
 }
 
@@ -28,8 +28,11 @@ main button{
 
    background: var(--text-color);
    color: var(--background-color);
-   width:280px;
-   height:430px;
+   width:20%;
+   min-width:320px;
+   max-width:90%;
+   min-height:400px;
+   height:35%;
    padding:0;
    margin:0;
    animation: fadeIn 1s ease-in-out forwards;
@@ -37,33 +40,32 @@ main button{
 
 .imageContainer img{
    overflow: hidden;
-   /* box-shadow: 0 2px 2px -2px var(--background-color); */
    width: 100%;
    height: 200px;
    object-fit: cover;
 }
 
 .accountDetails {
-   padding:15px;
+   padding:2rem;
 }
 
 .specificAccountsContainer h1{
-   font-size: 32px;
+   font-size: 2.3rem;
    word-wrap: break-word;
 }
 
 
 .specificAccountsContainer h3{
-   font-size: 20px;
+   font-size: 1.6rem;
    word-wrap: break-word;
 }
 
 .editAccountButton{
-   width:130px;
-   height: 40px;
+   width:7rem;
+   height: 2.5rem;
    margin:auto;
    padding:0;
-   font-size: 18px;
+   font-size: 1.2rem;
    color:white;
    border:0;
    border-radius: 25px;
@@ -81,55 +83,72 @@ main button{
 .positiveNetWorth{
    color:green;
 }
-
-table{
-   /* border:2px solid black; */
-   width:90%;
-   margin:10px auto 10px auto;
-   padding:10px;
-   text-align: left;
-   border-collapse: collapse;
-}
-
-th{
-   font-size:22px;
-   font-weight: bolder;
-   padding: 8px;
-   margin:0;
-}
-
-td{
-   font-size: 20px;
-   padding:8px;
-   margin: 0;
-}
-
-table tr.headingRow{
-   background-color: #43a7fa;
-
-   color:white;
-   height:60px;
-   padding:10px;
-}
-
-table tr.dataRow{
-   background-color: #E3DEDE;
-   height:50px;
-   padding:10px;
-   color:black;
-}
-
-table i{
-   text-align: center;
-   width:100%;
+#transactionsSection{
+   width:80%;
    margin:auto;
 }
 
-table i:hover{
-   color:#178eef;
-   cursor: pointer;
-   transform: translateY(-1px);
-   transition:0.5s;
+#transactionsData{
+   overflow-y: auto;
+   max-height: 500px;
+
+
+   border-bottom-left-radius: 10px;
+   border-bottom-right-radius: 10px;
+}
+
+.transaction{
+   font-size: 0.9em;
+   height:3rem;
+   padding:2rem 0 2rem 2rem;
+
+   display:grid;
+   grid-template-columns: 2fr 2fr 2fr 2fr 2fr 2fr;
+   align-items: center;
+   justify-content: center;
+   text-align: left;
+
+   background: var(--text-color);
+   color: var(--background-color);
+   overflow:auto;
+   column-gap: 2em;
+
+}
+
+.transaction h3{
+   overflow: hidden;
+   white-space: nowrap;
+   text-overflow: ellipsis;
 }
 
 
+.transaction h3.Income{
+   color:#178eef;
+}
+
+.transaction h3.Expenses{
+   color:red;
+}
+
+.editTransactionIcon{
+   font-size:1.1em;
+   max-width:2em;
+}
+.editTransactionIcon:hover{
+   color:#178eef;
+   cursor:pointer;
+}
+
+
+#transactionsTitle{
+   background:#178eef;
+   color:white;
+   border-top-left-radius: 10px;
+   border-top-right-radius: 10px;
+   height:3.5rem;
+   font-size: 1.2em;
+}
+
+#transactionsData div:last-child{
+   border-bottom: 0;
+}

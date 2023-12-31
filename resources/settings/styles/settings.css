@@ -1,9 +1,9 @@
 form{
-   width:1000px;
+   width:70%;
    max-width: 95%;
 }
 form h2{
-   font-size:35px;
+   font-size:2.2rem;
    margin-bottom:0;
 }
 
@@ -15,7 +15,7 @@ form h2{
 }
 
 .editingContainer label{
-   font-size:22px;
+   font-size:1.6rem;
    grid-row:1;
    grid-column: 1;
 }
@@ -23,18 +23,15 @@ form h2{
 .editingContainer .editCategory{
    grid-row:1;
    grid-column: 3/4;
-   font-size:20px;
 }
 
 .editingContainer .error{
    grid-row:3;
    width:100%;
-   font-size:20px;
    grid-column: 1/4;
 }
 
 .editingContainer input{
-   font-size:20px;
    grid-row:2;
    grid-column: 1/4;
 }
@@ -43,6 +40,10 @@ form label{
    text-align: left;
    bottom:0;
    left:0;
+}
+
+.fa-eye{
+   top:52px;
 }
 
 .securityContainer{
@@ -57,19 +58,18 @@ form label{
 }
 
 .securityTitle{
-   font-size:20px;
+   font-size:1.4rem;
    grid-row:1;
    grid-column: 1;
    margin:0;
 }
 
 .securityText{
-   font-size:18px;
+   font-size:1.2rem;
    grid-row:2;
    grid-column: 1;
    margin:0;
 }
-
 
 
 #deleteButtonPopUp{
@@ -84,17 +84,23 @@ form label{
    border:2px solid black;
    color:black;
    background-color: white;
-   width:130px;
+   width:8.7rem;
+   max-width: 100%;
    margin:auto;
-   font-size:16px;
+   font-size:1.1rem;
+   white-space: wrap;
    padding:0;
-   height:60px;
+   height:4rem;
 }
-
+.logOutContainer{
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   text-align: center;
+}
 #logOutIcon{
    cursor:pointer;
-   font-size:30px;
-   text-align: center;
+   font-size:2rem;
    color:red;
 }
 
@@ -105,14 +111,23 @@ form label{
 #verifiedImage{
    grid-row:1/2;
    grid-column: 2/4;
-   max-width: 130px;
+   max-width: 8.7rem;
 }
 
-@media only screen and (max-width:500px){
+
+
+@media only screen and (max-width:1300px){
+   form{
+      width:90%;
+   }
+   h1{
+      font-size:3.9rem;
+   }
    form h2{
-      font-size:28px;
+      font-size:1.8rem;
       margin:10px auto 0 auto;
    }
+
    form label, form .editingContainer {
       font-size:18px;
    }

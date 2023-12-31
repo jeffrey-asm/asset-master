@@ -1,6 +1,18 @@
 main{
    opacity: 1;
 }
+
+.mainImage{
+   width:100%;
+   margin-left:auto;
+   margin-right: auto;
+}
+.mainImage img{
+   max-height: 480px;
+   width:auto;
+   max-width: 90%;
+}
+
 .mainPage{
    position: relative;
    display: flex;
@@ -14,15 +26,16 @@ main{
 }
 
 .mainPage h1{
-   font-size: 110px;
-   margin: 0;
-   max-width: 90%;
+   font-size: 6rem;
+   margin: auto;
+   width: 100%;
+   white-space: nowrap;
 }
 
 .mainPage p{
-   font-size: 22px;
+   font-size: 1.6rem;
    margin:auto;
-   max-width:80%;
+   max-width:30%;
 }
 
 .mainPage p.errorParagraph{
@@ -33,8 +46,6 @@ main{
    color:#07EA3A;
    text-decoration: none;
    font-weight: bold;
-   max-width:300px;
-   height:auto;
 }
 
 .mainText{
@@ -43,7 +54,8 @@ main{
    flex-wrap: wrap;
    align-items: center;
    justify-content: center;
-   gap:20px;
+   width:100%;
+   gap:1rem;
 }
 
 #logInSignUpContainer{
@@ -52,7 +64,7 @@ main{
    flex-wrap: wrap;
    align-items: center;
    justify-content: center;
-   gap:20px;
+   gap:0.5rem;
    width:100%;
    margin:auto;
 }
@@ -60,16 +72,12 @@ main{
 #logInSignUpContainer button{
    box-sizing: border-box;
    cursor:pointer;
-   width: 220px;
-   height: 60px;
-   font-size: 22px;
+   width: 10rem;
+   height: 4rem;
+   font-size: 1.4rem;
    text-align: center;
    color:white;
-   padding: 10px;
    font-weight: bolder;
-   border-radius: 5px;
-   border: none;
-   transition: .5s;
 }
 
 #loginButton{
@@ -82,43 +90,54 @@ main{
 
 
 @media only screen and (max-width:900px) {
+   .mainImage{
+      width:100%;
+   }
    .mainPage h1{
-      font-size: 70px;
+      font-size: 4.8rem;
    }
 
    .mainPage p{
-      font-size: 22px;
-      width:90%;
+      font-size: 1.3rem;
+      max-width:50%;
       margin:0;
-   }
-
-   .mainPage{
-      gap:20px;
    }
 }
 
-@media only screen and (max-width:500px) {
-   #logInSignUpContainer{
-      flex-direction: column;
-      gap:10px;
-   }
-
+@media only screen and (max-width:700px) {
    #logInSignUpContainer button{
-      width:220px;
-      font-size: 20px;
+      width:7.6rem;
+      height:3.4rem;
+      font-size:1.2rem;
    }
 
    .mainPage h1{
-      font-size: 45px;
-      max-width: 100%;
+      font-size: 3.5rem;
    }
 
    .mainPage p{
-      font-size: 18px;
-      max-width:90%;
+      font-size: 1.1rem;
+      max-width:55%;
    }
 
    .mainPage p.errorParagraph{
       max-width: 90%;
+   }
+}
+
+@media only screen and (max-width:430px) {
+   #logInSignUpContainer button{
+      width:6.8rem;
+      height:3rem;
+      font-size:1.1rem;
+   }
+
+   .mainPage p{
+      font-size: 1rem;
+      max-width: 60%;
+   }
+
+   .mainPage h1{
+      font-size: 2.5rem;
    }
 }

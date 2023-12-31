@@ -238,10 +238,14 @@ exports.editAccount = asyncHandler(async(request,result,next)=>{
    }
 });
 
-exports.addTransactions = asyncHandler(async(request,result,next)=>{
+exports.addTransaction = asyncHandler(async(request,result,next)=>{
    try{
       let trimmedInputs = validation.trimInputs(result,request.body,'amount');
       if(trimmedInputs.status != undefined) return;
+
+      console.log(trimmedInputs);
+      throw error;
+
 
       let randomID = await query.retrieveRandomID('SELECT * FROM Transactions WHERE TransactionID = ?');
 
@@ -250,19 +254,33 @@ exports.addTransactions = asyncHandler(async(request,result,next)=>{
 
       trimmedInputs.ID = randomID;
 
-      if(trimmedInputs.CategoryID == 'Income'){
-         let currentIncome = new Decimal(`${request.session.budget['Income'].current}`);
-         currentIncome = currentIncome.plus(trimmedInputs.amount);
-
-         await query.runQuery(`UPDATE Budgets SET IncomeCurrent = ?, WHERE UserID = ?;`[currentIncome.toString(),request.session.UserID]);
-         request.session.budget['Income'].current = trimmedInputs.amount = parseFloat(trimmedInputs.amount.toString());
+      if(budgetController.testNewMonth(trimmedInputs.month)){
+         //Only update budget for current month expenses
          result.status(200);
          sharedReturn.sendSuccess(result,'Successfully added transaction <i class="fa-solid fa-credit-card"></i>',trimmedInputs);
-      } else if(trimmedInputs.CategoryID == 'Expenses'){
-
-      } else{
-
       }
+
+
+
+      let mainCategoryCurrent = new Decimal(`${request.session.budget[`${trimmedInputs.type}`].current}`);
+      mainCategoryCurrent = mainCategoryCurrent.plus(trimmedInputs.amount);
+
+      const updateBudgetQuery = `UPDATE Budgets SET ${trimmedInputs.type}Current = ?, WHERE UserID = ?;`;
+      await query.runQuery(updateBudgetQuery,[mainCategoryCurrent.toString(),request.session.UserID]);
+      request.session.budget[`${trimmedInputs.type}`].current = parseFloat(mainCategoryCurrent.toString());
+
+      if(trimmedInputs.categoryID != 'Income' || trimmedInputs.categoryID != 'Income' ){
+         //Update category
+         let categoryCurrent = new Decimal(`${request.session.budget.categories[trimmedInputs.categoryID].current}`);
+         categoryCurrent = categoryCurrent.plus(trimmedInputs.amount);
+         await query.runQuery('UPDATE Budgets SET Current = ?, WHERE CategoryID = ?;',[categoryCurrent.toString(),trimmedInputs.categoryID]);
+         request.session.budget.categories[trimmedInputs.categoryID].current = parseFloat(categoryCurrent.toString());
+      }
+
+      await request.session.save();
+      result.status(200);
+      sharedReturn.sendSuccess(result,'Successfully added transaction <i class="fa-solid fa-credit-card"></i>',trimmedInputs);
+
 
    } catch (error){
       result.status(500);

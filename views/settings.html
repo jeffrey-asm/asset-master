@@ -11,6 +11,20 @@
    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </head>
 <body>
+   <nav>
+      <i class="fa-solid fa-angles-left" id = 'exitSideBarIcon'></i>
+      <a href = "./home">Home</a>
+      <a href = "./budget">Budget</a>
+      <a href = "./accounts">Accounts</a>
+      <a href = "./settings">Settings</a>
+
+      <div class = 'sliderContainer'>
+         <label class="switch mode">
+            <input type="checkbox" name = 'mode' id = 'mode' >
+            <span class="slider mode"></span>
+          </label>
+      </div>
+   </nav>
    <header>
       <i class="fas fa-bars" id="sidebarIcon"></i>
       <div class = "headerTitle">
@@ -18,20 +32,7 @@
          <h1>Asset Master</h1>
       </div>
 
-      <nav>
-         <i class="fa-solid fa-angles-left" id = 'exitSideBarIcon'></i>
-         <a href = "./home">Home</a>
-         <a href = "./budget">Budget</a>
-         <a href = "./accounts">Accounts</a>
-         <a href = "./settings">Settings</a>
 
-         <div class = 'sliderContainer'>
-            <label class="switch mode">
-               <input type="checkbox" name = 'mode' id = 'mode' >
-               <span class="slider mode"></span>
-             </label>
-         </div>
-      </nav>
    </header>
 
    <main>
@@ -83,8 +84,11 @@
 
          <div class = 'securityContainer'>
             <h3 class = 'securityTitle'>Log Out</h3>
-            <p class = 'securityText'>End your current browser session, return when you please.</p>
-            <i class="fa-solid fa-right-from-bracket" id = 'logOutIcon'></i>
+            <p class = 'securityText'>End your current viewing session.</p>
+            <div class = 'logOutContainer'>
+               <i class="fa-solid fa-right-from-bracket" id = 'logOutIcon'></i>
+            </div>
+
          </div>
 
          <div class = 'securityContainer'>
@@ -106,29 +110,32 @@
          <div class = 'popupExitContainer'>
             <i class="fa-solid fa-xmark exitFormIcon" id = 'exitPasswordIcon'></i>
          </div>
-         <form id = "passwordForm" class = 'popupForm' novalidate>
-            <h1>Change Password</h1>
+         <div class ='popupFormContainer'>
+            <form id = "passwordForm" class = 'popupForm' novalidate>
+               <h2>Change Password</h2>
 
-            <div class = 'passwordContainer'>
-               <label for="oldPassword">Old Password</label>
-               <i class="fa-regular fa-eye" id = "showOldPassword" data-container = 'oldPassword'></i>
-               <input type="password" name="oldPassword" id="oldPassword">
-            </div>
+               <div class = 'passwordContainer'>
+                  <label for="oldPassword">Old Password</label>
+                  <i class="fa-regular fa-eye" id = "showOldPassword" data-container = 'oldPassword'></i>
+                  <input type="password" name="oldPassword" id="oldPassword">
+               </div>
 
-            <div class = 'passwordContainer'>
-               <label for="password">New Password</label>
-               <i class="fa-regular fa-eye" id = "showPassword" data-container = 'password'></i>
-               <input type="password" name="password" id="password">
-            </div>
+               <div class = 'passwordContainer'>
+                  <label for="password">New Password</label>
+                  <i class="fa-regular fa-eye" id = "showPassword" data-container = 'password'></i>
+                  <input type="password" name="password" id="password">
+               </div>
 
-            <div class = 'passwordContainer'>
-               <label for="additionalPassword">Confirm password</label>
-               <i class="fa-regular fa-eye" id = "showAdditionalPassword"  data-container = 'additionalPassword'></i>
-               <input type="password" name="additionalPassword" id="additionalPassword">
-            </div>
+               <div class = 'passwordContainer'>
+                  <label for="additionalPassword">Confirm password</label>
+                  <i class="fa-regular fa-eye" id = "showAdditionalPassword"  data-container = 'additionalPassword'></i>
+                  <input type="password" name="additionalPassword" id="additionalPassword">
+               </div>
 
-            <button type="submit" id = 'passwordSubmitButton'>Submit</button>
-         </form>
+               <button type="submit" id = 'passwordSubmitButton'>Submit</button>
+            </form>
+         </div>
+
       </div>
    </div>
 

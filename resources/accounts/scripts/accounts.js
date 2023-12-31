@@ -1,5 +1,5 @@
 import {openPopUp,exitPopUp,sendRequest,openNotification}  from "../../shared/scripts/shared.js";
-import {constructAccount,getUserAccounts} from "./construct.js";
+import {constructAccount,getUserData} from "./construct.js";
 
 let addAccountButton = document.getElementById('addAccountButton');
 let addAccountContainer = document.getElementById('addAccountContainer');
@@ -37,7 +37,7 @@ exitEditAccountIcon.onclick = function(event){
 }
 
 
-getUserAccounts();
+getUserData();
 
 addAccountForm.onsubmit = async function(event){
    event.preventDefault();
@@ -79,6 +79,12 @@ editAccountForm.onsubmit = async function(event){
 
             if(!data.render.remove){
                constructAccount(data.render.name,data.render.type,data.render.balance,data.render.ID);
+            } else{
+               //In case a remove leads to no accounts
+               let accountsContainer = document.getElementById('accounts');
+               if(document.querySelectorAll('.specificAccountsContainer').length == 0) {
+                  accountsContainer.innerHTML = '<h2>No accounts available</h2>';
+               }
             }
 
             if(data.render.netWorth < 0) {
@@ -88,6 +94,8 @@ editAccountForm.onsubmit = async function(event){
                document.getElementById('netWorthText').innerHTML =
                `Net Worth: <span class = 'positiveNetWorth'>$${parseFloat(data.render.netWorth).toLocaleString("en-US",{ minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>`;
             }
+
+
          }
 
       },1100);
@@ -106,48 +114,4 @@ editAccountForm.onsubmit = async function(event){
    let structuredFormData = new URLSearchParams(formData).toString();
 
    await sendRequest('../users/editAccount',structuredFormData,editAccountSubmitButton,'Submit',successFunction,failFunction);
-}
-
-let addTransactionContainer = document.getElementById('addTransactionContainer');
-let addTransactionForm = document.getElementById('addTransactionForm');
-let addTransactionSubmitButton = document.getElementById('addTransactionButton');
-let exitEditAccountIcon = document.getElementById('exitEditAccountIcon');
-let addTransactionButton = document.getElementById('addTransactionButton');
-
-addTransactionButton.onclick = function(event){
-   openPopUp(addTransactionContainer);
-}
-
-exitEditAccountIcon.onclick = function(event){
-   exitPopUp(editAccountContainer,addAccountForm,exitEditAccountIcon);
-
-   let editTransactionIcons = document.querySelectorAll('.editTransaction');
-
-   for(let i = 0; i < editTransactionIcons.length; i++){
-      editTransactionIcons[i].disabled = true;
-   }
-
-   setTimeout(()=>{
-      for(let i = 0; i < editTransactionIcons.length; i++){
-         editTransactionIcons[i].disabled = false;
-      }
-   },1500);
-}
-
-addTransactionForm.onsubmit = async function(event){
-   event.preventDefault();
-
-   let successFunction = (data,messageContainer) => {
-      setTimeout(()=>{
-         document.getElementById('exitEditAccountIcon').click();
-
-      },1100);
-   }
-
-   let failFunction =  () => {};
-
-   let formData = new FormData(this);
-   let structuredFormData = new URLSearchParams(formData).toString();
-
-   await sendRequest('../users/addTransaction',structuredFormData,addTransactionSubmitButton,'Submit',successFunction,failFunction);
 }

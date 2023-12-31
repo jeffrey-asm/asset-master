@@ -31,7 +31,7 @@ app.use(session({
   secret:process.env.SESSION_SECRET,
   resave:false,
   saveUninitialized:false,
-  cookie: { secure: false, httpOnly: false, maxAge: 1000 * 60 * 10 }
+  cookie: { secure: false, httpOnly: false, maxAge: 1000 * 60 * 60 }
 }));
 
 app.use(cors());
@@ -62,7 +62,6 @@ app.use(function(error, request, result, next) {
 
   // render the error page
   result.status(error.status || 500);
-  //
   result.sendFile(path.join(__dirname,'views','error.html'));
 });
 

@@ -8,6 +8,8 @@ loginForm.onsubmit = async function(event){
 
    let successFunction = (data,messageContainer) => {
       submitButton.innerHTML = '';
+      document.getElementById("username").classList.remove("errorInput");
+      document.getElementById("password").classList.remove('errorInput');
       setTimeout(()=>{
          transitionToPage(submitButton,'../users/home');
       },800);
