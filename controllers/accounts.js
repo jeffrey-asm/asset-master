@@ -6,7 +6,7 @@ const Decimal = require("decimal.js");
 const budgetController = require('./budget.js');
 
 
-async function grabUserAccounts(request){
+async function grabUserData(request){
    try{
       let returnData = {
          accounts:{},
@@ -16,7 +16,7 @@ async function grabUserAccounts(request){
       };
       let netWorth = new Decimal('0.00');
       let accounts = await query.runQuery('SELECT * FROM Accounts WHERE UserID = ?;',[request.session.UserID]);
-      let transactions = await query.runQuery('SELECT * FROM Transactions WHERE UserID = ? ORDER BY Month;',[request.session.UserID]);
+      let transactions = await query.runQuery('SELECT * FROM Transactions WHERE UserID = ?;',[request.session.UserID]);
 
       for(let i = 0; i < accounts.length; i++){
          let preciseBalance = new Decimal(accounts[i].Balance);
@@ -36,14 +36,15 @@ async function grabUserAccounts(request){
 
       for(let i = 0; i < transactions.length; i++){
          returnData.transactions[transactions[i].TransactionID] = {
-            title:accounts[i].Title,
-            type: accounts[i].Type,
-            categoryID:accounts[i].CategoryID,
-            accountID: accounts[i].accountID,
-            month:accounts[i].Month,
-            amount:accounts[i].Amount
+            title:transactions[i].Title,
+            type: transactions[i].Type,
+            categoryID:transactions[i].CategoryID,
+            accountID: transactions[i].AccountID,
+            date:transactions[i].Date,
+            amount:parseFloat(transactions[i].Amount)
          }
       }
+
 
       if(!request.session.budget){
          //Need budget for specific categories in transaction form
@@ -51,7 +52,6 @@ async function grabUserAccounts(request){
       } else{
          returnData.budget = request.session.budget;
       }
-
       return returnData;
    } catch(error){
       console.log(error);
@@ -61,7 +61,7 @@ async function grabUserAccounts(request){
 
 async function setUpAccountsCache(request){
    //Update cached user data
-   let updatedAccounts = await grabUserAccounts(request);
+   let updatedAccounts = await grabUserData(request);
    request.session.accounts = updatedAccounts.accounts;
    request.session.transactions = updatedAccounts.transactions;
    request.session.netWorth = updatedAccounts.netWorth;
@@ -240,24 +240,49 @@ exports.editAccount = asyncHandler(async(request,result,next)=>{
 
 exports.addTransaction = asyncHandler(async(request,result,next)=>{
    try{
-      let trimmedInputs = validation.trimInputs(result,request.body,'amount');
+      let trimmedInputs = validation.trimInputs(result,request.body,'amount','date');
       if(trimmedInputs.status != undefined) return;
-
+      console.log(request.body)
       console.log(trimmedInputs);
-      throw error;
+
+      if(trimmedInputs.account == ''){
+         trimmedInputs.account = null;
+      }
+
+      let formValidation = validation.validateTransactionForm(request,result,trimmedInputs.account,'account',trimmedInputs.title,'title',trimmedInputs.category,'category');
+      if(formValidation.status != 'pass') return;
 
 
       let randomID = await query.retrieveRandomID('SELECT * FROM Transactions WHERE TransactionID = ?');
 
-      await query.runQuery('INSERT INTO Transactions (TransactionID, Title, Month, Amount, UserID, AccountID, CategoryID) VALUES (?, ?, ?, ?, ?, ?, ?)',
-      [randomID, trimmedInputs.title,trimmedInputs.month,trimmedInputs.amount.toString(),request.session.UserID,trimmedInputs.AccountID, trimmedInputs.CategoryID]);
+
+      await query.runQuery('INSERT INTO Transactions (TransactionID, Title, Date, Type, Amount, UserID, AccountID, CategoryID) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+      [randomID, trimmedInputs.title,trimmedInputs.date,trimmedInputs.type,trimmedInputs.amount.toString(),request.session.UserID,trimmedInputs.account, trimmedInputs.category]);
 
       trimmedInputs.ID = randomID;
 
-      if(budgetController.testNewMonth(trimmedInputs.month)){
+      //Must be in same month and year to affect budget
+      let currentDate = query.getCurrentMonth().split('-');
+      let testingDate = (trimmedInputs.date).split('-');
+
+      if(testingDate[0] != currentDate[0] || testingDate[1] != currentDate[1]){
          //Only update budget for current month expenses
+         trimmedInputs.amount = parseFloat((trimmedInputs.amount).toString());
+
+         request.session.transactions[randomID] = {
+            title:trimmedInputs.title,
+            type: trimmedInputs.type,
+            categoryID:trimmedInputs.category,
+            accountID: trimmedInputs.account,
+            date:trimmedInputs.date,
+            amount:trimmedInputs.amount
+         }
+
+         await request.session.save();
+
          result.status(200);
          sharedReturn.sendSuccess(result,'Successfully added transaction <i class="fa-solid fa-credit-card"></i>',trimmedInputs);
+         return;
       }
 
 
@@ -265,26 +290,57 @@ exports.addTransaction = asyncHandler(async(request,result,next)=>{
       let mainCategoryCurrent = new Decimal(`${request.session.budget[`${trimmedInputs.type}`].current}`);
       mainCategoryCurrent = mainCategoryCurrent.plus(trimmedInputs.amount);
 
-      const updateBudgetQuery = `UPDATE Budgets SET ${trimmedInputs.type}Current = ?, WHERE UserID = ?;`;
-      await query.runQuery(updateBudgetQuery,[mainCategoryCurrent.toString(),request.session.UserID]);
+      await query.runQuery(`UPDATE Budgets SET ?? = ? WHERE UserID = ?;`,[`${trimmedInputs.type}Current`,mainCategoryCurrent.toString(),request.session.UserID]);
       request.session.budget[`${trimmedInputs.type}`].current = parseFloat(mainCategoryCurrent.toString());
 
-      if(trimmedInputs.categoryID != 'Income' || trimmedInputs.categoryID != 'Income' ){
+      if(trimmedInputs.category != 'Income' && trimmedInputs.category != 'Expenses'){
          //Update category
-         let categoryCurrent = new Decimal(`${request.session.budget.categories[trimmedInputs.categoryID].current}`);
+         let categoryCurrent = new Decimal(`${request.session.budget.categories[trimmedInputs.category].current}`);
          categoryCurrent = categoryCurrent.plus(trimmedInputs.amount);
-         await query.runQuery('UPDATE Budgets SET Current = ?, WHERE CategoryID = ?;',[categoryCurrent.toString(),trimmedInputs.categoryID]);
-         request.session.budget.categories[trimmedInputs.categoryID].current = parseFloat(categoryCurrent.toString());
+         await query.runQuery('UPDATE Categories SET Current = ? WHERE CategoryID = ?;',[categoryCurrent.toString(),trimmedInputs.category]);
+         request.session.budget.categories[trimmedInputs.category].current = parseFloat(categoryCurrent.toString());
+      }
+
+      trimmedInputs.amount = parseFloat((trimmedInputs.amount).toString());
+
+      request.session.transactions[randomID] = {
+         title:trimmedInputs.title,
+         type: trimmedInputs.type,
+         categoryID:trimmedInputs.category,
+         accountID: trimmedInputs.account,
+         date:trimmedInputs.date,
+         amount:trimmedInputs.amount
       }
 
       await request.session.save();
       result.status(200);
       sharedReturn.sendSuccess(result,'Successfully added transaction <i class="fa-solid fa-credit-card"></i>',trimmedInputs);
+   } catch (error){
+      console.log(error);
+      result.status(500);
+      sharedReturn.sendError(result,'N/A',`Could not successfully process request <i class='fa-solid fa-database'></i>`);
+      return;
+   }
+});
+
+exports.editTransaction = asyncHandler(async(request,result,next)=>{
+   try{
+      let trimmedInputs = validation.trimInputs(result,request.body,'editAmount','editDate');
+      if(trimmedInputs.status != undefined) return;
+
+      if(trimmedInputs.account == ''){
+         trimmedInputs.account = null;
+      }
+
+      let formValidation = validation.validateTransactionForm(request,result,trimmedInputs.account,'account',trimmedInputs.title,'title',trimmedInputs.category,'category');
+      if(formValidation.status != 'pass') return;
+
+
 
 
    } catch (error){
       result.status(500);
-      sharedReturn.sendError(result,'N/A',`Could not successfully process request <i class='fa-solid fa-database'></i>`);
+      sharedReturn.sendError(result,'username',`Could not successfully process request <i class='fa-solid fa-database'></i>`);
       return;
    }
 });

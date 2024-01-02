@@ -48,17 +48,51 @@ export function constructTransaction(accountID,title,type,categoryID,date,amount
    transactionContainer.className = 'transaction';
    transactionContainer.ID = ID;
 
+   let accountName = '';
+
+   if(accountID != null){
+      accountName = document.getElementById(accountID).dataset.name;
+   }
+
+   let categoryName = document.querySelector(`option[value="${categoryID}"]`).innerHTML;
+
+   let formattedDate = date.split('-');
+   //Assume form YY-MM-DD
+   let dateText = `${formattedDate[0]}-${formattedDate[1]}-${formattedDate[2].substr(0,2)}`;
+
+
+
    transactionContainer.innerHTML = `
-      <h3>${account}</h3>
+      <h3>${accountName}</h3>
       <h3>${title}</h3>
-      <h3 class = 'category${type}'>${category}</h3>
-      <h3>${date}</h3>
+      <h3>${categoryName}</h3>
+      <h3>${dateText}</h3>
       <h3 class = '${type}'>$${currentAmountFixed}</h3>
       <i class = "fa-solid fa-pen-to-square editTransactionIcon"></i>
    `;
-   document.querySelector('table').append(transactionContainer);
 
-   return transactionContainer;
+   let transactionData = document.getElementById('transactionsData');
+
+   if(transactionData.querySelectorAll('.transaction').length == 0){
+      //Remove no transaction message
+      transactionData.innerHTML = '';
+   }
+
+   document.getElementById('transactionsData').append(transactionContainer);
+
+
+
+   // let editTransactionContainer = document.getElementById('editAccountContainer');
+   // let editAccountForm = document.getElementById('editAccountForm');
+
+
+   // transactionContainer.querySelector('.editTransactionIcon').onclick = function(event){
+   //    editAccountForm.querySelector('#editName').value = name;
+   //    editAccountForm.querySelector('#editType').value = type;
+   //    editAccountForm.querySelector('#editBalance').value = balance;
+   //    editAccountForm.dataset.identification = ID;
+   //    openPopUp(editAccountContainer);
+   // }
 }
 
 export async function getUserData(){
@@ -122,7 +156,7 @@ export async function getUserData(){
             expensesShown = true;
          }
 
-         categoryOptions += `<option data-type = '${categories[categoriesKeys[i]].name}' value = ${categoriesKeys[i]}>${categories[categoriesKeys[i]].name}</option>`;
+         categoryOptions += `<option data-type = '${categories[categoriesKeys[i]].type}' value = ${categoriesKeys[i]}>${categories[categoriesKeys[i]].name}</option>`;
       }
 
       if(!expensesShown){
@@ -136,13 +170,12 @@ export async function getUserData(){
       let transactionKeys = Object.keys(data.render.transactions);
 
       for(let i = 0; i < transactionKeys.length; i++){
-         let title = data.render.transactions[transactionKeys[i]].title;
-         let type = data.render.transactions[transactionKeys[i]].type;
-         let date = data.render.transactions[transactionKeys[i]].date;
-         let amount = data.render.transactions[transactionKeys[i]].amount;
-         let categoryID = data.render.transactions[transactionKeys[i]].CategoryID;
-         let accountID = data.render.transactions[transactionKeys[i]].AccountID;
-         constructTransaction(accountID, title, type, categoryID, date, amount, transactionKeys[i]);
+         let currentTransaction = data.render.transactions[transactionKeys[i]];
+         constructTransaction(currentTransaction.accountID, currentTransaction.title, currentTransaction.type, currentTransaction.categoryID, currentTransaction.date, currentTransaction.amount, transactionKeys[i]);
+      }
+
+      if(transactionKeys.length == 0){
+         document.getElementById('transactionsData').innerHTML = '<div class = "no-transaction">No transactions available</div>';
       }
 
 

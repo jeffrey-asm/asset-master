@@ -171,9 +171,7 @@ exports.updateCategory = asyncHandler(async(request,result,next)=>{
 
          //May only update total if there is a change using cached data
          if(!previousTotal.equals(trimmedInputs.amount)){
-            let updateMainBudgetQuery = `UPDATE Budgets SET ${trimmedInputs.type}Total = ? WHERE UserID = ?;`;
-
-            await query.runQuery(updateMainBudgetQuery,[trimmedInputs.amount.toString(),request.session.UserID]);
+            await query.runQuery(`UPDATE Budgets SET ?? = ? WHERE UserID = ?;`,[`${trimmedInputs.type}Total`,trimmedInputs.amount.toString(),request.session.UserID]);
 
             trimmedInputs.mainOrSub = 'main';
             trimmedInputs.total = parseFloat(trimmedInputs.amount.toString());
@@ -282,7 +280,7 @@ exports.resetBudget = asyncHandler(async(request,result,next)=>{
       await query.runQuery(resetQuery,[currentMonth,currentMonth,request.session.UserID]);
 
       //Await for cache to store data first for proper rendering
-      request.session.budget['Income'].current = request.session.budget['Expenses'].current = 0.00;
+      request.session.budget.Income.current = request.session.budget.Expenses.current = 0.00;
 
       let categories = Object.keys(request.session.budget.categories);
 
@@ -292,8 +290,8 @@ exports.resetBudget = asyncHandler(async(request,result,next)=>{
       }
 
 
-
       request.session.budget.leftOver = 0.00;
+      request.session.budget.Month = currentMonth;
       await request.session.save();
 
       result.status(200);

@@ -408,7 +408,7 @@ footer{
 
 @keyframes notificationHide {
    from {
-      top:15%;
+      top:13%;
       transform: translate(-50%,-50%) scale(1);
    }
    to {
@@ -424,9 +424,10 @@ footer{
    visibility: visible;
    opacity:1;
    width:500px;
-   max-width: 90%;
-   height:190px;
-   max-height:10vh;
+   max-width: 70%;
+   height:200px;
+   max-height:5vh;
+   text-align: center;
 }
 
 .notificationShown {
@@ -438,7 +439,7 @@ footer{
 }
 
 .popupNotification p{
-   font-size:1.3rem;
+   font-size:1.1rem;
    font-weight: bolder;
    margin:0;
 }

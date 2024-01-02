@@ -21,6 +21,7 @@ addTransactionForm.onsubmit = async function(event){
    let successFunction = (data,messageContainer) => {
       setTimeout(()=>{
          document.getElementById('exitAddTransactionIcon').click();
+         constructTransaction(data.render.account,data.render.title,data.render.type,data.render.category,data.render.date,data.render.amount,data.render.ID);
       },1100);
    }
 
@@ -28,10 +29,8 @@ addTransactionForm.onsubmit = async function(event){
 
    let formData = new FormData(this);
    //Select options hold possible ID's
-   formData.set('CategoryID', (document.getElementById('category').value));
-   formData.set('AccountID', (document.getElementById('account').value));
    formData.set('type', (document.getElementById('category').querySelector('option:checked').dataset.type));
-
+   formData.set('date', (document.getElementById('date').value));
 
    let structuredFormData = new URLSearchParams(formData).toString();
 
@@ -39,3 +38,5 @@ addTransactionForm.onsubmit = async function(event){
 
    await sendRequest('../users/addTransaction',structuredFormData,addTransactionSubmitButton,'Submit',successFunction,failFunction);
 }
+
+//document.querySelector(`#transactionsData #${data.render.ID}`).remove()

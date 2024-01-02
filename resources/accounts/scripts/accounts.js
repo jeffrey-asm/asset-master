@@ -55,6 +55,11 @@ addAccountForm.onsubmit = async function(event){
             `Net Worth: <span class = 'positiveNetWorth'>$${parseFloat(data.render.netWorth).toLocaleString("en-US",{ minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>`;
          }
       },1100);
+
+      //Add options for new account to transaction form
+      document.getElementById('account').innerHTML = `<option value ='${data.render.ID}'>${data.render.name}</option>` + document.getElementById('account').innerHTML;
+      document.getElementById('editAccount').innerHTML = `<option value ='${data.render.ID}'>${data.render.name}</option>` + document.getElementById('editAccount').innerHTML;
+
    }
 
    let failFunction =  () => {};
@@ -75,7 +80,7 @@ editAccountForm.onsubmit = async function(event){
 
          if(data.render.changes){
             //Always remove node, and reconstruct for non-removing account
-            document.getElementById(data.render.ID).remove();
+            document.querySelector(`#accounts #${data.render.ID}`).remove()
 
             if(!data.render.remove){
                constructAccount(data.render.name,data.render.type,data.render.balance,data.render.ID);
@@ -85,6 +90,11 @@ editAccountForm.onsubmit = async function(event){
                if(document.querySelectorAll('.specificAccountsContainer').length == 0) {
                   accountsContainer.innerHTML = '<h2>No accounts available</h2>';
                }
+
+               //Remove options in transaction form
+               document.querySelectorAll(`option[value="${data.render.ID}"]`).forEach((option)=>{
+                  option.remove();
+               });
             }
 
             if(data.render.netWorth < 0) {

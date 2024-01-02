@@ -54,12 +54,12 @@ CREATE TABLE `Accounts` (
 CREATE TABLE `Transactions` (
    TransactionID VARCHAR(30) PRIMARY KEY NOT NULL,
    Title VARCHAR(50) NOT NULL,
-   Month DATE NOT NULL,
+   Date DATE NOT NULL,
    Type varchar(8) NOT NULL,
    Amount DECIMAL(13, 2) NOT NULL,
    UserID VARCHAR(30)  NOT NULL,
-   AccountID VARCHAR(30)  NOT NULL,
-   CategoryID VARCHAR(30)
+   AccountID VARCHAR(30),
+   CategoryID VARCHAR(30) NOT NULL
 );
 
 

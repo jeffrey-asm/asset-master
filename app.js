@@ -22,12 +22,12 @@ const redisClient = redis.createClient({
   port: 6379
 });
 
-redisClient.connect().catch(console.error);
+// redisClient.connect().catch(console.error);
 
 app.use(cookieParser());
 //Change cookie to secure on HTTPS
 app.use(session({
-  store: new RedisStore({ client: redisClient  }),
+  // store: new RedisStore({ client: redisClient  }),
   secret:process.env.SESSION_SECRET,
   resave:false,
   saveUninitialized:false,
