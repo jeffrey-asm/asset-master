@@ -7,12 +7,34 @@ let addTransactionSubmitButton = document.getElementById('addTransactionSubmitBu
 let exitAddTransactionIcon = document.getElementById('exitAddTransactionIcon');
 let addTransactionButton = document.getElementById('addTransactionButton');
 
+let editTransactionContainer = document.getElementById('editTransactionContainer');
+let editTransactionForm = document.getElementById('editTransactionForm');
+let editTransactionSubmitButton = document.getElementById('editTransactionSubmitButton');
+let exitEditTransactionIcon = document.getElementById('exitEditTransactionIcon');
+
 addTransactionButton.onclick = function(event){
    openPopUp(addTransactionContainer);
 }
 
 exitAddTransactionIcon.onclick = function(event){
    exitPopUp(addTransactionContainer,addTransactionForm,exitAddTransactionIcon,addTransactionButton);
+}
+
+exitEditTransactionIcon.onclick = function(event){
+   exitPopUp(editTransactionContainer,editTransactionForm,exitEditTransactionIcon);
+
+   let editTransactionButtons = document.querySelectorAll('.editTransactionIcon');
+
+   editTransactionButtons.forEach((editButton)=>{
+      editButton.disabled = true;
+   });
+
+   setTimeout(()=>{
+      editTransactionButtons.forEach((editButton)=>{
+         editButton.disabled = false;
+      });
+   },1500);
+
 }
 
 addTransactionForm.onsubmit = async function(event){
@@ -34,9 +56,36 @@ addTransactionForm.onsubmit = async function(event){
 
    let structuredFormData = new URLSearchParams(formData).toString();
 
-   console.log(addTransactionSubmitButton);
-
    await sendRequest('../users/addTransaction',structuredFormData,addTransactionSubmitButton,'Submit',successFunction,failFunction);
 }
 
-//document.querySelector(`#transactionsData #${data.render.ID}`).remove()
+editTransactionForm.onsubmit = async function(event){
+   event.preventDefault();
+
+   let successFunction = (data,messageContainer) => {
+      setTimeout(()=>{
+         document.getElementById('exitEditTransactionIcon').click();
+
+         if(date.render.remove){
+            document.querySelector(`.transaction#${data.render.ID}`).remove();
+         } else if(data.render.changes){
+            //Edit instance in current table
+            constructTransaction(data.render.account,data.render.title,data.render.type,data.render.category,data.render.date,data.render.amount,data.render.ID);
+         }
+      },1100);
+   }
+
+   let failFunction =  () => {};
+
+   let formData = new FormData(this);
+   //Select options hold possible ID's
+   formData.set('type', (document.getElementById('editCategory').querySelector('option:checked').dataset.type));
+   formData.set('date', (document.getElementById('editDate').value));
+   formData.set('ID', (this.dataset.identification));
+   formData.set('remove', document.getElementById('removeTransaction').checked);
+
+   let structuredFormData = new URLSearchParams(formData).toString();
+
+   await sendRequest('../users/editTransaction',structuredFormData,editTransactionSubmitButton,'Submit',successFunction,failFunction);
+}
+

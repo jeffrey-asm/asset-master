@@ -71,7 +71,6 @@
          </div>
 
       </div>
-
    </main>
 
    <div class = 'popupContainers'>
@@ -178,7 +177,7 @@
 
       </div>
 
-      <div class = 'popup' id = 'addTransactionContainer'>
+      <div class = 'popup' id = 'editTransactionContainer'>
          <div class = 'popupIconContainer'>
             <i class="fa-solid fa-credit-card"></i>
          </div>
@@ -186,7 +185,7 @@
             <i class="fa-solid fa-xmark exitFormIcon" id = "exitEditTransactionIcon"></i>
          </div>
          <form id = "editTransactionForm" class = 'popupForm' novalidate>
-            <h2>Add Transaction</h2>
+            <h2>Edit Transaction</h2>
             <label for="account">Account</label>
             <select name="account" id="editAccount">
 
@@ -205,6 +204,13 @@
             <input type="date" name="date" id="editDate" >
             <label for="amount">Amount</label>
             <input type="number" name="amount" id="editAmount">
+            <div class = 'sliderContainer'>
+               <label for="remove">Remove Transaction</label>
+               <label class="switch">
+                  <input type="checkbox" name = 'remove' id = 'removeTransaction'>
+                  <span class="slider"></span>
+                </label>
+            </div>
             <button type="submit" id = 'editTransactionSubmitButton'>Submit</button>
          </form>
       </div>

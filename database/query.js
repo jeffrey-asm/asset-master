@@ -11,6 +11,7 @@ exports.runQuery = async function(query='',inputs=[]){
 
    try{
       const results = await asyncQuery(query,inputs);
+      console.log(results);
       return results;
    } catch (error){
       console.log(error);
@@ -47,7 +48,33 @@ exports.randomIdentification = function() {
    //Create random id for a transaction using both chars and ints from current date
    const randomID = cryptoJS.lib.WordArray.random(30);
    let hexString = cryptoJS.enc.Hex.stringify(randomID);
-   return hexString.substring(0, 30);
+
+   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+   const randomIndex = Math.floor(Math.random() * characters.length);
+
+   //Random character at start to use as identifier in HTML
+   return characters[randomIndex] + hexString.substring(0,29).padEnd(29, '0');
+}
+
+exports.changesMade = function(inputObject,comparingObject){
+   let inputKeys = Object.keys(inputObject);
+
+   //Shared function to check if any changes were made prior to running queries
+   for(let i = 0; i < inputKeys.length; i++){
+      if(comparingObject.hasOwnProperty(inputKeys[i]) && inputObject[inputKeys[i]] != comparingObject[inputKeys[i]]){
+         if(inputKeys[i] == 'date'){
+            //Compare using specific date format in database
+            const inputDate = new Date(inputObject[inputKeys[i]] + 'T05:00:00.000Z');
+            const oldDate = new Date(comparingObject[inputKeys[i]]);
+
+            if(inputDate.getTime() != oldDate.getTime()) return true;
+         } else{
+            return true;
+         }
+      }
+   }
+
+   return false;
 }
 
 exports.retrieveRandomID = async function(query){
@@ -67,7 +94,7 @@ exports.retrieveRandomID = async function(query){
 exports.getCurrentMonth = function(){
    const currentDate = new Date();
    let year = currentDate.getFullYear();
-   let month = (currentDate.getMonth() + 1).toString().padStart(2,'0');
+   let month = (currentDate.getUTCMonth() + 1).toString().padStart(2,'0');
    //Set to one as budgets are reset on the first;
    let day = '01';
    return year + '-' + month + '-' + day;

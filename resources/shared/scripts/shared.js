@@ -190,8 +190,8 @@ function openNotification(iconClass, notificationHTML, notificationType){
 
 async function sendRequest(url,structuredFormData,formButton,formButtonText,successFunction=()=>{},failFunction=()=>{}){
    //Interesting loading animation inside button
+   formButton.disabled = true;
    formButton.innerHTML = `<div class="lds-facebook"><div></div><div></div><div></div></div>`;
-   console.log(formButton);
    removeMessage();
 
    try {
@@ -204,12 +204,10 @@ async function sendRequest(url,structuredFormData,formButton,formButtonText,succ
       });
 
       const data = await response.json();
-
+      console.log(data);
       if(data.error){
          throw error;
       }
-
-      console.log(data);
 
       if (data.status !== 'pass') {
         displayMessage(formButton, data.message, 'error');
@@ -229,6 +227,8 @@ async function sendRequest(url,structuredFormData,formButton,formButtonText,succ
       openNotification("fa-solid fa-layer-group", '<p>Could not successfully process request</p>', 'errorType');
       formButton.innerHTML = formButtonText;
       failFunction();
+    } finally{
+      formButton.disabled = false;
     }
 }
 
@@ -278,9 +278,6 @@ if(document.contains(sideBarIcon)){
    }
 
 }
-
-
-
 
 let logoIcon = document.getElementById('logoIcon');
 

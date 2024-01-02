@@ -90,8 +90,9 @@ main button{
 
 #transactionsData{
    overflow-y: auto;
-   min-height:300px;
-   max-height: 700px;
+   min-height:250px;
+   max-height: 750px;
+   height:auto;
 
 
    border-bottom-left-radius: 10px;
@@ -113,19 +114,21 @@ main button{
 }
 
 .transaction{
-   font-size: 0.9em;
-   height:3rem;
-   padding:2rem 0 2rem 2rem;
+   font-size: 1em;
+   height:7.5rem;
+   padding:0rem 2rem 0rem 2rem;
 
    display:grid;
-   grid-template-columns: 2fr 2fr 2fr 2fr 2fr 2fr;
+   grid-template-columns: 2fr 2fr 2fr 2fr 2fr 1fr;
    align-items: center;
    justify-content: center;
    text-align: left;
 
+   border-bottom: 1px solid var(--background-color);
+
    background: var(--text-color);
    color: var(--background-color);
-   overflow:auto;
+   overflow: hidden;
    column-gap: 2em;
 
 }
@@ -145,14 +148,8 @@ main button{
    color:red;
 }
 
-.editTransactionIcon{
-   font-size:1.1em;
-   max-width:2em;
-}
-.editTransactionIcon:hover{
-   color:#178eef;
-   cursor:pointer;
-}
+
+
 
 
 #transactionsTitle{
@@ -160,10 +157,31 @@ main button{
    color:white;
    border-top-left-radius: 10px;
    border-top-right-radius: 10px;
-   height:3.5rem;
+   height:8rem;
    font-size: 1.2em;
 }
 
 #transactionsData div:last-child{
    border-bottom: 0;
+}
+
+.editTransactionIcon{
+   width:3rem;
+   font-size:2.5rem;
+   color:var(--background-color);
+   font-size:1.1em;
+   max-width:2em;
+   max-height:2em;
+   background:none;
+}
+
+.editTransactionIcon:hover{
+   color:#178eef;
+   cursor:pointer;
+   box-shadow:none;
+}
+
+.editTransactionIcon[disabled]{
+   background:none;
+   color:#aca8a8;
 }

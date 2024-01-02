@@ -67,10 +67,10 @@ CREATE TABLE `Transactions` (
 
 UPDATE Budgets B
 JOIN Categories C ON B.UserID = C.UserID
-SET B.IncomeCurrent = ?,
-    B.ExpensesCurrent = ?,
-    C.Current = ?,
-WHERE B.UserID = ?;
+SET B.IncomeCurrent = '0.00',
+    B.ExpensesCurrent = '0.00',
+    C.Current = '0.00'
+WHERE B.UserID = 'qeaeomr1703376705615';
 
 
 
@@ -78,12 +78,14 @@ WHERE B.UserID = ?;
 -- EDIT ACCOUNT
 UPDATE Transactions T
 JOIN Budgets B ON T.UserID = B.UserID
-JOIN Categories C ON T.CategoryID = C.CategoryID
+Join Categories C on T.UserID = C.UserID
 SET
-    B.IncomeCurrent = ?,
-    B.ExpensesCurrent = ?,
-    C.Current = ?,
-    T.Column1 = new_value1,
-    T.Column2 = new_value2,
-    T.Column3 = new_value3
+   B.IncomeCurrent = ?,
+   B.ExpensesCurrent = ?,
+   T.Title = ?,
+   T.CategoryID = ?,
+   T.AccountID = ?,
+   T.Type = ?,
+   T.Date = ?,
+   T.Amount = ?
 WHERE T.UserID = ?;

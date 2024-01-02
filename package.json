@@ -3,20 +3,31 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "nodemon -L ./bin/www"
+    "start": "nodemon ./bin/www"
   },
   "dependencies": {
+    "body-parser": "^1.20.2",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "dotenv": "^16.3.1",
     "http-errors": "~1.6.3",
+    "cors": "^2.8.5",
     "jade": "^0.29.0",
     "morgan": "~1.9.1",
+    "decimal.js": "^10.4.3",
+    "redis": "^4.6.12",
+    "connect-redis": "^7.1.0",
+    "util": "^0.12.5",
+    "express": "^4.18.2",
+    "express-async-handler": "^1.2.0",
+    "express-session": "^1.17.3",
+    "helmet": "^7.1.0",
+    "mysql2": "^3.6.5",
+    "crypto-js": "^4.2.0",
     "swagger-ui-express": "^5.0.0",
     "yamljs": "^0.3.0"
   },
   "devDependencies": {
-    "bcrypt": "^5.1.1",
     "body-parser": "^1.20.2",
     "connect-redis": "^7.1.0",
     "cors": "^2.8.5",

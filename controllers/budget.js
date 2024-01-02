@@ -23,8 +23,6 @@ exports.grabBudgetInformation =  async function(request){
       let userBudget = await query.runQuery('SELECT * FROM Budgets WHERE UserID = ?;',[request.session.UserID]);
       let userCategories = await query.runQuery('SELECT * FROM Categories WHERE UserID = ? ORDER BY Type DESC;',[request.session.UserID]);
 
-      console.log(userCategories);
-
       returnData.Income = {
          'current' : parseFloat(userBudget[0].IncomeCurrent),
          'total' : parseFloat(userBudget[0].IncomeTotal),
@@ -138,8 +136,6 @@ exports.updateCategory = asyncHandler(async(request,result,next)=>{
    try{
       let trimmedInputs = validation.trimInputs(result,request.body,'editAmount');
       if(trimmedInputs.status != undefined) return;
-
-      console.log(trimmedInputs);
 
       let editingMainCategory = trimmedInputs.ID == 'mainIncome' || trimmedInputs.ID == 'mainExpenses';
 

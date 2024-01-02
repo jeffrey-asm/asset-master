@@ -79,12 +79,11 @@ editAccountForm.onsubmit = async function(event){
          document.getElementById('exitEditAccountIcon').click();
 
          if(data.render.changes){
-            //Always remove node, and reconstruct for non-removing account
-            document.querySelector(`#accounts #${data.render.ID}`).remove()
-
             if(!data.render.remove){
                constructAccount(data.render.name,data.render.type,data.render.balance,data.render.ID);
             } else{
+               document.querySelector(`#accounts #${data.render.ID}`).remove()
+
                //In case a remove leads to no accounts
                let accountsContainer = document.getElementById('accounts');
                if(document.querySelectorAll('.specificAccountsContainer').length == 0) {

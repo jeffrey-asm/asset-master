@@ -27,7 +27,6 @@ export const positiveGradient = [
 export const negativeGradient = [...positiveGradient].reverse();
 
 export function constructCategory(mainOrSub,type,ID,name,current,total){
-   console.log(ID);
    let formattedCurrent = current.toLocaleString("en-US",{ minimumFractionDigits: 2, maximumFractionDigits: 2 });
    let formattedTotal = total.toLocaleString("en-US",{ minimumFractionDigits: 2, maximumFractionDigits: 2 });
    let mainContainer = document.getElementById(`${type}`);
@@ -90,7 +89,16 @@ export function constructCategory(mainOrSub,type,ID,name,current,total){
    }
 
    let containerProgressBar = container.getElementsByClassName('currentProgress')[0];
-   mainContainer.append(container);
+
+   let possibleSwap = document.querySelector(`#${ID}`);
+
+   if(!possibleSwap){
+      mainContainer.append(container);
+   } else{
+      //Replace HTML Node for a edit to maintain placement
+      mainContainer.replaceChild(container, possibleSwap)
+   }
+
 
    setTimeout(()=>{
       //Update progress bar during animation for changing progress visuals
@@ -145,7 +153,6 @@ export async function getBudget(){
       });
 
       let data = await response.json();
-      console.log(data);
       //Render object holds all variables essential to constructing front end data
 
       let formattedDate = data.render.Month.split('-');

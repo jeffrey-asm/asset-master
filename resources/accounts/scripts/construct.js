@@ -25,7 +25,15 @@ export function constructAccount(name,type,balance,ID){
       accountsContainer.innerHTML = '';
    }
 
-   document.getElementById('accounts').append(container);
+   let possibleSwap = document.querySelector(`#accounts #${ID}`);
+
+   if(!possibleSwap){
+      accountsContainer.append(container);
+   } else{
+      //Replace HTML Node for a edit to maintain placement
+      accountsContainer.replaceChild(container, possibleSwap)
+   }
+
 
    let editAccountButton = container.querySelector('.editAccountButton');
    let editAccountContainer = document.getElementById('editAccountContainer');
@@ -40,18 +48,40 @@ export function constructAccount(name,type,balance,ID){
    }
 }
 
+function insertTransactionByDate(container){
+   let mainContainer = document.getElementById('transactionsData');
+   let possibleTransactions = mainContainer.querySelectorAll('.transaction');
+   let found = false;
+
+   possibleTransactions.forEach((transaction)=>{
+      if(parseInt(container.dataset.date) > parseInt(transaction.dataset.date)){
+         //Date in in form Date.getTime()
+         if(!found){
+            mainContainer.insertBefore(container, transaction);
+            found = true;
+         }
+      }
+   });
+
+   //Simply append oldest date to table
+   if(!found){
+      mainContainer.append(container);
+   }
+}
 
 export function constructTransaction(accountID,title,type,categoryID,date,amount,ID){
    let currentAmountFixed = amount.toLocaleString("en-US",{ minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-   let transactionContainer = document.createElement('tr');
+   let transactionContainer = document.createElement('div');
    transactionContainer.className = 'transaction';
-   transactionContainer.ID = ID;
+   transactionContainer.id = ID
 
    let accountName = '';
 
    if(accountID != null){
       accountName = document.getElementById(accountID).dataset.name;
+   } else{
+      accountID = '';
    }
 
    let categoryName = document.querySelector(`option[value="${categoryID}"]`).innerHTML;
@@ -59,16 +89,23 @@ export function constructTransaction(accountID,title,type,categoryID,date,amount
    let formattedDate = date.split('-');
    //Assume form YY-MM-DD
    let dateText = `${formattedDate[0]}-${formattedDate[1]}-${formattedDate[2].substr(0,2)}`;
-
-
+   //Store for insertion
+   let transactionDate = new Date(date);
+   transactionDate.setUTCDate(transactionDate.getUTCDate() - 1);
+   transactionContainer.dataset.date = transactionDate.getTime();
+   transactionContainer.dataset.dateTest = date;
 
    transactionContainer.innerHTML = `
-      <h3>${accountName}</h3>
+      <h3 class = 'accountNameLink'>${accountName}</h3>
       <h3>${title}</h3>
       <h3>${categoryName}</h3>
       <h3>${dateText}</h3>
       <h3 class = '${type}'>$${currentAmountFixed}</h3>
-      <i class = "fa-solid fa-pen-to-square editTransactionIcon"></i>
+      <button class = "editTransactionIcon">
+         <span>
+            <i class = "fa-solid fa-pen-to-square"></i>
+         </span>
+      </button>
    `;
 
    let transactionData = document.getElementById('transactionsData');
@@ -78,21 +115,41 @@ export function constructTransaction(accountID,title,type,categoryID,date,amount
       transactionData.innerHTML = '';
    }
 
-   document.getElementById('transactionsData').append(transactionContainer);
+   let possibleSwap = document.querySelector(`#transactionsData #${ID}`);
 
 
+   if(possibleSwap){
+      //Must always re-adjust date insertion
+      possibleSwap.remove();
+   }
 
-   // let editTransactionContainer = document.getElementById('editAccountContainer');
-   // let editAccountForm = document.getElementById('editAccountForm');
+   insertTransactionByDate(transactionContainer);
 
+   let editTransactionContainer = document.getElementById('editTransactionContainer');
+   let editTransactionForm = document.getElementById('editTransactionForm');
+   let editTransactionButton =  transactionContainer.querySelector('.editTransactionIcon');
 
-   // transactionContainer.querySelector('.editTransactionIcon').onclick = function(event){
-   //    editAccountForm.querySelector('#editName').value = name;
-   //    editAccountForm.querySelector('#editType').value = type;
-   //    editAccountForm.querySelector('#editBalance').value = balance;
-   //    editAccountForm.dataset.identification = ID;
-   //    openPopUp(editAccountContainer);
-   // }
+   editTransactionButton.onclick = function(event){
+      editTransactionForm.querySelector('#editAccount').value = accountID;
+      editTransactionForm.querySelector('#editTitle').value = title;
+      editTransactionForm.querySelector('#editCategory').value = categoryID;
+      editTransactionForm.querySelector('#editDate').value = dateText;
+      editTransactionForm.querySelector('#editAmount').value = amount;
+      editTransactionForm.dataset.identification = ID;
+      openPopUp(editTransactionContainer);
+   }
+
+   if(accountID != ''){
+      let accountNameLink = transactionContainer.querySelector('.accountNameLink');
+      let accountContainer = document.querySelector(`#accounts #${accountID}`);
+
+      accountNameLink.style.cursor = 'pointer';
+      accountNameLink.style.color = '#178eef';
+
+      accountNameLink.onclick = function(event){
+         accountContainer.scrollIntoView({behavior:'smooth'});
+      }
+   }
 }
 
 export async function getUserData(){
@@ -105,7 +162,6 @@ export async function getUserData(){
       });
 
       let data = await response.json();
-      console.log(data);
       //Render object holds all variables essential to constructing front end data
       mainTag.style.opacity = '1';
 

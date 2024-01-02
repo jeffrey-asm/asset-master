@@ -50,7 +50,6 @@ detailsForm.onsubmit = async function(event){
    event.preventDefault();
 
    let successFunction = (data,messageContainer) => {
-      console.log(data);
       let username = document.getElementById('username');
       let email = document.getElementById('email');
       let editUsername = document.getElementById('editUsername');
