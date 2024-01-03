@@ -184,35 +184,37 @@
          <div class = 'popupExitContainer'>
             <i class="fa-solid fa-xmark exitFormIcon" id = "exitEditTransactionIcon"></i>
          </div>
-         <form id = "editTransactionForm" class = 'popupForm' novalidate>
-            <h2>Edit Transaction</h2>
-            <label for="account">Account</label>
-            <select name="account" id="editAccount">
+         <div class ='popupFormContainer'>
+            <form id = "editTransactionForm" class = 'popupForm' novalidate>
+               <h2>Edit Transaction</h2>
+               <label for="account">Account</label>
+               <select name="account" id="editAccount">
 
 
-            </select>
+               </select>
 
-            <label for="title">Title</label>
-            <input type="text" name="title" id="editTitle" placeholder="Title">
+               <label for="title">Title</label>
+               <input type="text" name="title" id="editTitle" placeholder="Title">
 
-            <label for="category">Category</label>
-            <select name="category" id="editCategory">
+               <label for="category">Category</label>
+               <select name="category" id="editCategory">
 
-            </select>
-            <p>Categories may be added in <a href="./budget" target = "_blank">Budget Page <i class="fa-solid fa-circle-info informational"></i></a> </p>
-            <label for="date">Date</label>
-            <input type="date" name="date" id="editDate" >
-            <label for="amount">Amount</label>
-            <input type="number" name="amount" id="editAmount">
-            <div class = 'sliderContainer'>
-               <label for="remove">Remove Transaction</label>
-               <label class="switch">
-                  <input type="checkbox" name = 'remove' id = 'removeTransaction'>
-                  <span class="slider"></span>
-                </label>
-            </div>
-            <button type="submit" id = 'editTransactionSubmitButton'>Submit</button>
-         </form>
+               </select>
+               <p>Categories may be added in <a href="./budget" target = "_blank">Budget Page <i class="fa-solid fa-circle-info informational"></i></a> </p>
+               <label for="date">Date</label>
+               <input type="date" name="date" id="editDate" >
+               <label for="amount">Amount</label>
+               <input type="number" name="amount" id="editAmount">
+               <div class = 'sliderContainer'>
+                  <label for="remove">Remove Transaction</label>
+                  <label class="switch">
+                     <input type="checkbox" name = 'remove' id = 'removeTransaction'>
+                     <span class="slider"></span>
+                   </label>
+               </div>
+               <button type="submit" id = 'editTransactionSubmitButton'>Submit</button>
+            </form>
+         </div>
       </div>
 
 

@@ -66,7 +66,8 @@ editTransactionForm.onsubmit = async function(event){
       setTimeout(()=>{
          document.getElementById('exitEditTransactionIcon').click();
 
-         if(date.render.remove){
+         if(date.render && data.render.remove == true){
+            console.log(data.render);
             document.querySelector(`.transaction#${data.render.ID}`).remove();
          } else if(data.render.changes){
             //Edit instance in current table

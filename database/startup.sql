@@ -72,8 +72,9 @@ SET B.IncomeCurrent = '0.00',
     C.Current = '0.00'
 WHERE B.UserID = 'qeaeomr1703376705615';
 
+UPDATE Categories Set Current = '123.00' WHERE CategoryID= 'p381de4d5385b9a1e986b3547c208d';
 
-
+UPDATE Transactions Set Amount = '2009.00' WHERE TransactionID= 'Oba730b1b94b855144cadc24600146';
 
 -- EDIT ACCOUNT
 UPDATE Transactions T
