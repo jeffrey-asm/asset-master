@@ -81,6 +81,22 @@ editAccountForm.onsubmit = async function(event){
          if(data.render.changes){
             if(!data.render.remove){
                constructAccount(data.render.name,data.render.type,data.render.balance,data.render.ID);
+
+               let possibleTransactions = document.querySelectorAll(`.transaction[data-account="${data.render.ID}"]`);
+
+               for(let i = 0; i < possibleTransactions.length; i++){
+                  //Update names if applicable!
+                  let accountNameLink = possibleTransactions[i].querySelector('.accountNameLink');
+                  accountNameLink.innerHTML = data.render.name;
+                  accountNameLink.onclick = function(event){
+                     let accountContainer = document.querySelector(`#accounts #${data.render.ID}`);
+                     accountContainer.scrollIntoView({behavior:'smooth'});
+                     accountContainer.classList.add('highlighted');
+                     setTimeout(()=>{
+                        accountContainer.classList.remove('highlighted');
+                     },5000);
+                  }
+               }
             } else{
                document.querySelector(`#accounts #${data.render.ID}`).remove()
 
@@ -94,6 +110,18 @@ editAccountForm.onsubmit = async function(event){
                document.querySelectorAll(`option[value="${data.render.ID}"]`).forEach((option)=>{
                   option.remove();
                });
+
+               let possibleTransactions = document.querySelectorAll(`.transaction[data-account="${data.render.ID}"]`);
+
+               for(let i = 0; i < possibleTransactions.length; i++){
+                  //Reset account ID for transaction
+                  let accountNameLink = possibleTransactions[i].querySelector('.accountNameLink');
+                  accountNameLink.innerHTML = '';
+                  accountNameLink.style.cursor = 'none';
+                  accountNameLink.style.color = 'initial';
+                  accountNameLink.onclick = null;
+                  possibleTransactions[i].dataset.accountID = '';
+               }
             }
 
             if(data.render.netWorth < 0) {
@@ -103,8 +131,6 @@ editAccountForm.onsubmit = async function(event){
                document.getElementById('netWorthText').innerHTML =
                `Net Worth: <span class = 'positiveNetWorth'>$${parseFloat(data.render.netWorth).toLocaleString("en-US",{ minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>`;
             }
-
-
          }
 
       },1100);
@@ -123,4 +149,21 @@ editAccountForm.onsubmit = async function(event){
    let structuredFormData = new URLSearchParams(formData).toString();
 
    await sendRequest('../users/editAccount',structuredFormData,editAccountSubmitButton,'Submit',successFunction,failFunction);
+}
+
+document.querySelector('.testAdd').onclick = function(event){
+   let test = document.createElement('tr');
+   test.innerHTML = `<tr>
+   <td  class = 'accountNameLink'>Test</td>
+   <td>Title</td>
+   <td>categoryName</td>
+   <td>2024-01-01</td>
+   <td class = 'Income'>$900.00</td>
+   <td><i class="fas fa-pen-to-square"></i></td>
+</tr>`
+   document.querySelector('table tbody tr:last-child td:first-child').classList.remove('roundedLeftBottom');
+   document.querySelector('table tbody tr:last-child td:last-child').classList.remove('roundedRightBottom');
+   document.querySelector('table tbody').append(test);
+   document.querySelector('table tbody tr:last-child td:first-child').classList.add('roundedLeftBottom');
+   document.querySelector('table tbody tr:last-child td:last-child').classList.add('roundedRightBottom');
 }

@@ -66,9 +66,22 @@ editTransactionForm.onsubmit = async function(event){
       setTimeout(()=>{
          document.getElementById('exitEditTransactionIcon').click();
 
-         if(date.render && data.render.remove == true){
-            console.log(data.render);
-            document.querySelector(`.transaction#${data.render.ID}`).remove();
+         if(data.render.remove == true){
+            let transaction = document.querySelector(`.transaction#${data.render.ID}`);
+            transaction.classList.add('removedTransaction');
+
+            setTimeout(()=>{
+               transaction.remove();
+
+               let possibleTransaction = document.querySelector('#transactionsData .transaction');
+
+               if(!possibleTransaction){
+                  //Must have removed only transaction on table
+                  document.getElementById('transactionsData').innerHTML = '<div class = "no-transaction">No transactions available</div>';
+               }
+            },1400);
+
+
          } else if(data.render.changes){
             //Edit instance in current table
             constructTransaction(data.render.account,data.render.title,data.render.type,data.render.category,data.render.date,data.render.amount,data.render.ID);

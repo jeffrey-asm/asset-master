@@ -3,6 +3,7 @@ const query = require('../database/query.js');
 const validation = require("../database/validation.js");
 const sharedReturn = require('./message.js');
 const Decimal = require("decimal.js");
+const accountController = require('./accounts.js');
 
 exports.testNewMonth = function(oldDate){
    // YY-MM-DD
@@ -17,7 +18,7 @@ exports.testNewMonth = function(oldDate){
    return testingMonth != currentMonth || currentYear != testingYear;
 }
 
-exports.grabBudgetInformation =  async function(request){
+exports.grabBudgetInformation =  async function(request,result,next){
    try{
       let returnData = {};
       let userBudget = await query.runQuery('SELECT * FROM Budgets WHERE UserID = ?;',[request.session.UserID]);
@@ -48,19 +49,21 @@ exports.grabBudgetInformation =  async function(request){
 
 
       returnData.Month = userBudget[0].Month;
+      request.session.budget = returnData;
+
+      await request.session.save();
 
       let resetBudgetTest = exports.testNewMonth(returnData.Month);
-
-      if(resetBudgetTest){
-         //Show user pop up that they should reset budget and note down current budget as database space is limited
-         // All transactions are still saved
-         returnData.notify = true;
-      }
 
       let incomeFixed = new Decimal(userBudget[0].IncomeCurrent);
       let expensesFixed = new Decimal(userBudget[0].ExpensesCurrent);
 
-      returnData.leftOver = parseFloat((incomeFixed.minus(expensesFixed).toString()));
+      if(resetBudgetTest){
+         //Reset budget for the month
+         returnData = await exports.resetBudget(request,result,next);
+      } else{
+         returnData.leftOver = parseFloat((incomeFixed.minus(expensesFixed).toString()));
+      }
 
       return returnData;
    } catch(error){
@@ -74,7 +77,7 @@ exports.getUserBudget = asyncHandler(async(request,result,next)=>{
       let returnData = {};
 
       if(!request.session.budget){
-         returnData = request.session.budget = await exports.grabBudgetInformation(request);
+         returnData = request.session.budget = await exports.grabBudgetInformation(request,result,next);
       } else{
          //Use cached data using redis for quicker accessing of temporary user data
          returnData = JSON.parse(JSON.stringify(request.session.budget));
@@ -147,7 +150,24 @@ exports.updateCategory = asyncHandler(async(request,result,next)=>{
       if(trimmedInputs.remove == "true" && !editingMainCategory){
          //Handle remove (income/expenses is not changed at all because all transactions are moved to main types)
          await query.runQuery(`DELETE FROM Categories WHERE CategoryID = ?;`,[trimmedInputs.ID]);
-         // await query.runQuery(`UPDATE Transactions SET CategoryID = NULL WHERE CategoryID = ?;`,[trimmedInputs.ID]);
+
+         if(!request.session.transactions){
+            await accountController.setUpAccountsCache(request);
+         }
+
+         let possibleTransactionIDs = Object.keys(request.session.transactions);
+         let previousType = request.session.budget.categories[trimmedInputs.ID].type;
+
+         await query.runQuery(`UPDATE Transactions SET CategoryID = ? WHERE CategoryID = ?;`,[previousType,trimmedInputs.ID]);
+
+
+         for(let i = 0; i < possibleTransactionIDs.length; i++){
+            //Update all connected account transactions within the cache
+            if(request.session.transactions[possibleTransactionIDs[i]].categoryID == trimmedInputs.ID){
+               request.session.transactions[possibleTransactionIDs[i]].categoryID = previousType;
+            }
+         }
+
          trimmedInputs.changes = true;
          trimmedInputs.mainOrSub = 'remove';
 
@@ -202,7 +222,6 @@ exports.updateCategory = asyncHandler(async(request,result,next)=>{
             changesMade = true;
          }
 
-
          if(previousType != trimmedInputs.type){
             //Swapping between Income and Expenses, must update both current trackers
             let newIncomeCurrent = new Decimal(`${request.session.budget.Income.current}`);
@@ -220,10 +239,22 @@ exports.updateCategory = asyncHandler(async(request,result,next)=>{
             request.session.budget.Income.current  = parseFloat(newIncomeCurrent.toString());
             request.session.budget.Expenses.current  = parseFloat(newExpensesCurrent.toString());
 
-
             await query.runQuery('UPDATE Budgets SET IncomeCurrent = ?, ExpensesCurrent = ? WHERE UserID = ?;',
             [newIncomeCurrent.toString(),newExpensesCurrent.toString(),request.session.UserID]);
-            // await query.runQuery(`UPDATE Transactions SET Type = ? WHERE CategoryID = ?;`,[trimmedInputs.type,trimmedInputs.ID]);
+            await query.runQuery(`UPDATE Transactions SET Type = ? WHERE CategoryID = ?;`,[trimmedInputs.type,trimmedInputs.ID]);
+
+            if(!request.session.transactions){
+               await accountController.setUpAccountsCache(request);
+            }
+
+            let possibleTransactionIDs = Object.keys(request.session.transactions);
+
+            for(let i = 0; i < possibleTransactionIDs.length; i++){
+               //Update all connected account transactions within the cache
+               if(request.session.transactions[possibleTransactionIDs[i]].categoryID == trimmedInputs.ID){
+                  request.session.transactions[possibleTransactionIDs[i]].type = trimmedInputs.type;
+               }
+            }
 
             //Will need to re-construct containers for changes in several categories
             changesMade = true;
@@ -231,13 +262,14 @@ exports.updateCategory = asyncHandler(async(request,result,next)=>{
          }
 
          if(changesMade){
-            await query.runQuery('UPDATE Categories SET Name = ?, Type = ?, Total = ? WHERE CategoryID = ?;',[trimmedInputs.name, trimmedInputs.type,trimmedInputs.amount.toString(),trimmedInputs.ID]);
+            await query.runQuery('UPDATE Categories SET Name = ?, Type = ?, Current = ?, Total = ? WHERE CategoryID = ?;',[trimmedInputs.name, trimmedInputs.type,trimmedInputs.current.toString(),trimmedInputs.amount.toString(),trimmedInputs.ID]);
             trimmedInputs.changes = true;
             trimmedInputs.total = parseFloat(trimmedInputs.amount.toString());
 
             //Update specific category cache
             request.session.budget.categories[trimmedInputs.ID].name = trimmedInputs.name;
             request.session.budget.categories[trimmedInputs.ID].type = trimmedInputs.type;
+            request.session.budget.categories[trimmedInputs.ID].current = trimmedInputs.current;
             request.session.budget.categories[trimmedInputs.ID].total = trimmedInputs.total;
 
             result.status(200);
@@ -289,13 +321,8 @@ exports.resetBudget = asyncHandler(async(request,result,next)=>{
       request.session.budget.leftOver = 0.00;
       request.session.budget.Month = currentMonth;
       await request.session.save();
-
-      result.status(200);
-      sharedReturn.sendSuccess(result,'Budget reset for the month <i class="fa-solid fa-check"></i>');
+      return request.session.budget;
    }catch(error){
-      console.log(error);
-      result.status(500);
-      sharedReturn.sendError(result,'editCategoryName',"Could not successfully process request <i class='fa-solid fa-database'></i>");
       return;
    }
 });

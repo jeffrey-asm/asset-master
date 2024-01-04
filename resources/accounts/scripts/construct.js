@@ -78,7 +78,7 @@ export function constructTransaction(accountID,title,type,categoryID,date,amount
 
    let accountName = '';
 
-   if(accountID != null){
+   if(accountID != null && accountID != ''){
       accountName = document.getElementById(accountID).dataset.name;
    } else{
       accountID = '';
@@ -93,7 +93,7 @@ export function constructTransaction(accountID,title,type,categoryID,date,amount
    let transactionDate = new Date(date);
    transactionDate.setUTCDate(transactionDate.getUTCDate() - 1);
    transactionContainer.dataset.date = transactionDate.getTime();
-   transactionContainer.dataset.dateTest = date;
+   transactionContainer.dataset.account = accountID;
 
    transactionContainer.innerHTML = `
       <h3 class = 'accountNameLink'>${accountName}</h3>
@@ -108,13 +108,6 @@ export function constructTransaction(accountID,title,type,categoryID,date,amount
       </button>
    `;
 
-   let transactionData = document.getElementById('transactionsData');
-
-   if(transactionData.querySelectorAll('.transaction').length == 0){
-      //Remove no transaction message
-      transactionData.innerHTML = '';
-   }
-
    let possibleSwap = document.querySelector(`#transactionsData #${ID}`);
 
 
@@ -123,14 +116,29 @@ export function constructTransaction(accountID,title,type,categoryID,date,amount
       possibleSwap.remove();
    }
 
-   insertTransactionByDate(transactionContainer);
+   let noTransactionCheck = document.querySelector('.no-transaction');
+
+   if(noTransactionCheck){
+      //Remove no transaction message
+      noTransactionCheck.classList.add('addedTransaction');
+      setTimeout(()=>{
+         insertTransactionByDate(transactionContainer);
+         noTransactionCheck.remove();
+      },1500);
+   } else{
+      insertTransactionByDate(transactionContainer);
+   }
+
+
+
+
 
    let editTransactionContainer = document.getElementById('editTransactionContainer');
    let editTransactionForm = document.getElementById('editTransactionForm');
    let editTransactionButton =  transactionContainer.querySelector('.editTransactionIcon');
 
    editTransactionButton.onclick = function(event){
-      editTransactionForm.querySelector('#editAccount').value = accountID;
+      editTransactionForm.querySelector('#editAccount').value = transactionContainer.dataset.account;
       editTransactionForm.querySelector('#editTitle').value = title;
       editTransactionForm.querySelector('#editCategory').value = categoryID;
       editTransactionForm.querySelector('#editDate').value = dateText;
@@ -139,15 +147,20 @@ export function constructTransaction(accountID,title,type,categoryID,date,amount
       openPopUp(editTransactionContainer);
    }
 
-   if(accountID != ''){
+   if(transactionContainer.dataset.account != ''){
       let accountNameLink = transactionContainer.querySelector('.accountNameLink');
-      let accountContainer = document.querySelector(`#accounts #${accountID}`);
+      let accountContainer = document.querySelector(`#accounts #${transactionContainer.dataset.account}`);
 
       accountNameLink.style.cursor = 'pointer';
       accountNameLink.style.color = '#178eef';
 
       accountNameLink.onclick = function(event){
          accountContainer.scrollIntoView({behavior:'smooth'});
+         accountContainer.classList.add('highlighted');
+
+         setTimeout(()=>{
+            accountContainer.classList.remove('highlighted');
+         },5000);
       }
    }
 }
@@ -162,6 +175,7 @@ export async function getUserData(){
       });
 
       let data = await response.json();
+      console.log(data);
       //Render object holds all variables essential to constructing front end data
       mainTag.style.opacity = '1';
 

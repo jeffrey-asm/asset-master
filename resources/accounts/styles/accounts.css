@@ -15,57 +15,67 @@ main button{
    flex-direction: row;
    align-items: center;
    justify-content:center;
-   gap:30px;
+   gap:2.3em;
    flex-wrap: wrap;
-   padding:100px 0 100px 0;
+   padding:2rem 0 2rem 0;
+   max-width: 90%;
+   margin:auto;
 }
+
+
 
 .specificAccountsContainer {
    border-radius: 7px;
-   box-shadow: var(--text-color) 0px 0px 5px;
+   box-shadow: var(--text-color) 0px 0px 4px;
    overflow: hidden;
    text-align: center;
 
    background: var(--text-color);
    color: var(--background-color);
-   width:20%;
-   min-width:320px;
+   width:21rem;
    max-width:90%;
-   min-height:400px;
-   height:35%;
+   height:28.5rem;
    padding:0;
    margin:0;
    animation: fadeIn 1s ease-in-out forwards;
 }
 
+
+.highlighted {
+   box-shadow: var(--text-color) 0px 0px 100px;
+}
+
 .imageContainer img{
    overflow: hidden;
    width: 100%;
-   height: 200px;
+   height: 12.5rem;
    object-fit: cover;
+   box-shadow: var(--background-color) 0px 0px 3px;
 }
-
 .accountDetails {
    padding:2rem;
 }
 
 .specificAccountsContainer h1{
-   font-size: 2.3rem;
-   word-wrap: break-word;
+   font-size: 2rem;
+
+   white-space: wrap;
+   overflow: hidden;
+   text-overflow: ellipsis;
 }
 
 
 .specificAccountsContainer h3{
-   font-size: 1.6rem;
+   font-size: 1.4rem;
    word-wrap: break-word;
 }
 
 .editAccountButton{
    width:7rem;
    height: 2.5rem;
-   margin:auto;
+   margin:0.3rem auto;
    padding:0;
-   font-size: 1.2rem;
+   font-size: 1rem;
    color:white;
    border:0;
    border-radius: 25px;
@@ -83,23 +93,44 @@ main button{
 .positiveNetWorth{
    color:green;
 }
-#transactionsSection{
-   width:80%;
-   margin:auto;
-}
 
-#transactionsData{
-   overflow-y: auto;
-   min-height:250px;
-   max-height: 750px;
-   height:auto;
+@keyframes slideDown {
+   from {
+     height: 0;
+   }
+   to {
+     height: 6.7rem;
+   }
+ }
 
+ @keyframes slideUp {
+   from {
+      height: 6.7rem;
+   }
+   to {
+     height: 0;
+   }
+ }
 
-   border-bottom-left-radius: 10px;
-   border-bottom-right-radius: 10px;
-}
+ @keyframes emptySlideDown {
+   from {
+     height: 0;
+   }
+   to {
+     height: 300px;
+   }
+ }
 
-.no-transaction{
+ @keyframes emptySlideUp {
+   from {
+     height: 300px;
+   }
+   to {
+     height: 0;
+   }
+ }
+
+ .no-transaction{
    font-size: 1.5em;
    font-weight: bolder;
 
@@ -110,35 +141,69 @@ main button{
    background: var(--text-color);
    color: var(--background-color);
 
-   min-height: 300px;
+   height: 300px;
+   transition: height 1.5s ease-in-out;
+   animation:emptySlideDown 1.5s ease-in-out forwards;
+}
+
+.addedTransaction{
+   transition: height 1.5s ease-in-out;
+   animation:emptySlideUp 1.5s ease-in-out forwards;
+}
+
+#transactionsSection{
+   width:90%;
+   margin:2rem auto;
+   overflow:auto;
+}
+
+#transactionsData{
+   box-sizing: border-box;
+   min-height:250px;
+   max-height: 750px;
+   height:auto;
+   overflow-y: auto;
 }
 
 .transaction{
+   box-sizing: border-box;
    font-size: 1em;
-   height:7.5rem;
-   padding:0rem 2rem 0rem 2rem;
+   height:6.7rem;
+   margin: 0rem 2rem;
+   padding: 0rem 2rem;
 
-   display:grid;
-   grid-template-columns: 2fr 2fr 2fr 2fr 2fr 1fr;
+   /* overflow-x: auto; */
+   display: flex;
    align-items: center;
-   justify-content: center;
+   justify-content: space-evenly;
+   align-items: center;
+
    text-align: left;
 
    border-bottom: 1px solid var(--background-color);
 
    background: var(--text-color);
    color: var(--background-color);
-   overflow: hidden;
    column-gap: 2em;
 
 }
 
-.transaction h3{
-   overflow: hidden;
-   white-space: nowrap;
-   text-overflow: ellipsis;
+.removedTransaction{
+   transition: height 1.5s ease-in-out;
+   animation:slideUp 1.5s ease-in-out forwards;
 }
 
+.transaction *{
+   flex:1;
+
+}
+
+.transaction :nth-child(-n+3){
+   flex:1;
+   white-space: wrap;
+   overflow: hidden;
+   text-overflow: ellipsis;
+}
 
 .transaction h3.Income{
    color:#178eef;
@@ -147,10 +212,6 @@ main button{
 .transaction h3.Expenses{
    color:red;
 }
-
-
-
-
 
 #transactionsTitle{
    background:#178eef;
@@ -161,10 +222,10 @@ main button{
    font-size: 1.2em;
 }
 
-#transactionsData div:last-child{
-   border-bottom: 0;
+#transactionsTitle button{
+   color:transparent;
+   cursor: none;
 }
-
 .editTransactionIcon{
    width:3rem;
    font-size:2.5rem;
@@ -182,6 +243,97 @@ main button{
 }
 
 .editTransactionIcon[disabled]{
+   background:none;
+   color:#aca8a8;
+}
+
+@media only screen and (max-width:600px) {
+   main{
+      width:95%;
+      margin:auto;
+   }
+   #accounts{
+      width:100%;
+      max-width: 100%;
+      padding: 0;
+   }
+}
+
+table{
+   width:90%;
+   margin:3rem auto;
+   text-align: center;
+   border-collapse:collapse;
+}
+
+table th{
+   font-size:1.3rem;
+   background-color: #178eef;
+   padding:25px;
+   border: 0;
+   height:3.3rem;
+}
+
+table thead th:first-child{
+   border-top-left-radius: 10px;
+}
+table thead th:last-child{
+   border-top-right-radius: 10px;
+}
+
+/* table tbody tr:last-child td:first-child{
+   border-bottom-left-radius: 10px;
+}
+
+table tbody tr:last-child td:last-child{
+
+} */
+
+.roundedLeftBottom{
+   border-bottom-left-radius: 10px;
+}
+.roundedRightBottom{
+   border-bottom-right-radius: 10px;
+}
+
+table tbody{
+   min-height:250px;
+   max-height: 750px;
+   overflow-y:auto;
+}
+
+table tbody tr{
+   font-size:1.1rem;
+   font-weight: bolder;
+   background-color: var(--text-color);
+   color:var(--background-color);
+   overflow: auto;
+   height:0;
+   border: 0;
+   transition: height 2s ease-in-out;
+   animation: slideDown 2s ease-in-out forwards;
+   border-bottom-left-radius: 0px;
+   border-bottom-right-radius: 0px;
+}
+
+
+table button{
+   width:3rem;
+   font-size:2.5rem;
+   color:var(--background-color);
+   font-size:1.1em;
+   max-width:2em;
+   max-height:2em;
+   background:none;
+}
+
+table button:hover{
+   color:#178eef;
+   cursor:pointer;
+   box-shadow:none;
+}
+
+table button[disabled]{
    background:none;
    color:#aca8a8;
 }

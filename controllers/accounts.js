@@ -23,7 +23,7 @@ async function grabUserData(request){
          returnData.accounts[accounts[i].AccountID] = {
             name:accounts[i].Name,
             type:accounts[i].Type,
-            balance:parseFloat(preciseBalance.toString())
+            balance:parseFloat(preciseBalance.toString()),
          }
 
          if(accounts[i].Type == 'Loan' || accounts[i].Type == 'Credit Card') preciseBalance = preciseBalance.neg();
@@ -58,7 +58,7 @@ async function grabUserData(request){
    }
 }
 
-async function setUpAccountsCache(request){
+exports.setUpAccountsCache = async function (request){
    //Update cached user data
    let updatedAccounts = await grabUserData(request);
    request.session.accounts = updatedAccounts.accounts;
@@ -74,7 +74,7 @@ exports.getUserAccounts = asyncHandler(async(request,result,next)=>{
       let returnData;
 
       if(!request.session.accounts){
-         returnData = await setUpAccountsCache(request);
+         returnData = await exports.setUpAccountsCache(request);
       } else{
          returnData = {
             accounts: request.session.accounts,
@@ -154,9 +154,9 @@ exports.editAccount = asyncHandler(async(request,result,next)=>{
       let formValidation = validation.validateAccountForm(result,trimmedInputs.name,'editName',trimmedInputs.type,'editType');
       if(formValidation.status != 'pass') return;
 
-      let previousBalance = new Decimal(request.session.accounts[trimmedInputs.ID].balance);
-      let previousName = request.session.accounts[trimmedInputs.ID].name;
-      let previousType = request.session.accounts[trimmedInputs.ID].type;
+      let previousAccount = request.session.accounts[trimmedInputs.ID];
+      let previousBalance = new Decimal(previousAccount.balance);
+      let previousType = previousAccount.type;
 
       let debtTypes ={
          'Loan' : 1,
@@ -172,9 +172,18 @@ exports.editAccount = asyncHandler(async(request,result,next)=>{
       if(trimmedInputs.remove == "true"){
          //Handle remove (income/expenses is not changed at all because all transactions are moved to main types)
          await query.runQuery(`DELETE FROM Accounts WHERE AccountID = ?;`,[trimmedInputs.ID]);
-         // await query.runQuery(`UPDATE Transactions SET AccountID = '' WHERE AccountID = ?;`,[trimmedInputs.ID]);
-          //Must add onto Net worth when removing any type of debt
 
+         await query.runQuery(`UPDATE Transactions SET AccountID = ? WHERE AccountID = ?;`,['',trimmedInputs.ID]);
+         //Must add onto Net worth when removing any type of debt
+
+         let possibleTransactionIDs = Object.keys(request.session.transactions);
+
+         for(let i = 0; i < possibleTransactionIDs.length; i++){
+            //Update all connected account transactions within the cache
+            if(request.session.transactions[possibleTransactionIDs[i]].accountID == trimmedInputs.ID){
+               request.session.transactions[possibleTransactionIDs[i]].accountID = null;
+            }
+         }
 
          trimmedInputs.remove = true;
          trimmedInputs.changes = true;
@@ -190,7 +199,7 @@ exports.editAccount = asyncHandler(async(request,result,next)=>{
 
       trimmedInputs.remove = false;
 
-      if(previousType != trimmedInputs.type || previousName != trimmedInputs.name || !(previousBalance.abs()).equals(trimmedInputs.balance)){
+      if(query.changesMade(trimmedInputs,previousAccount)){
          //Update columns on any change
          await query.runQuery('UPDATE Accounts SET Name = ?, Type = ?, Balance = ? WHERE AccountID = ?;',[trimmedInputs.name, trimmedInputs.type,trimmedInputs.balance.toString(),trimmedInputs.ID]);
 
@@ -211,7 +220,6 @@ exports.editAccount = asyncHandler(async(request,result,next)=>{
 
          //Revert back to an absolute value type in case this is a debt type account
          trimmedInputs.balance = parseFloat(trimmedInputs.balance.toString());
-
 
          request.session.accounts[trimmedInputs.ID] = {
             name:trimmedInputs.name,
@@ -237,11 +245,12 @@ exports.editAccount = asyncHandler(async(request,result,next)=>{
    }
 });
 
-function updateBudgetLeftOver(request){
+async function updateBudgetLeftOver(request){
    let incomeFixed = new Decimal(request.session.budget.Income.current);
    let expensesFixed =  new Decimal(request.session.budget.Expenses.current);
 
-   request.session.leftOver = parseFloat((incomeFixed.minus(expensesFixed).toString()));
+   request.session.budget.leftOver = parseFloat((incomeFixed.minus(expensesFixed).toString()));
+   await request.session.save();
 }
 exports.addTransaction = asyncHandler(async(request,result,next)=>{
    try{
@@ -251,6 +260,7 @@ exports.addTransaction = asyncHandler(async(request,result,next)=>{
       if(trimmedInputs.account == ''){
          trimmedInputs.account = null;
       }
+
 
       let formValidation = validation.validateTransactionForm(request,result,trimmedInputs.account,'account',trimmedInputs.title,'title',trimmedInputs.category,'category');
       if(formValidation.status != 'pass') return;
@@ -265,10 +275,10 @@ exports.addTransaction = asyncHandler(async(request,result,next)=>{
       trimmedInputs.ID = randomID;
 
       //Must be in same month and year to affect budget
-      let currentDate = query.getCurrentMonth().split('-');
+      let currentBudgetDate = (request.session.budget.Month).toString().split('-');
       let testingDate = (trimmedInputs.date).split('-');
 
-      if(testingDate[0] != currentDate[0] || testingDate[1] != currentDate[1]){
+      if(testingDate[0] != currentBudgetDate[0] || testingDate[1] != currentBudgetDate[1]){
          //Only update budget for current month expenses
          trimmedInputs.amount = parseFloat((trimmedInputs.amount).toString());
 
@@ -281,8 +291,6 @@ exports.addTransaction = asyncHandler(async(request,result,next)=>{
             amount:trimmedInputs.amount
          }
 
-
-         updateBudgetLeftOver(request);
          await request.session.save();
 
          result.status(200);
@@ -314,6 +322,9 @@ exports.addTransaction = asyncHandler(async(request,result,next)=>{
          date:trimmedInputs.date,
          amount:trimmedInputs.amount
       }
+
+      await request.session.save();
+      await updateBudgetLeftOver(request);
 
       await request.session.save();
       result.status(200);
@@ -372,55 +383,60 @@ exports.editTransaction = asyncHandler(async(request,result,next)=>{
       let toMainCategory = mainCategories.hasOwnProperty(trimmedInputs.category);
 
       //Must be in same month and year to affect budget
-      let currentDate = query.getCurrentMonth().split('-');
-      let testingDate = (trimmedInputs.date).split('-');
+      let currentBudgetDate = (request.session.budget.Month).toString().split('-');
+
+      let previousDate = (request.session.transactions[trimmedInputs.ID].date).toString().split('-');
+      let inputDate = (trimmedInputs.date).split('-');
+
+      //Compare YY-MM for input and previous dates using current budget year-month
+      let previousDateAffectsBudget = (previousDate[0] == currentBudgetDate[0] && previousDate[1] == currentBudgetDate[1]);
+      let currentDateAffectsBudget = (inputDate[0] == currentBudgetDate[0] && inputDate[1] == currentBudgetDate[1]);
 
       if(trimmedInputs.remove == 'true'){
          await query.runQuery(`DELETE FROM Transactions WHERE TransactionID = ?;`,[trimmedInputs.ID]);
          trimmedInputs.remove = true;
 
-         //Edge case of a current budget transaction being moved to a prior month, so update records
-         let previousDate = previousTransaction.split('-');
-         let adjustCurrentBudget = (previousDate[0] == currentDate[0] && previousDate[1] == currentDate[1])
-
-         if(!adjustCurrentBudget && (testingDate[0] != currentDate[0] || testingDate[1] != currentDate[1])){
+         if(!previousDateAffectsBudget){
+            //Update cache via deleting category
+            delete request.session.transactions[trimmedInputs.ID];
             //Removals should only affect current budgets
+            await request.session.save();
+            result.status(200);
+            sharedReturn.sendSuccess(result,'Successfully removed transaction <i class="fa-solid fa-trash"></i>',trimmedInputs);
+            return;
+         } else{
+            //Update Budgets
+            if(!fromMainCategory){
+               //Update category
+               previousCategoryCurrent = new Decimal(request.session.budget.categories[previousTransaction.categoryID].current);
+               previousCategoryCurrent = previousCategoryCurrent.minus(previousAmount);
+
+               await query.runQuery(`UPDATE Categories SET Current = ? WHERE CategoryID = ?;`,[previousCategoryCurrent.toString(),previousTransaction.categoryID]);
+
+               request.session.budget.categories[previousTransaction.categoryID].current = parseFloat(previousCategoryCurrent.toString());
+            }
+
+            if(previousTransaction.type == 'Income'){
+               newIncomeCurrent = newIncomeCurrent.minus(previousAmount);
+            } else{
+               newExpensesCurrent = newExpensesCurrent.minus(previousAmount);
+            }
+
+            await query.runQuery(`UPDATE Budgets SET IncomeCurrent = ?, ExpensesCurrent = ? WHERE UserID = ?;`,[newIncomeCurrent.toString(),newExpensesCurrent.toString(),request.session.UserID]);
+
+            delete request.session.transactions[trimmedInputs.ID];
+            request.session.budget.Income.current  = parseFloat(newIncomeCurrent.toString());
+            request.session.budget.Expenses.current  = parseFloat(newExpensesCurrent.toString());
+
+            await request.session.save();
+            await updateBudgetLeftOver(request);
+
+            await request.session.save();
             result.status(200);
             sharedReturn.sendSuccess(result,'Successfully removed transaction <i class="fa-solid fa-trash"></i>',trimmedInputs);
             return;
          }
-
-         //Update Budgets
-         if(!fromMainCategory){
-            //Update category
-            previousCategoryCurrent = new Decimal(request.session.budget.categories[previousTransaction.categoryID].current);
-            previousCategoryCurrent = previousCategoryCurrent.minus(previousAmount);
-
-            await query.runQuery(`UPDATE Categories SET Current = ? WHERE CategoryID = ?`,[previousCategoryCurrent.toString(),previousTransaction.categoryID]);
-
-            request.session.budget.categories[previousTransaction.categoryID] = parseFloat(previousCategoryCurrent.toString());
-         }
-
-         if(previousTransaction.type == 'Income'){
-            newIncomeCurrent = newIncomeCurrent.minus(previousAmount);
-         } else{
-            newExpensesCurrent = newExpensesCurrent.minus(previousAmount);
-         }
-
-         await query.runQuery(`UPDATE Budgets SET IncomeCurrent = ?, ExpensesCurrent = ? WHERE UserID = ?`,[newIncomeCurrent.toString(),newExpensesCurrent.toString(),request.session.UserID]);
-
-         //Update cache via deleting category
-         delete request.session.transactions[trimmedInputs.ID];
-
-         request.session.budget.Income.current  = parseFloat(newIncomeCurrent.toString());
-         request.session.budget.Expenses.current  = parseFloat(newExpensesCurrent.toString());
-
-         await request.session.save();
-
-         result.status(200);
-         sharedReturn.sendSuccess(result,'Successfully removed transaction <i class="fa-solid fa-trash"></i>',trimmedInputs);
-         return;
-      } else if(testingDate[0] != currentDate[0] || testingDate[1] != currentDate[1]){
+      } else if(!currentDateAffectsBudget && !previousDateAffectsBudget) {
          //Simple update transaction table, no budget if not within same month
          await query.runQuery('UPDATE Transactions SET Title = ?, Date = ?, Type = ?, Amount = ?, AccountID = ?, CategoryID = ? WHERE TransactionID = ?',
          [trimmedInputs.title,trimmedInputs.date,trimmedInputs.type,trimmedInputs.amount.toString(),trimmedInputs.account, trimmedInputs.category,trimmedInputs.ID]);
@@ -443,50 +459,69 @@ exports.editTransaction = asyncHandler(async(request,result,next)=>{
          return;
       }
 
-
+      //Check if any changes will have affect on budget always
       if(previousTransaction.type != trimmedInputs.type){
          //Income -> Expenses and vice versa
-         if(fromMainCategory && !toMainCategory){
+         if(fromMainCategory && !toMainCategory && currentDateAffectsBudget){
             //Income -> Expenses Category or Expenses -> Income Categories
             newCategoryCurrent = new Decimal(request.session.budget.categories[trimmedInputs.category].current);
             newCategoryCurrent = newCategoryCurrent.plus(trimmedInputs.amount);
-         } else if(!fromMainCategory && toMainCategory){
+         } else if(!fromMainCategory && toMainCategory && previousDateAffectsBudget){
             //Income Category -> Expenses  or Expenses Category -> Income
             previousCategoryCurrent = new Decimal(request.session.budget.categories[previousTransaction.categoryID].current);
             previousCategoryCurrent = previousCategoryCurrent.minus(previousAmount);
          } else if(!fromMainCategory && !toMainCategory){
             //Income Category -> Expenses Category  or Expenses Category -> Income Category
-            previousCategoryCurrent = new Decimal(request.session.budget.categories[previousTransaction.categoryID].current);
-            previousCategoryCurrent = previousCategoryCurrent.minus(previousAmount);
+            if(previousDateAffectsBudget){
+               previousCategoryCurrent = new Decimal(request.session.budget.categories[previousTransaction.categoryID].current);
+               previousCategoryCurrent = previousCategoryCurrent.minus(previousAmount);
+            }
 
-            newCategoryCurrent = new Decimal(request.session.budget.categories[trimmedInputs.category].current);
-            newCategoryCurrent = newCategoryCurrent.plus(trimmedInputs.amount);
+            if(currentDateAffectsBudget){
+               newCategoryCurrent = new Decimal(request.session.budget.categories[trimmedInputs.category].current);
+               newCategoryCurrent = newCategoryCurrent.plus(trimmedInputs.amount);
+            }
          }
 
-         //Update main trackers (fromMainCategory && toMainCategory) and all other cases needed
+         //Update main trackers if applicable to budget
          if(trimmedInputs.type == 'Income'){
-            newIncomeCurrent = newIncomeCurrent.plus(trimmedInputs.amount);
-            newExpensesCurrent = newExpensesCurrent.minus(previousAmount);
-         } else{
-            newIncomeCurrent = newIncomeCurrent.minus(previousAmount);
-            newExpensesCurrent = newExpensesCurrent.plus(trimmedInputs.amount);
-         }
+            if(currentDateAffectsBudget){
+               newIncomeCurrent = newIncomeCurrent.plus(trimmedInputs.amount);
+            }
 
+            if(previousDateAffectsBudget){
+               newExpensesCurrent = newExpensesCurrent.minus(previousAmount);
+            }
+         } else{
+            if(currentDateAffectsBudget){
+               newExpensesCurrent = newExpensesCurrent.plus(trimmedInputs.amount);
+            }
+
+            if(previousDateAffectsBudget){
+               newIncomeCurrent = newIncomeCurrent.minus(previousAmount);
+            }
+         }
       } else {
-         if(!fromMainCategory && toMainCategory){
+         if(!fromMainCategory && toMainCategory && previousDateAffectsBudget){
             // Income Category -> Income
             previousCategoryCurrent = new Decimal(request.session.budget.categories[previousTransaction.categoryID].current);
             previousCategoryCurrent = previousCategoryCurrent.minus(previousAmount);
-         } else if(fromMainCategory && !toMainCategory){
+         } else if(fromMainCategory && !toMainCategory && currentDateAffectsBudget){
             // Income -> Income Category
-            newExpensesCurrent = new Decimal(request.session.budget.categories[trimmedInputs.category].current);
-            newExpensesCurrent = newExpensesCurrent.plus(trimmedInputs.amount);
+            newCategoryCurrent = new Decimal(request.session.budget.categories[trimmedInputs.category].current);
+            newCategoryCurrent = newCategoryCurrent.plus(trimmedInputs.amount);
          } else if(!fromMainCategory && !toMainCategory){
-            if(trimmedInputs.category != previousTransaction.categoryID){
-               //Income Category -> New Income Category
+            //Income Category -> New Income Category
+            if(previousDateAffectsBudget && trimmedInputs.category != previousTransaction.categoryID){
                previousCategoryCurrent = new Decimal(request.session.budget.categories[previousTransaction.categoryID].current);
                previousCategoryCurrent = previousCategoryCurrent.minus(previousAmount);
+            } else if(previousDateAffectsBudget){
+               //If they have the same sub category ID, then only make a single row update in database
+               newCategoryCurrent = new Decimal(request.session.budget.categories[trimmedInputs.category].current);
+               newCategoryCurrent = newCategoryCurrent.minus(previousAmount);
+            }
 
+            if(currentDateAffectsBudget){
                newCategoryCurrent = new Decimal(request.session.budget.categories[trimmedInputs.category].current);
                newCategoryCurrent = newCategoryCurrent.plus(trimmedInputs.amount);
             }
@@ -494,11 +529,21 @@ exports.editTransaction = asyncHandler(async(request,result,next)=>{
 
          //Always update main trackers
          if(trimmedInputs.type == 'Income'){
-            newIncomeCurrent = newIncomeCurrent.minus(previousAmount);
-            newIncomeCurrent = newIncomeCurrent.plus(trimmedInputs.amount);
+            if(previousDateAffectsBudget){
+               newIncomeCurrent = newIncomeCurrent.minus(previousAmount);
+            }
+
+            if(currentDateAffectsBudget){
+               newIncomeCurrent = newIncomeCurrent.plus(trimmedInputs.amount);
+            }
          } else{
-            newExpensesCurrent = newExpensesCurrent.minus(previousAmount);
-            newExpensesCurrent = newExpensesCurrent.plus(trimmedInputs.amount);
+            if(previousDateAffectsBudget){
+               newExpensesCurrent = newExpensesCurrent.minus(previousAmount);
+            }
+
+            if(currentDateAffectsBudget){
+               newExpensesCurrent = newExpensesCurrent.plus(trimmedInputs.amount);
+            }
          }
       }
 
@@ -512,7 +557,7 @@ exports.editTransaction = asyncHandler(async(request,result,next)=>{
          //Update cache
          request.session.budget.categories[previousTransaction.categoryID].current = parseFloat(previousCategoryCurrent.toString());
       } else if(!previousCategoryCurrent && newCategoryCurrent){
-         // All other cases involving from main to new category
+         // All other cases involving from main to new category within current month
          await query.runQuery(`Update Categories Set Current = ? WHERE CategoryID = ?`,[newCategoryCurrent.toString(),trimmedInputs.ID]);
 
          //Update cache
@@ -536,7 +581,8 @@ exports.editTransaction = asyncHandler(async(request,result,next)=>{
          request.session.budget.categories[previousTransaction.categoryID].current = parseFloat(previousCategoryCurrent.toString());
       }
 
-      updateBudgetLeftOver(request);
+      await request.session.save();
+      await updateBudgetLeftOver(request);
 
       //Update transactions and budgets table in one go for monthly budget affects
       const updateQuery = `UPDATE Transactions T

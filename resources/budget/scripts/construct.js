@@ -153,6 +153,7 @@ export async function getBudget(){
       });
 
       let data = await response.json();
+      console.log(data);
       //Render object holds all variables essential to constructing front end data
 
       let formattedDate = data.render.Month.split('-');
@@ -170,7 +171,7 @@ export async function getBudget(){
       let categoriesKeys = Object.keys(categories);
 
       categoriesKeys.sort(function(a, b) {
-         return categories[a].name.localeCompare(categories[b].name);
+         return (categories[a].name).localeCompare(categories[b].name);
        });
 
       for(let i = 0; i < categoriesKeys.length;i++){
@@ -194,35 +195,6 @@ export async function getBudget(){
          leftOverSpan.style.color = '#178eef';
          leftOverSpan.innerHTML = `$` + data.render.leftOver.toLocaleString("en-US",{ minimumFractionDigits: 2, maximumFractionDigits: 2 });
       }
-
-      //Final check to notify user if they should reset their monthly budget to reflect current date
-      if(data.render.notify){
-         let resetNotification = openNotification('fa-solid fa-arrows-rotate',`<form id = 'resetBudgetForm' class = 'notificationForm'>
-         <p>Please reset current budget to account for current month.</p>
-         <button type = 'submit' id = 'resetBudgetButton'>Reset</button>
-         </form>`,'informational');
-
-         resetNotification.querySelector('form').onsubmit = async function(event){
-            event.preventDefault();
-
-            let formData = new FormData(this);
-            let structuredFormData = new URLSearchParams(formData).toString();
-
-            let successFunction = (data,messageContainer)=>{
-               //Simple reconstruction of data to reflect new budget
-               getBudget();
-
-               setTimeout(()=>{
-                  document.querySelector('.exitNotificationIcon').click();
-               },1000);
-
-            }
-            let failFunction =  () => {};
-
-            await sendRequest('../users/resetBudget',structuredFormData,this.querySelector('button'),'Reset',successFunction,failFunction);
-         }
-      }
-
     } catch (error) {
       console.log(error);
       constructCategory('main', 'Income','mainIncome', 'Income', 0.00, 0.00);

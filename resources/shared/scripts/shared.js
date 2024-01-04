@@ -228,7 +228,9 @@ async function sendRequest(url,structuredFormData,formButton,formButtonText,succ
       formButton.innerHTML = formButtonText;
       failFunction();
     } finally{
-      formButton.disabled = false;
+      setTimeout(()=>{
+         formButton.disabled = false;
+      },1500);
     }
 }
 

@@ -35,6 +35,40 @@
    </header>
    <main>
 
+      <div style="overflow-x:auto;">
+
+         <table>
+            <thead>
+               <tr>
+                  <th>Account</th>
+                  <th>Title</th>
+                  <th>Category</th>
+                  <th>Date</th>
+                  <th>Total</th>
+                  <th></th>
+               </tr>
+            </thead>
+            <tbody>
+               <tr>
+                  <td  class = 'accountNameLink'>Test</td>
+                  <td>Title</td>
+                  <td>categoryName</td>
+                  <td>2024-01-01</td>
+                  <td class = 'Income'>$900.00</td>
+                  <td>
+                     <button class = "editTransactionIcon">
+                        <span>
+                           <i class = "fa-solid fa-pen-to-square "></i>
+                        </span>
+                     </button>
+                  </td>
+               </tr>
+            </tbody>
+         </table>
+
+         <button class = 'testAdd'>Add</button>
+      </div>
+
       <div id = "accountsSection">
          <div id = "accountsContainers">
 
@@ -49,6 +83,8 @@
          </div>
       </div>
 
+
+
       <div id = "transactionsSection">
          <div id = "transactionsTable">
             <div id = "transactionsTitle" class = "transaction">
@@ -57,7 +93,11 @@
                <h3>Category</h3>
                <h3>Date</h3>
                <h3>Total</h3>
-
+               <button class = "editTransactionIcon">
+                  <span>
+                     <i class = "fa-solid fa-pen-to-square"></i>
+                  </span>
+               </button>
             </div>
 
             <div id = "transactionsData">
@@ -65,6 +105,9 @@
             </div>
 
          </div>
+
+
+
 
          <div>
             <button type="button" id = "addTransactionButton" class = "addButton"> Add Transaction <i class="fa-solid fa-plus"></i> </button>
