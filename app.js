@@ -35,7 +35,15 @@ app.use(session({
 }));
 
 app.use(cors());
-app.use(helmet());
+//Allow any image source from feed
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: ["'self'"],
+      imgSrc: ["'self'", 'https://images.mktw.net'],
+    },
+  })
+);
 app.use(logger('dev'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());

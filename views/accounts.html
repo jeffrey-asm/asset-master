@@ -11,8 +11,8 @@
    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </head>
 <body>
+   <i class="fas fa-bars" id="sidebarIcon"></i>
    <header>
-      <i class="fas fa-bars" id="sidebarIcon"></i>
       <div class = "headerTitle">
          <i class="fa-solid fa-layer-group fa-xl" id = 'logoIcon'></i>
          <h1>Asset Master</h1>
@@ -35,40 +35,6 @@
    </header>
    <main>
 
-      <div style="overflow-x:auto;">
-
-         <table>
-            <thead>
-               <tr>
-                  <th>Account</th>
-                  <th>Title</th>
-                  <th>Category</th>
-                  <th>Date</th>
-                  <th>Total</th>
-                  <th></th>
-               </tr>
-            </thead>
-            <tbody>
-               <tr>
-                  <td  class = 'accountNameLink'>Test</td>
-                  <td>Title</td>
-                  <td>categoryName</td>
-                  <td>2024-01-01</td>
-                  <td class = 'Income'>$900.00</td>
-                  <td>
-                     <button class = "editTransactionIcon">
-                        <span>
-                           <i class = "fa-solid fa-pen-to-square "></i>
-                        </span>
-                     </button>
-                  </td>
-               </tr>
-            </tbody>
-         </table>
-
-         <button class = 'testAdd'>Add</button>
-      </div>
-
       <div id = "accountsSection">
          <div id = "accountsContainers">
 
@@ -84,36 +50,35 @@
       </div>
 
 
-
       <div id = "transactionsSection">
          <div id = "transactionsTable">
-            <div id = "transactionsTitle" class = "transaction">
-               <h3>Account</h3>
-               <h3>Description</h3>
-               <h3>Category</h3>
-               <h3>Date</h3>
-               <h3>Total</h3>
-               <button class = "editTransactionIcon">
-                  <span>
-                     <i class = "fa-solid fa-pen-to-square"></i>
-                  </span>
-               </button>
-            </div>
+            <table>
+               <thead>
+                  <tr>
+                     <th>Account</th>
+                     <th>Title</th>
+                     <th>Category</th>
+                     <th>Date</th>
+                     <th>Total</th>
+                     <th></th>
+                  </tr>
+               </thead>
 
-            <div id = "transactionsData">
+               <tbody>
 
-            </div>
+               </tbody>
 
+            </table>
          </div>
-
-
-
 
          <div>
             <button type="button" id = "addTransactionButton" class = "addButton"> Add Transaction <i class="fa-solid fa-plus"></i> </button>
          </div>
 
       </div>
+
+
+
    </main>
 
    <div class = 'popupContainers'>

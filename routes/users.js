@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 const usersController = require("../controllers/users.js");
+const homeController = require("../controllers/home.js");
 const updateController = require("../controllers/update.js");
 const budgetController = require("../controllers/budget.js");
 const accountsController = require("../controllers/accounts.js");
@@ -11,6 +12,8 @@ router.get('/', usersController.redirect);
 
 // Handle home page routing
 router.get('/home', usersController.home);
+
+router.get('/fetchHomeData', homeController.fetchHomeData);
 
 // Handle budget page routing
 router.get('/budget', usersController.budget);

@@ -25,6 +25,10 @@ export function constructAccount(name,type,balance,ID){
       accountsContainer.innerHTML = '';
    }
 
+   //Add to account options in transaction form to the top
+   document.getElementById('account').innerHTML = `<option value = ${ID}>${name}</option>` + document.getElementById('account').innerHTML;
+   document.getElementById('editAccount').innerHTML = `<option value = ${ID}>${name}</option>` + document.getElementById('editAccount').innerHTML;
+
    let possibleSwap = document.querySelector(`#accounts #${ID}`);
 
    if(!possibleSwap){
@@ -49,8 +53,8 @@ export function constructAccount(name,type,balance,ID){
 }
 
 function insertTransactionByDate(container){
-   let mainContainer = document.getElementById('transactionsData');
-   let possibleTransactions = mainContainer.querySelectorAll('.transaction');
+   let mainContainer = document.querySelector('tbody');
+   let possibleTransactions = mainContainer.querySelectorAll('.transactionRow');
    let found = false;
 
    possibleTransactions.forEach((transaction)=>{
@@ -72,8 +76,8 @@ function insertTransactionByDate(container){
 export function constructTransaction(accountID,title,type,categoryID,date,amount,ID){
    let currentAmountFixed = amount.toLocaleString("en-US",{ minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-   let transactionContainer = document.createElement('div');
-   transactionContainer.className = 'transaction';
+   let transactionContainer = document.createElement('tr');
+   transactionContainer.className = 'transactionRow';
    transactionContainer.id = ID
 
    let accountName = '';
@@ -96,19 +100,21 @@ export function constructTransaction(accountID,title,type,categoryID,date,amount
    transactionContainer.dataset.account = accountID;
 
    transactionContainer.innerHTML = `
-      <h3 class = 'accountNameLink'>${accountName}</h3>
-      <h3>${title}</h3>
-      <h3>${categoryName}</h3>
-      <h3>${dateText}</h3>
-      <h3 class = '${type}'>$${currentAmountFixed}</h3>
-      <button class = "editTransactionIcon">
-         <span>
-            <i class = "fa-solid fa-pen-to-square"></i>
-         </span>
-      </button>
+      <td class = 'accountNameLink'>${accountName}</td>
+      <td>${title}</td>
+      <td>${categoryName}</td>
+      <td>${dateText}</td>
+      <td class = '${type}'>$${currentAmountFixed}</td>
+      <td>
+         <button class = "editTransactionIcon">
+            <span>
+               <i class = "fa-solid fa-pen-to-square"></i>
+            </span>
+         </button>
+      </td>
    `;
 
-   let possibleSwap = document.querySelector(`#transactionsData #${ID}`);
+   let possibleSwap = document.querySelector(`tbody #${ID}`);
 
 
    if(possibleSwap){
@@ -120,17 +126,10 @@ export function constructTransaction(accountID,title,type,categoryID,date,amount
 
    if(noTransactionCheck){
       //Remove no transaction message
-      noTransactionCheck.classList.add('addedTransaction');
-      setTimeout(()=>{
-         insertTransactionByDate(transactionContainer);
-         noTransactionCheck.remove();
-      },1500);
-   } else{
-      insertTransactionByDate(transactionContainer);
+      noTransactionCheck.remove();
    }
 
-
-
+   insertTransactionByDate(transactionContainer);
 
 
    let editTransactionContainer = document.getElementById('editTransactionContainer');
@@ -190,12 +189,11 @@ export async function getUserData(){
 
       for(let i = 0; i < accountKeys.length; i++){
          constructAccount(data.render.accounts[accountKeys[i]].name, data.render.accounts[accountKeys[i]].type, data.render.accounts[accountKeys[i]].balance, accountKeys[i]);
-         accountFormOptions += `<option value = ${accountKeys[i]}>${data.render.accounts[accountKeys[i]].name}</option>`;
       }
-      //Empty option
-      accountFormOptions += `<option value =''></option>`;
 
-      document.getElementById('account').innerHTML = document.getElementById('editAccount').innerHTML = accountFormOptions;
+      //Empty option
+      document.getElementById('account').innerHTML += `<option value =''></option>`;
+      document.getElementById('editAccount').innerHTML += `<option value =''></option>`;;
 
       if(data.render.netWorth < 0) {
          document.getElementById('netWorthText').innerHTML =
@@ -245,7 +243,7 @@ export async function getUserData(){
       }
 
       if(transactionKeys.length == 0){
-         document.getElementById('transactionsData').innerHTML = '<div class = "no-transaction">No transactions available</div>';
+         document.querySelector('tbody').innerHTML = '<tr class = "no-transaction"><td colspan = "6">No transactions available</td></tr>';
       }
 
 

@@ -35,7 +35,7 @@ export function constructCategory(mainOrSub,type,ID,name,current,total){
    container.id = ID;
    container.className = `${mainOrSub}Category`;
    container.innerHTML = `
-      <h2 class = "categoryHeading">${name}</h2>
+      <h3 class = "categoryHeading">${name}</h3>
       <h3 class = "categoryTotal">$${formattedCurrent}/ $${formattedTotal}</h3>
       <div class = "progressBar" >
          <div class = "currentProgress" class = '${type}'></div>

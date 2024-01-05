@@ -33,7 +33,7 @@ body{
 }
 
 main{
-   width:90%;
+   width:80%;
    margin:90px auto 20px auto;
    opacity:0;
    transition: opacity 1s ease-in-out;
@@ -41,7 +41,7 @@ main{
 
 header{
    position: relative;
-   top:0;
+   top:1.3rem;
    display: grid;
    grid-template-columns: 2fr 20fr;
    width:100%;
@@ -53,7 +53,7 @@ header{
 #sidebarIcon{
    position: fixed;
    margin-top:70px;
-   margin-left:25px;
+   margin-left:50px;
    text-align: center;
    font-size:32px;
    cursor: pointer;
@@ -88,6 +88,7 @@ header i:hover{
    cursor:pointer;
    color:#178eef;
 }
+
 
 
 @keyframes showSideBar{
@@ -507,6 +508,7 @@ footer{
 
    #sidebarIcon{
       font-size:2rem;
+      margin-left:10px;
    }
    nav{
       width:180px;
