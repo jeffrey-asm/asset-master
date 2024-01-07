@@ -11,7 +11,6 @@ exports.runQuery = async function(query='',inputs=[]){
 
    try{
       const results = await asyncQuery(query,inputs);
-      console.log(results);
       return results;
    } catch (error){
       console.log(error);

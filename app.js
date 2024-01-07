@@ -41,6 +41,7 @@ app.use(
     directives: {
       defaultSrc: ["'self'"],
       imgSrc: ["'self'", 'https://images.mktw.net'],
+      scriptSrc: ["'self'", 'https://cdn.jsdelivr.net']
     },
   })
 );

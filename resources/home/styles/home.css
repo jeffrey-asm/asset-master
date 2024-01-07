@@ -2,17 +2,20 @@
 
 main{
    display: grid;
-   grid-template-columns: 3fr 6fr;
-   opacity: 1;
+   text-align: center;
+   grid-template-columns: repeat(5,1fr);
 }
 
 #stories{
-   grid-column: 1/3;
+   grid-row:1;
+   grid-column: 4/-1;
    display: flex;
+   align-items: center;
+   justify-content: space-between;
    flex-direction: column;
-   row-gap: 2em;
    flex-wrap: wrap;
-   max-width: 80%;
+   margin:1em auto;
+   overflow: hidden;
 }
 
 .story{
@@ -21,22 +24,21 @@ main{
    align-items:center;
    justify-content: center;
    flex-wrap: nowrap;
-   gap:1em;
+   gap:1.5rem;
 
-   width:80%;
-   height:25em;
-
-   background-color: var(--text-color);
-   box-shadow: var(--text-color) 0px 0px 4px;
-   color:var(--background-color);
+   width:90%;
+   min-height:13em;
+   height:auto;
 }
 
 .imageContainer{
-   min-width:20em;
-   width:20em;
-   height:100%;
-   min-height:100%;
+   min-width:13.5rem;
+   width:13.5rem;
+   height:13.5rem;
+   min-height:13.5rem;
+   border-radius: 50%;
    overflow: hidden;
+   box-shadow: var(--text-color) 0px 0px 5px;
 }
 
 .imageContainer img{
@@ -54,28 +56,30 @@ main{
    text-align: left;
    gap:0;
 
-   font-size: 0.9rem;
+   font-size: 0.8rem;
 
    max-width: 90%;
    margin:auto;
    min-width: 0;
-   padding:0 1.2em 1.2em 1.2em;
+   padding:0 2em 2em 2em;
 
 }
 
 .storyText *{
-   margin:12px 0;
+   margin:6px 0;
    padding:0;
 }
 
 .storyText a{
+   font-weight: bolder;
    margin-top:0;
-   font-size:1em;
+   font-size:1.4rem;
    color:#178eef;
+   text-decoration: none;
 }
 
 .storyText p{
-   font-size:1.2em;
+   font-size:0.9rem;
 }
 
 .storyText a:visited{
@@ -83,13 +87,147 @@ main{
 }
 
 .storyText a:hover{
-   color:var(--background-color);
+   color:var(--text-color);
 }
 
 
 
 
 #markets{
+   font-size:1.3em;
+   font-weight: bolder;
+
+   text-align: center;
+   display: flex;
+   flex-direction: column;
+   flex-wrap: wrap;
+   align-items: center;
+   justify-content: flex-start;
+   gap:2.5em;
+}
+
+.graphContainer{
+   min-width: 600px;
+   max-width: 600px;
+   width: 600px;
+   margin:auto;
+   overflow: hidden;
+}
+
+.graphContainer *{
+   font-weight: bolder;
+   font-size:1.3rem;
+   margin:30px 0;
+}
+
+.graphContainer h2,.graphContainer a{
+   margin-top:0;
+   font-size:2.5rem;
+   color:#178eef;
+   width:80%;
+   margin:auto;
+   line-height:3.2rem;
+   text-decoration: none;
+   word-wrap: break-word;
+}
+
+.graphContainer a:hover{
+   color:var(--text-color);
+}
+
+
+
+#userData{
+   box-sizing: border-box;
+
    grid-row:1;
-   grid-column:3;
+   grid-column: 1/4;
+   width: 100%;
+   margin:0 auto;
+
+   display: flex;
+   flex-direction: column;
+   flex-wrap: wrap;
+   align-items: center;
+   justify-content: space-between;
+   gap:2rem;
+   text-align:center;
+}
+#userData canvas{
+   box-sizing: border-box;
+   min-width: 100%;
+   width:100%;
+   margin:auto;
+   min-height: 300px;
+   height:300px;
+}
+
+/*https://codepen.io/JoeHastings/pen/MOdRVm */
+#quoteContainer{
+   grid-row:2;
+   grid-column: 1/-1;
+   width:100%;
+   margin:4em auto 4em auto;
+   text-align: center;
+}
+
+blockquote {
+	font-weight: bolder;
+	font-size: 2rem;
+	max-width: 50%;
+	line-height: 1.4;
+	position: relative;
+	margin: 0 auto;
+	padding: 1.5rem;
+}
+
+blockquote:before,
+blockquote:after {
+	position: absolute;
+	color: #38ef7d;
+	font-size: 8rem;
+	width: 4rem;
+	height: 4rem;
+}
+
+blockquote:before {
+	content: '“';
+	left: -3rem;
+	top: -2rem;
+}
+
+blockquote:after {
+	content: '”';
+	right: -3rem;
+	bottom: 1rem;
+}
+
+cite {
+	line-height: 3;
+	text-align: left;
+}
+
+@media only screen and (max-width:1500px) {
+   main,#stories{
+      display: flex;
+      flex-direction: column;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+   }
+
+
+
+   .story{
+      flex-direction: column;
+   }
+   .storyText{
+      text-align: center;
+      align-items: center;
+      justify-content: center;
+   }
+
+   #stories,#markets{
+      width:100%;
+   }
 }

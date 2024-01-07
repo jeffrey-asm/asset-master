@@ -5,6 +5,7 @@ import {constructAccount} from "../../accounts/scripts/construct.js";
 
 let mode = localStorage.getItem('mode');
 let toggle = document.querySelector("#mode");
+
 if(mode && toggle){
    if(mode == 'dark'){
       toggle.click();
@@ -14,7 +15,6 @@ if(mode && toggle){
    document.body.style.opacity = '1';
 
    toggle.onchange = ()=> {
-
       if(document.body.classList.contains('dark-mode')){
          localStorage.mode = 'light';
          document.body.classList.remove('dark-mode');
@@ -27,6 +27,8 @@ if(mode && toggle){
    localStorage.mode = 'light';
    document.body.style.opacity = '1';
 }
+
+
 
 function checkDimensions(component,link) {
    let viewportWidth = window.innerWidth || document.documentElement.clientWidth;
@@ -42,6 +44,7 @@ function checkDimensions(component,link) {
    }
 
 }
+
 
 let dimensionInterval;
 

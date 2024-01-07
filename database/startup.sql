@@ -90,3 +90,8 @@ SET
    T.Date = ?,
    T.Amount = ?
 WHERE T.UserID = ?;
+
+CREATE TABLE `Stocks`(
+   Hour INT PRIMARY KEY,
+   Stocks JSON
+);

@@ -179,7 +179,6 @@ export async function getUserData(){
       mainTag.style.opacity = '1';
 
       let accountKeys = Object.keys(data.render.accounts);
-      let accountFormOptions = ``;
 
       if(accountKeys.length == 0) {
          //Show no accounts available

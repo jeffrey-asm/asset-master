@@ -87,13 +87,6 @@ main button{
    box-shadow:0 20px 25px -5px #333333, 0 8px 10px -6px #333333;
 }
 
-.negativeNetWorth{
-   color:red;
-}
-.positiveNetWorth{
-   color:green;
-}
-
 @keyframes slideDown {
    from {
       opacity: 0;

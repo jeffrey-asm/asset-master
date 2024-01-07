@@ -8,7 +8,7 @@ const budgetController = require("../controllers/budget.js");
 const accountsController = require("../controllers/accounts.js");
 
 /* GET users listing. */
-router.get('/', usersController.redirect);
+// router.get('/', usersController.redirect);
 
 // Handle home page routing
 router.get('/home', usersController.home);

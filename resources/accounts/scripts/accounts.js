@@ -22,7 +22,12 @@ exitAddAccountIcon.onclick = function(event){
 
 exitEditAccountIcon.onclick = function(event){
    exitPopUp(editAccountContainer,addAccountForm,exitEditAccountIcon);
+}
 
+
+getUserData();
+
+function disableAccountButtons(){
    let editAccountButtons = document.querySelectorAll('.editAccountButton');
 
    for(let i = 0; i < editAccountButtons.length; i++){
@@ -35,9 +40,6 @@ exitEditAccountIcon.onclick = function(event){
       }
    },1500);
 }
-
-
-getUserData();
 
 addAccountForm.onsubmit = async function(event){
    event.preventDefault();
@@ -86,6 +88,7 @@ editAccountForm.onsubmit = async function(event){
 
             if(!data.render.remove){
                constructAccount(data.render.name,data.render.type,data.render.balance,data.render.ID);
+               disableAccountButtons();
 
                let possibleTransactions = document.querySelectorAll(`.transactionRow[data-account="${data.render.ID}"]`);
 
@@ -103,7 +106,8 @@ editAccountForm.onsubmit = async function(event){
                   }
                }
             } else{
-               document.querySelector(`#accounts #${data.render.ID}`).remove()
+               document.querySelector(`#accounts #${data.render.ID}`).remove();
+               disableAccountButtons();
 
                //In case a remove leads to no accounts
                let accountsContainer = document.getElementById('accounts');
