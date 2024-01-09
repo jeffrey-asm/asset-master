@@ -127,7 +127,7 @@ exports.fetchHomeData = asyncHandler(async(request,result,next)=>{
          data.userData.accounts = request.session.accounts;
          data.userData.transactions = request.session.transactions;
          data.userData.netWorth = request.session.netWorth;
-         data.userData.budget = request.session.transactions;
+         data.userData.budget = request.session.budget;
       }
 
       result.status(200);

@@ -22,7 +22,10 @@ exitAddTransactionIcon.onclick = function(event){
 
 exitEditTransactionIcon.onclick = function(event){
    exitPopUp(editTransactionContainer,editTransactionForm,exitEditTransactionIcon);
+   disableEditButtons();
+}
 
+function disableEditButtons(){
    let editTransactionButtons = document.querySelectorAll('.editTransactionIcon');
 
    editTransactionButtons.forEach((editButton)=>{
@@ -34,8 +37,8 @@ exitEditTransactionIcon.onclick = function(event){
          editButton.disabled = false;
       });
    },1500);
-
 }
+
 
 addTransactionForm.onsubmit = async function(event){
    event.preventDefault();
@@ -44,6 +47,7 @@ addTransactionForm.onsubmit = async function(event){
       setTimeout(()=>{
          document.getElementById('exitAddTransactionIcon').click();
          constructTransaction(data.render.account,data.render.title,data.render.type,data.render.category,data.render.date,data.render.amount,data.render.ID);
+         disableEditButtons();
       },1100);
    }
 
@@ -86,6 +90,7 @@ editTransactionForm.onsubmit = async function(event){
          } else if(data.render.changes){
             //Edit instance in current table
             constructTransaction(data.render.account,data.render.title,data.render.type,data.render.category,data.render.date,data.render.amount,data.render.ID);
+            disableEditButtons();
          }
       },1100);
    }

@@ -18,12 +18,18 @@ addAccountButton.onclick = function(event){
 
 exitAddAccountIcon.onclick = function(event){
    exitPopUp(addAccountContainer,addAccountForm,exitAddAccountIcon,addAccountButton);
+   disabledAddButton();
+
+   addAccountButton.disabled = true;
+   setTimeout(()=>{
+      addAccountButton.disabled = false;
+   },1500);
 }
 
 exitEditAccountIcon.onclick = function(event){
    exitPopUp(editAccountContainer,addAccountForm,exitEditAccountIcon);
+   disableAccountButtons();
 }
-
 
 getUserData();
 

@@ -140,11 +140,11 @@ export async function getBudget(){
    let exitAddCategoryIcon = document.getElementById('exitAddCategoryIcon');
 
    exitAddCategoryIcon.onclick = function(event){
+      exitPopUp(addCategoryContainer,addCategoryForm,exitAddCategoryIcon);
       addCategoryButtons[0].disabled = addCategoryButtons[1].disabled = true;
       setTimeout(()=>{
          addCategoryButtons[0].disabled = addCategoryButtons[1].disabled = false;
       },1500);
-      exitPopUp(addCategoryContainer,addCategoryForm,exitAddCategoryIcon);
    }
 
    try {

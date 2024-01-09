@@ -1,4 +1,4 @@
-import {openNotification,exitPopUp,sendRequest}  from "../../shared/scripts/shared.js";
+import {exitPopUp,sendRequest}  from "../../shared/scripts/shared.js";
 import { constructCategory,getBudget } from "./construct.js";
 
 let addCategoryForm = document.getElementById('addCategoryForm');
@@ -9,7 +9,8 @@ let editCategoryForm = document.getElementById('editCategoryForm');
 let editCategorySubmitButton = document.getElementById('editCategorySubmitButton');
 let exitEditCategoryIcon = document.getElementById('exitEditCategoryIcon');
 
-exitEditCategoryIcon.onclick = function(event){
+
+function disableEditButtons(){
    let editButtons = document.body.querySelectorAll('.editCategory');
 
    for(let i = 0; i < editButtons.length; i++){
@@ -21,7 +22,10 @@ exitEditCategoryIcon.onclick = function(event){
          editButtons[i].disabled = false;
       }
    },1500);
+}
 
+
+exitEditCategoryIcon.onclick = function(event){
    exitPopUp(editCategoryContainer,editCategoryForm,exitEditCategoryIcon);
 }
 
@@ -59,6 +63,7 @@ editCategoryForm.onsubmit = async function(event){
                if(data.render.mainOrSub != 'remove'){
                   //Replace current category node
                   constructCategory(data.render.mainOrSub, data.render.type,data.render.ID, data.render.name, data.render.current, data.render.total);
+                  disableEditButtons();
                } else{
                   document.getElementById(data.render.ID).remove();
                }

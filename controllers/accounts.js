@@ -388,6 +388,10 @@ exports.editTransaction = asyncHandler(async(request,result,next)=>{
       let previousDate = (request.session.transactions[trimmedInputs.ID].date).toString().split('-');
       let inputDate = (trimmedInputs.date).split('-');
 
+      console.log(currentBudgetDate);
+      console.log(previousDate);
+      console.log(inputDate);
+
       //Compare YY-MM for input and previous dates using current budget year-month
       let previousDateAffectsBudget = (previousDate[0] == currentBudgetDate[0] && previousDate[1] == currentBudgetDate[1]);
       let currentDateAffectsBudget = (inputDate[0] == currentBudgetDate[0] && inputDate[1] == currentBudgetDate[1]);
@@ -513,6 +517,7 @@ exports.editTransaction = asyncHandler(async(request,result,next)=>{
          } else if(!fromMainCategory && !toMainCategory){
             //Income Category -> New Income Category
             if(previousDateAffectsBudget && trimmedInputs.category != previousTransaction.categoryID){
+               console.log('NEW SUB TYPE');
                previousCategoryCurrent = new Decimal(request.session.budget.categories[previousTransaction.categoryID].current);
                previousCategoryCurrent = previousCategoryCurrent.minus(previousAmount);
             } else if(previousDateAffectsBudget){
@@ -522,7 +527,10 @@ exports.editTransaction = asyncHandler(async(request,result,next)=>{
             }
 
             if(currentDateAffectsBudget){
-               newCategoryCurrent = new Decimal(request.session.budget.categories[trimmedInputs.category].current);
+               if(!newCategoryCurrent){
+                  newCategoryCurrent = new Decimal(request.session.budget.categories[trimmedInputs.category].current);
+               }
+
                newCategoryCurrent = newCategoryCurrent.plus(trimmedInputs.amount);
             }
          }
