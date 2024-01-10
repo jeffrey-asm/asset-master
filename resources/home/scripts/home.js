@@ -1,11 +1,10 @@
 import {openNotification}  from "../../shared/scripts/shared.js";
 
-
 function constructStories(stories){
    let storiesContainer = document.getElementById('stories');
    let storiesItems = stories.rss.channel[0].item;
 
-   for(let i = 0; i < storiesItems.length; i++){
+   for(let i = 0; i < storiesItems.length && i < 5; i++){
 
       let story = document.createElement('div');
       story.className = 'story';
@@ -30,8 +29,8 @@ function constructStories(stories){
          <div class = 'storyText'>
             <h2><a href = '${storiesItems[i].link}'>${storiesItems[i].title[0]}</a></h2>
             <p>${storiesItems[i].description[0]}</p>
-            <h3>${storiesItems[i].author[0]}</h3>
-            <h3>${storiesItems[i].pubDate[0]}</h3>
+            <h3><i class="fa-solid fa-at"></i> ${storiesItems[i].author[0]}</h3>
+            <h3><i class="fa-solid fa-calendar-days"></i> ${storiesItems[i].pubDate[0]}</h3>
          </div>
       `
       storiesContainer.append(story);
@@ -49,8 +48,7 @@ function constructGraph(graphType,graphData,graphOptions,text,container){
       </div>
       <div>
          <canvas></canvas>
-      </div>
-    `;
+      </div>`;
 
    container.append(graphContainer);
 
@@ -110,7 +108,6 @@ function constructStocks(stocks){
       };
 
       let options = {
-         responsive: true,
          maintainAspectRatio: true,
          plugins:{
             legend: {
@@ -141,8 +138,6 @@ function constructAccountsGraph(accounts,netWorth){
       accountValues.push(accountData[i].balance);
    }
 
-
-
    let data = {
       labels: accountNames,
       datasets: [{
@@ -155,7 +150,6 @@ function constructAccountsGraph(accounts,netWorth){
    };
 
    let options = {
-      responsive: true,
       maintainAspectRatio: true,
       scales: {
          y: {
@@ -183,38 +177,51 @@ function constructFinanceGraph(transactions,budget){
 
    let transactionData = Object.values(transactions);
 
-   //Goal : Construct 3 graphs (A single stacked bar is to compact)
-      // -> Income vs Expenses per month
-      // -> Income categories per month
-      // -> Expense categories per month
-   let incomeGraph = {
+   let incomeData = {
       label:"Income",
       data: Array.from({ length: 12 }, () => 0),
-      backgroundColor:'#07EA3A',
-      barPercentage: 1.0
+      backgroundColor:'rgba(144, 238, 144, 0.7)',
+      borderWidth: 1
    }
 
-   let expensesGraph = {
+   let expensesData = {
       label:"Expenses",
       data:Array.from({ length: 12 }, () => 0),
-      backgroundColor:'red',
-      barPercentage: 1.0
+      backgroundColor:'rgba(255, 99, 71, 0.7)',
+      borderWidth: 1
    }
 
+   let categoryIndexes = {};
 
-   let incomeCategoriesGraph = {
+   let incomeCategoriesData = {
       datasets:[]
    }
 
-   let incomeCategories = {};
-   let incomeCategoryIndex = 0;
-
-   let expensesCategories = {};
-   let expensesCategoryIndex = 0;
-
-   let expensesCategoriesGraph = {
+   let expensesCategoriesData = {
       datasets:[]
    }
+
+   let incomeCategoryIndex = 1;
+   let expensesCategoryIndex = 1;
+
+   //General types to be the base of the bar chart
+   let incomeGraphClone = {
+      label:"General Income",
+      data: Array.from({ length: 12 }, () => 0),
+      stack:"Income",
+      borderWidth: 1
+   };
+
+   incomeCategoriesData.datasets.push(incomeGraphClone);
+
+   let expensesGraphClone ={
+      label:"General Expenses",
+      data: Array.from({ length: 12 }, () => 0),
+      stack:"Expenses",
+      borderWidth: 1
+   };
+
+   expensesCategoriesData.datasets.push(expensesGraphClone);
 
    let categories = Object.entries(budget.categories);
 
@@ -226,31 +233,22 @@ function constructFinanceGraph(transactions,budget){
       let graphData = {
          label:categoryData.name,
          data: Array.from({ length: 12 }, () => 0),
-         barPercentage: 1.0
+         stack:categoryData.type
       }
 
       if(categoryData.type == 'Income'){
-         if(!incomeCategories[categoryID]){
-            incomeCategoriesGraph.datasets.push(graphData);
-            incomeCategories[categoryID] = incomeCategoryIndex++;
+         if(!categoryIndexes[categoryID]){
+            incomeCategoriesData.datasets.push(graphData);
+            categoryIndexes[categoryID] = incomeCategoryIndex++;
          }
       } else{
-         if(!expensesCategories[categoryID]){
-            expensesCategories[categoryID] = expensesCategoryIndex++;
-            expensesCategoriesGraph.datasets.push(graphData);
+         if(!categoryIndexes[categoryID]){
+            expensesCategoriesData.datasets.push(graphData);
+            categoryIndexes[categoryID] = expensesCategoryIndex++;
          }
       }
    });
 
-   let incomeGraphClone = JSON.parse(JSON.stringify(incomeGraph));
-   delete incomeGraphClone.backgroundColor;
-   incomeGraphClone.label = 'General Income';
-   incomeCategoriesGraph.datasets.push(incomeGraphClone);
-
-   let expensesGraphClone = JSON.parse(JSON.stringify(expensesGraph));
-   delete expensesGraphClone.backgroundColor;
-   expensesGraphClone.label = 'General Expenses';
-   expensesCategoriesGraph.datasets.push(expensesGraphClone);
 
    for(let i = 0; i < transactionData.length; i++){
       let date = transactionData[i].date.split('-');
@@ -260,27 +258,26 @@ function constructFinanceGraph(transactions,budget){
          //Only construct data for current year
          let monthIndex = date[1] - 1;
          let amount = transactionData[i].amount;
+         let categoryIndex = categoryIndexes[transactionData[i].categoryID];
 
          if(transactionData[i].type == 'Income'){
             if(transactionData[i].categoryID != 'Income'){
                //Categories Object stores index in array of data
-               incomeCategoriesGraph.datasets[incomeCategories[transactionData[i].categoryID]].data[monthIndex] += amount;
+               incomeCategoriesData.datasets[categoryIndex].data[monthIndex] += amount;
             } else{
-                //Last index represents general income/expenses category
-               incomeCategoriesGraph.datasets[incomeCategoryIndex].data[monthIndex] += amount;
+                //First index represents general income/expenses category
+                incomeCategoriesData.datasets[0].data[monthIndex] += amount;
             }
 
-            //First index represents general Income or expenses
-            incomeGraph.data[monthIndex] += amount;
-
+            incomeData.data[monthIndex] += amount;
          } else{
             if(transactionData[i].categoryID != 'Expenses'){
-               expensesCategoriesGraph.datasets[expensesCategories[transactionData[i].categoryID]].data[monthIndex] += amount;
+               expensesCategoriesData.datasets[categoryIndex].data[monthIndex] += amount;
             } else{
-               expensesCategoriesGraph.datasets[expensesCategoryIndex].data[monthIndex] += amount;
+               expensesCategoriesData.datasets[0].data[monthIndex] += amount;
             }
 
-            expensesGraph.data[monthIndex] += amount
+            expensesData.data[monthIndex] += amount
          }
       }
    }
@@ -288,11 +285,10 @@ function constructFinanceGraph(transactions,budget){
 
    let incomeExpensesData = {
       labels: months,
-      datasets: [incomeGraph,expensesGraph],
+      datasets: [incomeData,expensesData],
     };
 
     let options = {
-      responsive: true,
       maintainAspectRatio: true,
       scales: {
          y: {
@@ -311,9 +307,11 @@ function constructFinanceGraph(transactions,budget){
    };
 
    let stackedOptions = {
-      responsive: true,
       maintainAspectRatio: true,
       scales: {
+         x:{
+            stacked:true
+         },
          y: {
             minBarLength: 2,
             stacked:true,
@@ -322,38 +320,22 @@ function constructFinanceGraph(transactions,budget){
                beginAtZero:true,
            }
          },
-         x:{
-            stacked:true
-         }
       },
       plugins:{
          legend: {
             display: false
          }
-      }
+      },
    };
 
-   console.log(incomeCategoriesGraph.datasets);
-   console.log(expensesCategoriesGraph.datasets);
-   console.log(expensesCategoryIndex);
-
-   let incomeCategoryData = {
+   let categoryData = {
       labels: months,
-      datasets: [...incomeCategoriesGraph.datasets],
+      datasets: [...incomeCategoriesData.datasets,...expensesCategoriesData.datasets],
    };
 
-   let expensesCategoryData = {
-      labels: months,
-      datasets: [...expensesCategoriesGraph.datasets],
-   };
+   constructGraph('bar', incomeExpensesData, options, `<h2><a href = "./accounts#transactionsSection">Monthly Trends</a></h2>`, document.getElementById('finances'));
 
-
-
-   constructGraph('bar', incomeExpensesData, options, `<h2><a href = "./accounts#transactionsSection">Monthly Trends</a></h2><span>${currentYear}</span>`, document.getElementById('finances'));
-
-   constructGraph('bar', incomeCategoryData, stackedOptions, `<h2><a href = "./budgets">Income Category Trends</a></h2><span>${currentYear}</span>`, document.getElementById('finances'));
-
-   constructGraph('bar', expensesCategoryData, stackedOptions, `<h2><a href = "./budgets">Expense Category Trends</a></h2><span>${currentYear}</span>`, document.getElementById('finances'));
+   constructGraph('bar', categoryData, stackedOptions, `<h2><a href = "./budget">Category Trends</a></h2>`, document.getElementById('finances'));
 }
 
 async function fetchData(){
@@ -395,15 +377,6 @@ function updateChartColors(){
 
 document.querySelector("#mode").addEventListener('change', (event)=>{
    updateChartColors();
-});
-
-window.addEventListener('resize', function() {
-   //Maintain responsiveness of graphs
-   console.log(1);
-   console.log(2);
-   charts.forEach((chart)=>{
-      chart.resize();
-   });
 });
 
 fetchData();
