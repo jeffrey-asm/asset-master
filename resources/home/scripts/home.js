@@ -4,7 +4,7 @@ function constructStories(stories){
    let storiesContainer = document.getElementById('stories');
    let storiesItems = stories.rss.channel[0].item;
 
-   for(let i = 0; i < storiesItems.length && i < 5; i++){
+   for(let i = 0; i < storiesItems.length; i++){
 
       let story = document.createElement('div');
       story.className = 'story';
@@ -108,7 +108,8 @@ function constructStocks(stocks){
       };
 
       let options = {
-         maintainAspectRatio: true,
+         responsive:false,
+         maintainAspectRatio: false,
          plugins:{
             legend: {
                display: false
@@ -127,45 +128,53 @@ function constructAccountsGraph(accounts,netWorth){
 
 
    let backgroundColors = [
-      "#FF6384", "#36A2EB", "#FFCE56",
+      "#59FD59", "#36A2EB", "#FFCE56",
       "#4BC0C0", "#9966FF", "#FF9F40",
-      "#FF66CC", "#6699FF", "#FFD966",
+      "#FF35FF", "#6699FF", "#FFD966",
       "#45B6FE", "#FF6384", "#4BC0C0",
    ];
+
+   let accountColors = [];
 
    for(let i = 0; i < accountData.length; i++){
       accountNames.push(accountData[i].name);
       accountValues.push(accountData[i].balance);
+
+      if(accountData[i].type == 'Loan' || accountData[i].type == 'Credit Card'){
+         //Differentiate between negative and positive accounts
+         accountColors.push('red');
+      } else{
+         accountColors.push(backgroundColors[Math.floor(Math.random() * backgroundColors.length)]);
+      }
    }
 
    let data = {
       labels: accountNames,
       datasets: [{
           label: 'Balance',
-          backgroundColor: backgroundColors,
-          borderColor: backgroundColors,
+          backgroundColor: accountColors,
+          borderColor: accountColors,
           borderWidth: 1,
           data: accountValues,
       }]
    };
 
    let options = {
-      maintainAspectRatio: true,
+      responsive:false,
+      maintainAspectRatio: false,
       scales: {
          y: {
              beginAtZero: true
+         }
+      },
+      plugins:{
+         legend: {
+            display: false
          }
       }
    }
 
    let innerText = `<h2><a href = './accounts#accounts'>Accounts</h2></a>`;
-
-   if(netWorth < 0) {
-      innerText += `Net Worth: <span class = 'negativeNetWorth'>-$${(parseFloat(netWorth)*-1).toLocaleString("en-US",{ minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>`;
-   } else{
-      innerText += `Net Worth: <span class = 'positiveNetWorth'>$${parseFloat(netWorth).toLocaleString("en-US",{ minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>`;
-   }
-
 
    constructGraph('bar',data,options,innerText,document.getElementById('accounts'));
 }
@@ -289,7 +298,8 @@ function constructFinanceGraph(transactions,budget){
     };
 
     let options = {
-      maintainAspectRatio: true,
+      responsive:false,
+      maintainAspectRatio: false,
       scales: {
          y: {
             minBarLength: 2,
@@ -307,7 +317,8 @@ function constructFinanceGraph(transactions,budget){
    };
 
    let stackedOptions = {
-      maintainAspectRatio: true,
+      responsive:false,
+      maintainAspectRatio: false,
       scales: {
          x:{
             stacked:true
@@ -346,7 +357,6 @@ async function fetchData(){
 
       console.log(data);
 
-
       constructStories(data.stories);
       constructStocks(data.stocks);
       constructAccountsGraph(data.userData.accounts,data.userData.netWorth);
@@ -367,8 +377,8 @@ function updateChartColors(){
       chart.options.scales.x.ticks.color = getComputedStyle(document.body).getPropertyValue('--text-color');
       chart.options.scales.y.ticks.color = getComputedStyle(document.body).getPropertyValue('--text-color');
 
-      // 2.4 rem
-      let calculatedFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize) * 2.4;
+      // 4 rem
+      let calculatedFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize) * 4;
       chart.options.scales.x.ticks.fontSize = calculatedFontSize;
       chart.options.scales.y.ticks.fontSize = calculatedFontSize;
       chart.update();

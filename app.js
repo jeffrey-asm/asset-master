@@ -6,28 +6,18 @@ const logger = require('morgan');
 const cors = require('cors');
 const helmet = require('helmet');
 const session = require("express-session");
-const redis = require('redis');
-const connectRedis = require('connect-redis');
+const MemoryStore = require('memorystore')(session);
 require("dotenv").config();
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
 var app = express();
-
-//Configure redis client
-const RedisStore = connectRedis.default;
-const redisClient = redis.createClient({
-  host: 'localhost',
-  port: 6379
-});
-
-// redisClient.connect().catch(console.error);
-
 app.use(cookieParser());
+
 //Change cookie to secure on HTTPS
 app.use(session({
-  // store: new RedisStore({ client: redisClient  }),
+  store: new MemoryStore({ checkPeriod: 1000 * 60 * 60 }),
   secret:process.env.SESSION_SECRET,
   resave:false,
   saveUninitialized:false,
@@ -40,7 +30,7 @@ app.use(
   helmet.contentSecurityPolicy({
     directives: {
       defaultSrc: ["'self'"],
-      imgSrc: ["'self'", 'https://images.mktw.net'],
+      imgSrc: ["'self'", '*','data:'],
       scriptSrc: ["'self'", 'https://cdn.jsdelivr.net']
     },
   })
@@ -49,7 +39,6 @@ app.use(logger('dev'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use('/resources',express.static(path.join(__dirname,'resources')));
-
 
 app.set('views', path.join(__dirname, 'components'));
 app.set('view engine', 'ejs');

@@ -14,27 +14,25 @@ exports.login = asyncHandler(async(request,result,next)=>{
          sharedReturn.sendError(result,'username',`Invalid Credentials <i class='fa-solid fa-database'></i>`);
          return;
       } else{
-      //Compare hashed passwords
-      if(passwordHash === credentialsCheck[0].PasswordHash){
-         request.session.UserID = credentialsCheck[0].UserID;
-         request.session.Username = credentialsCheck[0].Username;
-         request.session.Email = credentialsCheck[0].Email;
-         request.session.Verified = credentialsCheck[0].Verified;
-         result.status(200);
-         sharedReturn.sendSuccess(result,`Welcome <i class="fa-solid fa-lock-open"></i>`);
-         return;
-      } else{
-         result.status(400);
-         sharedReturn.sendError(result,'username',`Invalid Credentials <i class='fa-solid fa-database'></i>`);
-         return;
-      }
+         //Compare hashed passwords
+         if(passwordHash === credentialsCheck[0].PasswordHash){
+            request.session.UserID = credentialsCheck[0].UserID;
+            request.session.Username = credentialsCheck[0].Username;
+            request.session.Email = credentialsCheck[0].Email;
+            request.session.Verified = credentialsCheck[0].Verified;
+            await request.session.save();
+            result.status(200);
+            sharedReturn.sendSuccess(result,`Welcome <i class="fa-solid fa-lock-open"></i>`);
+            return;
+         } else{
+            result.status(400);
+            sharedReturn.sendError(result,'username',`Invalid Credentials <i class='fa-solid fa-database'></i>`);
+            return;
+         }
       }
    } catch (error){
       result.status(500);
       sharedReturn.sendError(result,'username',`Could not successfully process request <i class='fa-solid fa-database'></i>`);
-      return;
-   } finally{
-      await request.session.save();
       return;
    }
 });

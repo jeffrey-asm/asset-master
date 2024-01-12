@@ -35,35 +35,30 @@ function parseXML(xmlData) {
 }
 
 
-async function fetchStocks(request){
+async function fetchStocks(request,dateAndHour){
    //Store API Date by the hour due to call limitations
    let possibleData = await query.runQuery('SELECT * FROM Stocks',[]);
    let initializeData = false;
-   let currentHour = new Date().getUTCHours();
 
    let stocks = {};
    let symbols = ['VT', 'VTI', 'SPY', 'QQQ','BITW'];
 
    if(possibleData.length == 0){
       initializeData = true;
-   } else if(possibleData[0].Hour != currentHour){
+   } else if(possibleData[0].DateAndHour != dateAndHour){
       initializeData = true;
    } else{
       //In case user session drops out, set up cache stock data
-      request.session.time = possibleData[0].Hour;
-      stocks =  JSON.parse(JSON.stringify(possibleData[0].Stocks));
+      request.session.dateAndHour = possibleData[0].DateAndHour;
+      stocks = JSON.parse(JSON.stringify(possibleData[0].Stocks));
 
       request.session.stocks = stocks;
       await request.session.save();
       return stocks;
    }
 
-
-
-
    try {
       throw error;
-
       for(let i = 0; i < symbols.length; i++){
          const options = {
             method: 'GET',
@@ -94,11 +89,11 @@ async function fetchStocks(request){
       const jsonBackup = await fs.readFile('resources/home/backup.json', 'utf8');
       const data = await JSON.parse(jsonBackup);
       stocks =  data;
-     }
+   }
 
    if(initializeData){
       await query.runQuery('DELETE FROM Stocks');
-      await query.runQuery('INSERT INTO Stocks (Hour,Stocks) VALUES(?,?)',[currentHour,JSON.stringify(stocks)]);
+      await query.runQuery('INSERT INTO Stocks (DateAndHour,Stocks) VALUES(?,?)',[dateAndHour,JSON.stringify(stocks)]);
    }
 
    request.session.stocks = stocks;
@@ -110,24 +105,29 @@ async function fetchStocks(request){
 exports.fetchHomeData = asyncHandler(async(request,result,next)=>{
    try{
       let data = {};
-      let currentHour = new Date().getUTCHours();
+
       data.stories = await fetchStories();
 
-      if(request.session.time && request.session.time == currentHour){
+      // Assume for YY-MM-DD-HR
+      let currentDate = new Date();
+      let dateAndHour = `${currentDate.getUTCFullYear()}-${(currentDate.getUTCMonth() + 1)}-${currentDate.getUTCDay()}-${currentDate.getUTCHours()}`
+      console.log(dateAndHour)
+      if(request.session.dateAndHour && request.session.dateAndHour == dateAndHour){
          console.log('SAME HOUR');
          data.stocks = request.session.stocks;
       } else{
-         data.stocks = await fetchStocks(request);
+         data.stocks = await fetchStocks(request,dateAndHour);
       }
 
       if(!request.session.accounts){
          data.userData = await accountController.setUpAccountsCache(request);
       } else{
-         data.userData = {};
-         data.userData.accounts = request.session.accounts;
-         data.userData.transactions = request.session.transactions;
-         data.userData.netWorth = request.session.netWorth;
-         data.userData.budget = request.session.budget;
+         data.userData = {
+            accounts : request.session.accounts,
+            transactions : request.session.transactions,
+            accounts : request.session.accounts,
+            budget : request.session.budget
+         };
       }
 
       result.status(200);
@@ -137,6 +137,5 @@ exports.fetchHomeData = asyncHandler(async(request,result,next)=>{
       result.status(500);
       sharedReturn.sendError(result,'email',`Could not successfully process request <i class='fa-solid fa-database'></i>`);
    }
-
 });
 

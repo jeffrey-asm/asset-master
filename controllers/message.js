@@ -11,7 +11,6 @@ exports.sendError = function(result,component,text){
          message: `${text}`
       });
    }
-
 }
 
 exports.sendSuccess = function(result,text,returnInfo={}){

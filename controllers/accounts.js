@@ -8,10 +8,10 @@ const budgetController = require('./budget.js');
 async function grabUserData(request){
    try{
       let returnData = {
-         accounts:{},
-         transactions:{},
-         budget:{},
-         netWorth:0.00
+         accounts : {},
+         transactions : {},
+         budget : {},
+         netWorth : 0.00
       };
       let netWorth = new Decimal('0.00');
       let accounts = await query.runQuery('SELECT * FROM Accounts WHERE UserID = ?;',[request.session.UserID]);
@@ -21,9 +21,9 @@ async function grabUserData(request){
          let preciseBalance = new Decimal(accounts[i].Balance);
 
          returnData.accounts[accounts[i].AccountID] = {
-            name:accounts[i].Name,
-            type:accounts[i].Type,
-            balance:parseFloat(preciseBalance.toString()),
+            name : accounts[i].Name,
+            type : accounts[i].Type,
+            balance : parseFloat(preciseBalance.toString()),
          }
 
          if(accounts[i].Type == 'Loan' || accounts[i].Type == 'Credit Card') preciseBalance = preciseBalance.neg();
@@ -35,12 +35,12 @@ async function grabUserData(request){
 
       for(let i = 0; i < transactions.length; i++){
          returnData.transactions[transactions[i].TransactionID] = {
-            title:transactions[i].Title,
-            type: transactions[i].Type,
-            categoryID:transactions[i].CategoryID,
-            accountID: transactions[i].AccountID,
-            date:transactions[i].Date,
-            amount:parseFloat(transactions[i].Amount)
+            title : transactions[i].Title,
+            type : transactions[i].Type,
+            categoryID : transactions[i].CategoryID,
+            accountID : transactions[i].AccountID,
+            date : transactions[i].Date,
+            amount : parseFloat(transactions[i].Amount)
          }
       }
 
@@ -127,9 +127,9 @@ exports.addAccount = asyncHandler(async(request,result,next)=>{
       }
 
       request.session.accounts[randomID] = {
-         name:trimmedInputs.name,
-         type:trimmedInputs.type,
-         balance:trimmedInputs.balance
+         name : trimmedInputs.name,
+         type : trimmedInputs.type,
+         balance : trimmedInputs.balance
       }
 
       await request.session.save();
@@ -168,7 +168,6 @@ exports.editAccount = asyncHandler(async(request,result,next)=>{
       let currentNetWorth = new Decimal(request.session.netWorth);
       currentNetWorth = currentNetWorth.minus(previousBalance);
 
-
       if(trimmedInputs.remove == "true"){
          //Handle remove (income/expenses is not changed at all because all transactions are moved to main types)
          await query.runQuery(`DELETE FROM Accounts WHERE AccountID = ?;`,[trimmedInputs.ID]);
@@ -201,7 +200,8 @@ exports.editAccount = asyncHandler(async(request,result,next)=>{
 
       if(query.changesMade(trimmedInputs,previousAccount)){
          //Update columns on any change
-         await query.runQuery('UPDATE Accounts SET Name = ?, Type = ?, Balance = ? WHERE AccountID = ?;',[trimmedInputs.name, trimmedInputs.type,trimmedInputs.balance.toString(),trimmedInputs.ID]);
+         await query.runQuery('UPDATE Accounts SET Name = ?, Type = ?, Balance = ? WHERE AccountID = ?;',
+         [trimmedInputs.name, trimmedInputs.type,trimmedInputs.balance.toString(),trimmedInputs.ID]);
 
          trimmedInputs.changes = true;
          trimmedInputs.remove = false;
@@ -215,10 +215,8 @@ exports.editAccount = asyncHandler(async(request,result,next)=>{
             adjustingNetWorthAmount = new Decimal(trimmedInputs.balance);
          }
 
-
          request.session.netWorth  = trimmedInputs.netWorth  = parseFloat((currentNetWorth.plus(adjustingNetWorthAmount)).toString());
 
-         //Revert back to an absolute value type in case this is a debt type account
          trimmedInputs.balance = parseFloat(trimmedInputs.balance.toString());
 
          request.session.accounts[trimmedInputs.ID] = {
@@ -252,6 +250,7 @@ async function updateBudgetLeftOver(request){
    request.session.budget.leftOver = parseFloat((incomeFixed.minus(expensesFixed).toString()));
    await request.session.save();
 }
+
 exports.addTransaction = asyncHandler(async(request,result,next)=>{
    try{
       let trimmedInputs = validation.trimInputs(result,request.body,'amount','date');
@@ -261,16 +260,15 @@ exports.addTransaction = asyncHandler(async(request,result,next)=>{
          trimmedInputs.account = null;
       }
 
-
       let formValidation = validation.validateTransactionForm(request,result,trimmedInputs.account,'account',trimmedInputs.title,'title',trimmedInputs.category,'category');
       if(formValidation.status != 'pass') return;
 
 
       let randomID = await query.retrieveRandomID('SELECT * FROM Transactions WHERE TransactionID = ?');
 
-
       await query.runQuery('INSERT INTO Transactions (TransactionID, Title, Date, Type, Amount, UserID, AccountID, CategoryID) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-      [randomID, trimmedInputs.title,trimmedInputs.date,trimmedInputs.type,trimmedInputs.amount.toString(),request.session.UserID,trimmedInputs.account, trimmedInputs.category]);
+      [randomID, trimmedInputs.title,trimmedInputs.date,trimmedInputs.type,trimmedInputs.amount.toString(),
+         request.session.UserID,trimmedInputs.account, trimmedInputs.category]);
 
       trimmedInputs.ID = randomID;
 
@@ -283,12 +281,12 @@ exports.addTransaction = asyncHandler(async(request,result,next)=>{
          trimmedInputs.amount = parseFloat((trimmedInputs.amount).toString());
 
          request.session.transactions[randomID] = {
-            title:trimmedInputs.title,
-            type: trimmedInputs.type,
-            categoryID:trimmedInputs.category,
-            accountID: trimmedInputs.account,
-            date:trimmedInputs.date,
-            amount:trimmedInputs.amount
+            title : trimmedInputs.title,
+            type : trimmedInputs.type,
+            categoryID : trimmedInputs.category,
+            accountID : trimmedInputs.account,
+            date : trimmedInputs.date,
+            amount : trimmedInputs.amount
          }
 
          await request.session.save();
@@ -301,32 +299,35 @@ exports.addTransaction = asyncHandler(async(request,result,next)=>{
       let mainCategoryCurrent = new Decimal(`${request.session.budget[`${trimmedInputs.type}`].current}`);
       mainCategoryCurrent = mainCategoryCurrent.plus(trimmedInputs.amount);
 
-      await query.runQuery(`UPDATE Budgets SET ?? = ? WHERE UserID = ?;`,[`${trimmedInputs.type}Current`,mainCategoryCurrent.toString(),request.session.UserID]);
+      await query.runQuery(`UPDATE Budgets SET ?? = ? WHERE UserID = ?;`,
+      [`${trimmedInputs.type}Current`,mainCategoryCurrent.toString(),request.session.UserID]);
+
       request.session.budget[`${trimmedInputs.type}`].current = parseFloat(mainCategoryCurrent.toString());
 
       if(trimmedInputs.category != 'Income' && trimmedInputs.category != 'Expenses'){
          //Update category
          let categoryCurrent = new Decimal(`${request.session.budget.categories[trimmedInputs.category].current}`);
          categoryCurrent = categoryCurrent.plus(trimmedInputs.amount);
-         await query.runQuery('UPDATE Categories SET Current = ? WHERE CategoryID = ?;',[categoryCurrent.toString(),trimmedInputs.category]);
+         await query.runQuery('UPDATE Categories SET Current = ? WHERE CategoryID = ?;',
+         [categoryCurrent.toString(),trimmedInputs.category]);
+
          request.session.budget.categories[trimmedInputs.category].current = parseFloat(categoryCurrent.toString());
       }
 
       trimmedInputs.amount = parseFloat((trimmedInputs.amount).toString());
 
       request.session.transactions[randomID] = {
-         title:trimmedInputs.title,
-         type: trimmedInputs.type,
-         categoryID:trimmedInputs.category,
-         accountID: trimmedInputs.account,
-         date:trimmedInputs.date,
-         amount:trimmedInputs.amount
+         title : trimmedInputs.title,
+         type : trimmedInputs.type,
+         categoryID : trimmedInputs.category,
+         accountID : trimmedInputs.account,
+         date : trimmedInputs.date,
+         amount : trimmedInputs.amount
       }
 
       await request.session.save();
       await updateBudgetLeftOver(request);
 
-      await request.session.save();
       result.status(200);
       sharedReturn.sendSuccess(result,'Successfully added transaction <i class="fa-solid fa-credit-card"></i>',trimmedInputs);
    } catch (error){
@@ -348,7 +349,6 @@ exports.editTransaction = asyncHandler(async(request,result,next)=>{
 
       let formValidation = validation.validateTransactionForm(request,result,trimmedInputs.account,'editAccount',trimmedInputs.title,'editTitle',trimmedInputs.category,'editCategory');
       if(formValidation.status != 'pass') return;
-
 
       //Check for any changes:
       let previousTransaction = request.session.transactions[trimmedInputs.ID];
@@ -388,10 +388,6 @@ exports.editTransaction = asyncHandler(async(request,result,next)=>{
       let previousDate = (request.session.transactions[trimmedInputs.ID].date).toString().split('-');
       let inputDate = (trimmedInputs.date).split('-');
 
-      console.log(currentBudgetDate);
-      console.log(previousDate);
-      console.log(inputDate);
-
       //Compare YY-MM for input and previous dates using current budget year-month
       let previousDateAffectsBudget = (previousDate[0] == currentBudgetDate[0] && previousDate[1] == currentBudgetDate[1]);
       let currentDateAffectsBudget = (inputDate[0] == currentBudgetDate[0] && inputDate[1] == currentBudgetDate[1]);
@@ -415,7 +411,8 @@ exports.editTransaction = asyncHandler(async(request,result,next)=>{
                previousCategoryCurrent = new Decimal(request.session.budget.categories[previousTransaction.categoryID].current);
                previousCategoryCurrent = previousCategoryCurrent.minus(previousAmount);
 
-               await query.runQuery(`UPDATE Categories SET Current = ? WHERE CategoryID = ?;`,[previousCategoryCurrent.toString(),previousTransaction.categoryID]);
+               await query.runQuery(`UPDATE Categories SET Current = ? WHERE CategoryID = ?;`,
+               [previousCategoryCurrent.toString(),previousTransaction.categoryID]);
 
                request.session.budget.categories[previousTransaction.categoryID].current = parseFloat(previousCategoryCurrent.toString());
             }
@@ -435,25 +432,26 @@ exports.editTransaction = asyncHandler(async(request,result,next)=>{
             await request.session.save();
             await updateBudgetLeftOver(request);
 
-            await request.session.save();
             result.status(200);
             sharedReturn.sendSuccess(result,'Successfully removed transaction <i class="fa-solid fa-trash"></i>',trimmedInputs);
             return;
          }
+
       } else if(!currentDateAffectsBudget && !previousDateAffectsBudget) {
          //Simple update transaction table, no budget if not within same month
          await query.runQuery('UPDATE Transactions SET Title = ?, Date = ?, Type = ?, Amount = ?, AccountID = ?, CategoryID = ? WHERE TransactionID = ?',
-         [trimmedInputs.title,trimmedInputs.date,trimmedInputs.type,trimmedInputs.amount.toString(),trimmedInputs.account, trimmedInputs.category,trimmedInputs.ID]);
+         [trimmedInputs.title,trimmedInputs.date,trimmedInputs.type,trimmedInputs.amount.toString(),trimmedInputs.account,
+            trimmedInputs.category,trimmedInputs.ID]);
 
          trimmedInputs.amount = parseFloat(trimmedInputs.amount.toString());
 
          request.session.transactions[trimmedInputs.ID] = {
-            title:trimmedInputs.title,
-            type: trimmedInputs.type,
-            categoryID:trimmedInputs.category,
-            accountID: trimmedInputs.account,
-            date:trimmedInputs.date,
-            amount:trimmedInputs.amount
+            title : trimmedInputs.title,
+            type : trimmedInputs.type,
+            categoryID : trimmedInputs.category,
+            accountID : trimmedInputs.account,
+            date : trimmedInputs.date,
+            amount : trimmedInputs.amount
          };
 
          await request.session.save();
@@ -507,7 +505,7 @@ exports.editTransaction = asyncHandler(async(request,result,next)=>{
          }
       } else {
          if(!fromMainCategory && toMainCategory && previousDateAffectsBudget){
-            // Income Category -> Income
+            // Income Category -> Income (No affect on main total)
             previousCategoryCurrent = new Decimal(request.session.budget.categories[previousTransaction.categoryID].current);
             previousCategoryCurrent = previousCategoryCurrent.minus(previousAmount);
          } else if(fromMainCategory && !toMainCategory && currentDateAffectsBudget){
@@ -516,8 +514,7 @@ exports.editTransaction = asyncHandler(async(request,result,next)=>{
             newCategoryCurrent = newCategoryCurrent.plus(trimmedInputs.amount);
          } else if(!fromMainCategory && !toMainCategory){
             //Income Category -> New Income Category
-            if(previousDateAffectsBudget && trimmedInputs.category != previousTransaction.categoryID){
-               console.log('NEW SUB TYPE');
+            if(trimmedInputs.category != previousTransaction.categoryID && previousDateAffectsBudget){
                previousCategoryCurrent = new Decimal(request.session.budget.categories[previousTransaction.categoryID].current);
                previousCategoryCurrent = previousCategoryCurrent.minus(previousAmount);
             } else if(previousDateAffectsBudget){
@@ -560,13 +557,15 @@ exports.editTransaction = asyncHandler(async(request,result,next)=>{
 
       if(previousCategoryCurrent && !newCategoryCurrent){
          // Case of Income Category -> Income or Income
-         await query.runQuery(`Update Categories Set Current = ? WHERE CategoryID = ?`,[previousCategoryCurrent.toString(),previousTransaction.categoryID]);
+         await query.runQuery(`Update Categories Set Current = ? WHERE CategoryID = ?`,
+         [previousCategoryCurrent.toString(),previousTransaction.categoryID]);
 
          //Update cache
          request.session.budget.categories[previousTransaction.categoryID].current = parseFloat(previousCategoryCurrent.toString());
       } else if(!previousCategoryCurrent && newCategoryCurrent){
          // All other cases involving from main to new category within current month
-         await query.runQuery(`Update Categories Set Current = ? WHERE CategoryID = ?`,[newCategoryCurrent.toString(),trimmedInputs.ID]);
+         await query.runQuery(`Update Categories Set Current = ? WHERE CategoryID = ?`,
+         [newCategoryCurrent.toString(),trimmedInputs.ID]);
 
          //Update cache
          request.session.budget.categories[trimmedInputs.category].current = parseFloat(newCategoryCurrent.toString());
@@ -582,7 +581,9 @@ exports.editTransaction = asyncHandler(async(request,result,next)=>{
                END
             WHERE CategoryID IN (?,?);
          `;
-         await query.runQuery(updateCategoriesQuery,[trimmedInputs.ID,newCategoryCurrent.toString(),previousTransaction.categoryID,previousCategoryCurrent.toString(),trimmedInputs.ID,previousTransaction.categoryID]);
+         await query.runQuery(updateCategoriesQuery,
+            [trimmedInputs.ID,newCategoryCurrent.toString(),previousTransaction.categoryID,
+               previousCategoryCurrent.toString(),trimmedInputs.ID,previousTransaction.categoryID]);
 
          //Update cache
          request.session.budget.categories[trimmedInputs.category].current = parseFloat(newCategoryCurrent.toString());
@@ -605,17 +606,19 @@ exports.editTransaction = asyncHandler(async(request,result,next)=>{
                               T.Date = ?,
                               T.Amount = ?
                            WHERE T.UserID = ? AND T.TransactionID = ?;`;
-      await query.runQuery(updateQuery,[newIncomeCurrent.toString(),newExpensesCurrent.toString(),trimmedInputs.title,trimmedInputs.category,trimmedInputs.account,trimmedInputs.type,trimmedInputs.date,trimmedInputs.amount.toString(),request.session.UserID,trimmedInputs.ID]);
+      await query.runQuery(updateQuery,[newIncomeCurrent.toString(),newExpensesCurrent.toString(),trimmedInputs.title,
+         trimmedInputs.category,trimmedInputs.account,trimmedInputs.type,trimmedInputs.date,
+         trimmedInputs.amount.toString(),request.session.UserID,trimmedInputs.ID]);
 
       trimmedInputs.amount = parseFloat(trimmedInputs.amount.toString());
 
       request.session.transactions[trimmedInputs.ID] = {
-         title:trimmedInputs.title,
-         type: trimmedInputs.type,
-         categoryID:trimmedInputs.category,
-         accountID: trimmedInputs.account,
-         date:trimmedInputs.date,
-         amount:trimmedInputs.amount
+         title : trimmedInputs.title,
+         type : trimmedInputs.type,
+         categoryID : trimmedInputs.category,
+         accountID : trimmedInputs.account,
+         date : trimmedInputs.date,
+         amount : trimmedInputs.amount
       };
 
       await request.session.save();

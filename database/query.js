@@ -3,6 +3,7 @@ const mysql = require('mysql2');
 const util = require('util');
 const cryptoJS = require('crypto-js');
 const sharedReturn = require('../controllers/message.js');
+const { request } = require("http");
 
 exports.runQuery = async function(query='',inputs=[]){
    //Establish a connection to database and await for a Promise return to work on valid result rows from a given table(s)
@@ -29,6 +30,7 @@ exports.updateDatabase = async function(result,query='',items=[],returnInfo={}){
 exports.searchDuplicates = async function(result,query,items,componentID,message){
    try{
       const duplicateCheck = await exports.runQuery(query,items);
+
       if(duplicateCheck.length >= 1){
          result.status(409);
          sharedReturn.sendError(result,componentID,message);
@@ -72,7 +74,6 @@ exports.changesMade = function(inputObject,comparingObject){
          }
       }
    }
-
    return false;
 }
 

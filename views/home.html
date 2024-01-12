@@ -35,25 +35,26 @@
       </nav>
    </header>
    <main>
-
       <div id = 'userData'>
          <div id = 'graphs'>
+            <div class = 'mainImage'>
+               <img src="../resources/home/images/data.png" alt="">
+            </div>
             <div id = 'accounts'>
             </div>
-
             <div id = 'finances'>
             </div>
          </div>
-
-         <div id = 'stories'>
-
+         <div id = 'markets'>
+            <div class = 'mainImage'>
+               <img src="../resources/home/images/stock.png" alt="">
+            </div>
          </div>
       </div>
 
-
-
-      <div id = 'investments'>
-         <div id = 'markets'>
+      <div id = 'stories'>
+         <div class = 'mainImage'>
+            <img src="../resources/home/images/news.png" alt="">
          </div>
 
       </div>
@@ -62,17 +63,61 @@
          <blockquote>The best investment you can make is in yourself.</blockquote>
          <cite> Warren Buffett </cite>
       </div>
-
-
-
-
-
-
    </main>
 
    <footer>
-      Copyright &copy; 2023 Asset Master
-   </footer>
+      <div class="footerLinkContainers">
+        <h3>Resources</h3>
+
+        <ul>
+         <a href="" class="footerLinks">Guides</a>
+         <a href="" class="footerLinks">News</a>
+         <a href="" class="footerLinks">Tools</a>
+         <a href="" class="footerLinks">FAQs</a>
+         <a href="" class="footerLinks">Blog</a>
+        </ul>
+      </div>
+      <div class="footerLinkContainers">
+        <h3>Pricing</h3>
+
+        <ul>
+         <a href="" class="footerLinks">Plans</a>
+         <a href="" class="footerLinks">Fees</a>
+         <a href="" class="footerLinks">Costs</a>
+         <a href="" class="footerLinks">Rates</a>
+         <a href="" class="footerLinks">Billing</a>
+        </ul>
+      </div>
+      <div class="footerLinkContainers" id="company_container">
+        <h3>Company</h3>
+
+        <ul>
+         <a href="" class="footerLinks">About</a>
+         <a href="" class="footerLinks">Mission</a>
+         <a href="" class="footerLinks">Culture</a>
+         <a href="" class="footerLinks">Careers</a>
+         <a href="" class="footerLinks">Partners</a>
+        </ul>
+      </div>
+
+      <div class="footerLinkContainers">
+         <h3>Connect</h3>
+         <div class = 'storeImageContainer'>
+            <img src="../resources/shared/images/apple.png" alt="">
+            <img src="../resources/shared/images/google.png" alt="">
+         </div>
+         <div class="footerMediaLinks" id = 'socialLinks'>
+            <a href="#"><i class="fa-brands fa-facebook"></i></a>
+            <a href="#" class="fa-brands fa-instagram"></a>
+            <a href="#"><i class="fa-brands fa-x-twitter"></i></a>
+            <a href="#" class="fa-brands fa-pinterest"></a>
+            <a href="#" class="fa-brands fa-linkedin"></a>
+            <a href="https://github.com/jeffreyC4/finance-tracker" class="fa-brands fa-github" id = 'git'></a>
+         </div>
+      </div>
+
+      <h5>Copyright &copy; <span id = 'footerYear'>2024</span> Asset Master &reg;</h5>
+    </footer>
 
    <script type="module" src="../resources/shared/scripts/shared.js"></script>
    <script type="module" src="../resources/home/scripts/home.js"></script>

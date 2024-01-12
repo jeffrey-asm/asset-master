@@ -34,21 +34,21 @@
       </nav>
    </header>
    <main>
-
+      <div class = 'mainImage'>
+         <img src="../resources/accounts/images/account.png" alt="">
+      </div>
       <div id = "accountsSection">
          <div id = "accountsContainers">
-
             <div id = "accounts">
-
             </div>
          </div>
-
-         <button type="button" id = "addAccountButton" class = "addButton">Add an account <i class="fa-solid fa-plus"></i>  </button>
+         <button type="button" id = "addAccountButton" class = "addButton">
+            Add an account <i class="fa-solid fa-plus"></i>
+         </button>
          <div class = 'netWorthContainer'>
             <h2 id = 'netWorthText'>Net Worth: <span class = 'negativeNetWorth'>$0.00</span></h2>
          </div>
       </div>
-
 
       <div id = "transactionsSection">
          <div id = "transactionsTable">
@@ -65,20 +65,15 @@
                </thead>
 
                <tbody>
-
                </tbody>
-
             </table>
          </div>
-
          <div>
-            <button type="button" id = "addTransactionButton" class = "addButton"> Add Transaction <i class="fa-solid fa-plus"></i> </button>
+            <button type="button" id = "addTransactionButton" class = "addButton">
+               Add Transaction <i class="fa-solid fa-plus"></i>
+            </button>
          </div>
-
       </div>
-
-
-
    </main>
 
    <div class = 'popupContainers'>
@@ -110,7 +105,6 @@
                <button type="submit" id = 'addAccountSubmitButton'>Submit</button>
             </form>
          </div>
-
       </div>
 
       <div class = 'popup' id = 'editAccountContainer'>
@@ -163,16 +157,11 @@
                <h2>Add Transaction</h2>
                <label for="account">Account</label>
                <select name="account" id="account">
-
-
                </select>
-
                <label for="title">Title</label>
                <input type="text" name="title" id="title" placeholder="Title">
-
                <label for="category">Category</label>
                <select name="category" id="category">
-
                </select>
                <p>Categories may be added in <a href="./budget" target = "_blank">Budget Page <i class="fa-solid fa-circle-info"></i></a> </p>
                <label for="date">Date</label>
@@ -182,7 +171,6 @@
                <button type="submit" id = 'addTransactionSubmitButton'>Submit</button>
             </form>
          </div>
-
       </div>
 
       <div class = 'popup' id = 'editTransactionContainer'>
@@ -197,16 +185,11 @@
                <h2>Edit Transaction</h2>
                <label for="account">Account</label>
                <select name="account" id="editAccount">
-
-
                </select>
-
                <label for="title">Title</label>
                <input type="text" name="title" id="editTitle" placeholder="Title">
-
                <label for="category">Category</label>
                <select name="category" id="editCategory">
-
                </select>
                <p>Categories may be added in <a href="./budget" target = "_blank">Budget Page <i class="fa-solid fa-circle-info informational"></i></a> </p>
                <label for="date">Date</label>
@@ -224,9 +207,6 @@
             </form>
          </div>
       </div>
-
-
-
    </div>
 
    <footer>

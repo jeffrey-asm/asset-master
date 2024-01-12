@@ -292,4 +292,9 @@ if(logoIcon){
    }
 }
 
+let footerYear = document.getElementById('footerYear');
+if(footerYear){
+   footerYear.innerText = (new Date().getUTCFullYear()).toString();
+}
+
 export {transitionToPage,displayMessage,removeMessage,openPopUp,exitPopUp,openNotification,sendRequest};

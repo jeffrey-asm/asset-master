@@ -37,17 +37,22 @@ exports.updateUser = asyncHandler(async(request,result,next)=>{
          //Only update username column
          await query.updateDatabase(result,'UPDATE Users SET Username = ? WHERE UserID = ?;',[trimmedInputs.username,request.session.UserID]);
          request.session.Username = trimmedInputs.username;
+         await request.session.save();
       } else if(changedEmail && !changedUsername){
          //New email implies no longer verified if already applied ('F')
          await query.updateDatabase(result,'UPDATE Users SET Email=?, Verified=? WHERE UserID=?;',[trimmedInputs.email,'F',request.session.UserID]);
          request.session.Email = trimmedInputs.email;
          request.session.Verified = 'F';
+         await request.session.save();
       } else if(changedUsername && changedEmail){
          //Update all essential columns
-      await query.updateDatabase(result,'UPDATE Users SET Username = ?, Email = ?, Verified = ? WHERE UserID = ?;',[trimmedInputs.username,trimmedInputs.email,'F',request.session.UserID]);
+         await query.updateDatabase(result,'UPDATE Users SET Username = ?, Email = ?, Verified = ? WHERE UserID = ?;',
+            [trimmedInputs.username,trimmedInputs.email,'F',request.session.UserID]);
+
          request.session.Username = trimmedInputs.username;
          request.session.Email = trimmedInputs.email;
          request.session.Verified = 'F';
+         await request.session.save();
       } else{
          //In case user did not change any values, don't bother writing an update query
          result.status(200);
@@ -57,10 +62,6 @@ exports.updateUser = asyncHandler(async(request,result,next)=>{
    } catch(error){
       result.status(500);
       sharedReturn.sendError(result,'email',`Could not successfully process request <i class='fa-solid fa-database'></i>`);
-      return;
-   } finally{
-      //Ensure variables are properly saved
-      await request.session.save();
       return;
    }
 });
@@ -77,7 +78,6 @@ exports.updatePassword = asyncHandler(async(request,result,next)=>{
       //Attempt to compare current password with input
       let oldPasswordHash = query.hash(trimmedInputs.oldPassword);
       let newPasswordHash = query.hash(trimmedInputs.password);
-
 
       let savedPasswordHash = await query.runQuery('SELECT PasswordHash FROM Users WHERE UserID = ?',[request.session.UserID]);
 

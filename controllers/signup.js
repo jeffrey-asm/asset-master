@@ -55,14 +55,13 @@ exports.signup = asyncHandler(async(request,result,next)=>{
     request.session.Username = trimmedInputs.username;
     request.session.Email = trimmedInputs.email;
     request.session.Verified = verifiedChar;
+    await request.session.save();
+
     result.status(200);
     sharedReturn.sendSuccess(result,`Welcome <i class="fa-solid fa-door-open"></i>`);
   } catch (error){
     result.status(500);
     sharedReturn.sendError(result,'email',`Could not successfully process request <i class='fa-solid fa-database'></i>`);
     return;
-  } finally{
-    await request.session.save();
-    return;
- }
+  }
 });

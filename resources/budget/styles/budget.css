@@ -144,6 +144,11 @@ main{
    margin:auto;
 }
 
+#statistics img{
+   max-width: 100%;
+   margin:auto
+}
+
 #incomeSpan{
    color:green;
 }
@@ -191,10 +196,13 @@ main{
 
       justify-content: flex-start;
       align-items: center;
-      width:20%;
 
       padding:0;
       text-align: center;
+   }
+
+   #statistics img{
+      max-width: 80%;
    }
 
 }
