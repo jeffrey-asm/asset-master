@@ -84,7 +84,7 @@ form button{
  }
 
 form input:focus{
-   border: 2px solid #178eef;
+   border: 2px solid #08B0FF;
 }
 
 form a{
@@ -100,7 +100,7 @@ form a{
    outline:none;
    border:none;
    background:transparent;
-   color:#178eef;
+   color:#08B0FF;
    font-size:16px;
    font-weight: bolder;
    text-align: right;

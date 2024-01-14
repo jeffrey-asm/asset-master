@@ -33,7 +33,6 @@ body{
 
 main{
    width:90%;
-   min-height:80vh;
    margin:90px auto 20px auto;
    opacity:0;
    transition: opacity 1s ease-in-out;
@@ -41,7 +40,7 @@ main{
 
 header{
    position: relative;
-   top:1.3rem;
+   top:2rem;
    display: grid;
    grid-template-columns: 2fr 20fr;
    width:100%;
@@ -52,14 +51,19 @@ header{
 
 #sidebarIcon{
    position: fixed;
-   margin-top:70px;
+   margin-top:50px;
    margin-left:50px;
    text-align: center;
-   font-size:32px;
+   font-size:2rem;
    cursor: pointer;
    grid-row:1;
    grid-column: 1;
    z-index:2;
+}
+
+#exitSideBarIcon{
+   font-size:2rem;
+   margin-bottom: 1rem;
 }
 
 
@@ -86,7 +90,7 @@ header{
 
 header i:hover{
    cursor:pointer;
-   color:#178eef;
+   color:#08B0FF;
 }
 
 
@@ -127,9 +131,10 @@ nav{
    flex-wrap: nowrap;
    align-items: center;
    justify-content: flex-start;
-   padding-top:68px;
-   gap:35px;
+   padding-top:75px;
+   gap:0;
    z-index:1000;
+   overflow: hidden;
 }
 .navbarShown{
    animation: showSideBar 1s ease-in-out forwards;
@@ -139,30 +144,40 @@ nav{
 }
 
 nav a,nav i{
-   font-size: 22px;
+   text-align: center;
+   font-size: 1.2rem;
    font-weight: bold;
    text-decoration: none;
    color:var(--background-color);
    cursor:pointer;
+   transition: 0.5s ease-in-out;
 }
 
-nav i{
-   font-size:32px;
+nav a{
+   width:100%;
+   padding:0 1rem;
+   height:4rem;
+
+   display: flex;
+   flex-direction: row;
+   justify-content: center;
+   align-items: center;
+   gap:12px;
 }
 
 nav .sliderModeContainer{
    margin:0;
 }
 
-nav a:hover, nav i:hover{
-   color:#08B0FF;
+nav a:hover{
+   background:#969A96;
 }
 
 
 button{
    cursor: pointer;
    box-sizing: border-box;
-   background-color: #178eef;
+   background-color: #08B0FF;
    border:0;
    border-radius: 5px;
    font-size: 1.2rem;
@@ -235,7 +250,7 @@ button{
 }
 
 .informational{
-   color:#178eef;
+   color:#08B0FF;
 }
 
 .errorInput{
@@ -288,18 +303,16 @@ button:hover {
 
 
 footer {
-   position: relative;
    clear:both;
    text-align: left;
    font-size: 1.3rem;
    width:100%;
-   margin:0 auto;
+   margin:5rem auto 0 auto;
 
    min-height: 350px;
-   padding: 1rem;
    border-top: 5px solid;
-   border-color: #0093E9;
-   border-image: linear-gradient(160deg, #0093E9 0%, #80D0C7 100%);
+   border-color: #08B0FF;
+   border-image: linear-gradient(160deg, #08B0FF 0%, #80D0C7 100%);
    border-image-slice: 30;
    background-color: #24252A;
    color: white;
@@ -307,28 +320,32 @@ footer {
 
    background-repeat: no-repeat;
    background-size: cover;
-   display: grid;
-   grid-template-columns: repeat(4,1fr);
+   display: flex;
+   flex-direction: row;
+   justify-content: space-evenly;
+   align-items: center;
    column-gap: 1rem;
 }
 
 .footerLinkContainers h3 {
+   margin-top:0;
    color: white;
-   font-size: 1.9rem;
+   font-size: 1.5rem;
 }
 
 .footerLinkContainers {
+   height:15rem;
    padding:5px;
-   margin: 0px;
+   margin: 1.1rem 2.2rem;
 
-   color: #2FAADD;
+   color: #08B0FF;
 }
 
 .footerLinkContainers ul {
    padding: 0;
    list-style-type: none;
 
-   font-size: 1.3rem;
+   font-size: 1.1rem;
 
    display: flex;
    flex-direction: column;
@@ -337,14 +354,14 @@ footer {
 }
 
 .footerLinks {
-   color: #2FAADD;
+   color: #08B0FF;
    text-decoration: none;
    cursor: pointer;
 }
 .storeImageContainer,.footerMediaLinks{
    display: flex;
    flex-direction: row;
-   flex-wrap: wrap;
+   flex-wrap: nowrap;
    align-items: center;
    justify-content: flex-start;
    text-align: center;
@@ -361,7 +378,7 @@ footer {
    padding: 10px;
    font-size:1.8rem;
 
-   color: #2FAADD;
+   color: #08B0FF;
    text-decoration: none;
 }
 
@@ -370,10 +387,11 @@ footer {
 }
 
 footer h5{
+   flex:0;
    width:100%;
    text-align: center;
-   grid-row: 2;
-   grid-column: 1/-1;
+   line-height: 2rem;
+   color:white;
 }
 
 footer a:hover {
@@ -455,7 +473,7 @@ footer a:hover {
    box-shadow: var(--shadow-color) 0px 10px 20px, var(--shadow-color) 0px 6px 6px;
    width:100px;
    height:100px;
-   background:#178eef;
+   background:#08B0FF;
    color:white;
 
    text-align: center;
@@ -577,7 +595,20 @@ footer a:hover {
    max-height:200px;
 }
 
-
+@media only screen and (max-width:1000px){
+   footer{
+      flex-wrap: wrap;
+      text-align: center;
+      padding-top:2rem;
+   }
+   .footerMediaLinks{
+      flex-wrap: wrap;
+      justify-content: center;
+   }
+   .footerLinkContainers{
+      height:auto;
+   }
+}
 
 @media only screen and (max-width:600px){
    main{
@@ -613,12 +644,11 @@ footer a:hover {
    nav i{
       font-size:2rem;
    }
-
-   footer {
-      grid-template-columns: 1fr 1fr 1fr;
-      text-align: center;
-      width: 100%;
-  }
-
 }
 
+@media only screen and (max-width:360px){
+   .storeImageContainer{
+      flex-direction: column;
+      justify-content: center;
+   }
+}

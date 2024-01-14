@@ -9,6 +9,7 @@ form h2{
 
 .editingContainer{
    width:100%;
+   font-size:1.3rem;
    margin:auto;
    display: grid;
    align-items: center;
@@ -21,9 +22,12 @@ form h2{
 }
 
 .editingContainer .editCategory{
+   font-size:1.1rem;
    grid-row:1;
    grid-column: 3/4;
 }
+
+
 
 .editingContainer .error{
    grid-row:3;

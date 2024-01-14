@@ -91,7 +91,6 @@ main{
 .graphContainer{
    box-sizing: border-box;
    width: 80%;
-   min-height: 350px;
    margin:0 auto;
 }
 .graphContainer *{
@@ -102,9 +101,10 @@ main{
 
 .graphContainer h2,.graphContainer a{
    margin-top:1rem;
-   font-size:3rem;
+   font-size:2.7rem;
    color:#178eef;
    margin:1rem auto;
+   max-width: 70%;
    text-decoration: none;
    word-wrap: break-word;
 }
@@ -177,26 +177,27 @@ blockquote {
 	line-height: 4rem;
 	position: relative;
 	margin: 0 auto;
-	padding: 1.8rem;
+	padding: 1.3rem 0;
 }
 
 blockquote:before,
 blockquote:after {
 	position: absolute;
 	color: #38ef7d;
-	font-size: 8rem;
+	font-size: 6rem;
 	width: 4rem;
 	height: 4rem;
+   top:5px;
 }
 
 blockquote:before {
 	content: '“';
-	left: -3rem;
+	left: -4rem;
 }
 
 blockquote:after {
 	content: '”';
-	right: -3rem;
+	right: -4rem;
 }
 
 cite {
@@ -205,7 +206,7 @@ cite {
 }
 
 
-@media only screen and (max-width:800px) {
+@media only screen and (max-width:1200px) {
    main{
       display: flex;
       flex-direction: column;
@@ -225,22 +226,28 @@ cite {
       justify-content: center;
    }
 
+   .graphContainer{
+      width:100%;
+   }
+
    blockquote{
       font-size: 1.6rem;
-      max-width:80%;
+      max-width:50%;
    }
 
    blockquote:before,
    blockquote:after {
-      font-size:6rem;
+      font-size:5.5rem;
    }
 
 }
 
 @media only screen and (max-width:550px) {
-   blockquote{
-      max-width: 50%;
+   .graphContainer a, .graphContainer h2{
+      font-size: 2.1rem;
    }
-
+   blockquote{
+      max-width: 70%;
+   }
 }
 

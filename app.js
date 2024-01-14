@@ -30,7 +30,7 @@ app.use(
   helmet.contentSecurityPolicy({
     directives: {
       defaultSrc: ["'self'"],
-      imgSrc: ["'self'", '*','data:'],
+      imgSrc: ["'self'", 'https://images.mktw.net','data:'],
       scriptSrc: ["'self'", 'https://cdn.jsdelivr.net']
     },
   })

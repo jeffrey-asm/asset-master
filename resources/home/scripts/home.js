@@ -38,6 +38,10 @@ function constructStories(stories){
 }
 
 let charts = []
+Chart.defaults.font.size = 16;
+Chart.defaults.font.weight = 'bold';
+Chart.defaults.responsive = false;
+Chart.defaults.plugins.legend.display = false;
 
 function constructGraph(graphType,graphData,graphOptions,text,container){
    let graphContainer = document.createElement('div');
@@ -107,15 +111,7 @@ function constructStocks(stocks){
          }],
       };
 
-      let options = {
-         responsive:false,
-         maintainAspectRatio: false,
-         plugins:{
-            legend: {
-               display: false
-            }
-         }
-       };
+      let options = {};
 
       constructGraph('line',data,options,`<h2><a href = 'https://www.google.com/search?q=${symbol}'>${stockNames[symbol]}</a></h2>`,document.getElementById('markets'));
    }
@@ -160,18 +156,11 @@ function constructAccountsGraph(accounts,netWorth){
    };
 
    let options = {
-      responsive:false,
-      maintainAspectRatio: false,
       scales: {
          y: {
-             beginAtZero: true
+             beginAtZero: true,
          }
       },
-      plugins:{
-         legend: {
-            display: false
-         }
-      }
    }
 
    let innerText = `<h2><a href = './accounts#accounts'>Accounts</h2></a>`;
@@ -298,30 +287,21 @@ function constructFinanceGraph(transactions,budget){
     };
 
     let options = {
-      responsive:false,
-      maintainAspectRatio: false,
       scales: {
          y: {
             minBarLength: 2,
             beginAtZero: true,
             ticks: {
                beginAtZero:true,
-           }
+            }
          }
       },
-      plugins:{
-         legend: {
-            display: false
-         }
-      }
    };
 
    let stackedOptions = {
-      responsive:false,
-      maintainAspectRatio: false,
       scales: {
          x:{
-            stacked:true
+            stacked:true,
          },
          y: {
             minBarLength: 2,
@@ -331,11 +311,6 @@ function constructFinanceGraph(transactions,budget){
                beginAtZero:true,
            }
          },
-      },
-      plugins:{
-         legend: {
-            display: false
-         }
       },
    };
 
@@ -376,11 +351,6 @@ function updateChartColors(){
    charts.forEach((chart)=>{
       chart.options.scales.x.ticks.color = getComputedStyle(document.body).getPropertyValue('--text-color');
       chart.options.scales.y.ticks.color = getComputedStyle(document.body).getPropertyValue('--text-color');
-
-      // 4 rem
-      let calculatedFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize) * 4;
-      chart.options.scales.x.ticks.fontSize = calculatedFontSize;
-      chart.options.scales.y.ticks.fontSize = calculatedFontSize;
       chart.update();
    });
 }
@@ -388,5 +358,6 @@ function updateChartColors(){
 document.querySelector("#mode").addEventListener('change', (event)=>{
    updateChartColors();
 });
+
 
 fetchData();
