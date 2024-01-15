@@ -24,7 +24,7 @@ exports.validateEmail = function(result,email){
    return { status: 'pass' };
 }
 
-function validatePasswords(result,password,secondPassword){
+exports.validatePasswords = function(result,password,secondPassword){
    let passwordTest = new RegExp("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$");
    if (passwordTest.test(password) == 0){
       //Passwords must have at least one special character, one digit, 1 uppercase, 1 lowercase, and at least 8 total characters

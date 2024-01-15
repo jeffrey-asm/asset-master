@@ -1,34 +1,40 @@
-import {positiveGradient,negativeGradient,constructCategory} from "../../budget/scripts/construct.js";
-import {updateProfileInfo} from "../../settings/scripts/construct.js";
-import {getBudget} from "../../budget/scripts/construct.js";
-import {constructAccount} from "../../accounts/scripts/construct.js";
-
 let mode = localStorage.getItem('mode');
-let toggle = document.querySelector("#mode");
 
-if(mode && toggle){
+if(mode){
    if(mode == 'dark'){
-      toggle.click();
-      document.body.classList.add('dark-mode')
-   }
+      let possibleToggleSwitch = document.querySelector('#mode');
 
-   document.body.style.opacity = '1';
-
-   toggle.onchange = ()=> {
-      if(document.body.classList.contains('dark-mode')){
-         localStorage.mode = 'light';
-         document.body.classList.remove('dark-mode');
-      } else{
-         localStorage.mode =  'dark';
-         document.body.classList.add('dark-mode');
+      if(possibleToggleSwitch){
+         possibleToggleSwitch.click();
       }
-   };
+      document.body.classList.add('dark-mode');
+   }
+   document.body.style.opacity = '1';
 } else{
    localStorage.mode = 'light';
    document.body.style.opacity = '1';
 }
 
+let homeLogo = document.getElementById('logo');
 
+if(homeLogo){
+   homeLogo.onclick = (event) =>{
+      window.location.href = './home';
+   }
+}
+
+
+// Send request to log out method in built controllers
+let logoutIcons = document.querySelectorAll('.logOutIcon');
+
+if(logoutIcons){
+   logoutIcons.forEach((icon)=>{
+      // Some pages may have two log out icons (settings)
+      icon.onclick = function(event){
+         window.location.href = './logOut';
+      }
+   });
+}
 
 function checkDimensions(component,link) {
    let viewportWidth = window.innerWidth || document.documentElement.clientWidth;
@@ -101,7 +107,6 @@ function displayMessage(inputComponent, message, classType){
    },300);
 }
 
-let headerTitle = document.querySelector('.headerTitle');
 let mainTag = document.querySelector('main');
 let footerTag = document.querySelector('footer');
 
@@ -109,8 +114,9 @@ function openPopUp(component){
    if(!component.classList.contains('popupShown')){
       component.style.visibility = 'visible';
       component.classList.remove('popupHidden');
+      component.querySelector('button').disabled = false;
       //Apply blur to all other elements
-      headerTitle.style.filter = mainTag.style.filter = footerTag.style.filter = 'blur(3px)';
+      mainTag.style.filter = footerTag.style.filter = 'blur(3px)';
 
       //Add transition to button for smooth animation on hover
       component.getElementsByTagName('button')[0].style.transition = '0.5s';
@@ -121,7 +127,6 @@ function openPopUp(component){
 }
 
 function exitPopUp(component,form,icon,button){
-
    if(component.classList.contains('popupShown')){
       icon.classList.add('clicked');
 
@@ -132,7 +137,7 @@ function exitPopUp(component,form,icon,button){
       component.getElementsByTagName('button')[0].style.transition = 'initial';
 
       //Remove all blur applications
-      headerTitle.style.filter = mainTag.style.filter = footerTag.style.filter = 'initial';
+      mainTag.style.filter = footerTag.style.filter = 'initial';
 
       component.classList.remove('popupShown');
       component.classList.add('popupHidden');
@@ -230,25 +235,21 @@ async function sendRequest(url,structuredFormData,formButton,formButtonText,succ
       openNotification("fa-solid fa-layer-group", '<p>Could not successfully process request</p>', 'errorType');
       formButton.innerHTML = formButtonText;
       failFunction();
-    } finally{
-      setTimeout(()=>{
-         formButton.disabled = false;
-      },1500);
     }
 }
 
 //Shared onfocus for all form inputs
-for(let i = 0; i < inputs.length; i++){
-   inputs[i].onfocus = function(event){
-      removeMessage(messageContainer)
+for(let input of inputs){
+   input.onfocus = function(){
+      removeMessage();
    }
 }
 
 //Shared function for password inputs
 let passwordIcons = document.querySelectorAll('.fa-regular.fa-eye');
 
-for(let i = 0; i < passwordIcons.length; i++){
-   passwordIcons[i].onclick = function(event){
+passwordIcons.forEach((icon) => {
+   icon.onclick = function(event){
       //Target container in dataset to toggle visible or hidden password
       let passwordContainer = document.getElementById(this.dataset.container);
 
@@ -260,7 +261,7 @@ for(let i = 0; i < passwordIcons.length; i++){
          this.style.color = "black";
       }
    }
-}
+});
 
 // navbar
 let sideBarIcon = document.getElementById('sidebarIcon');

@@ -31,11 +31,11 @@ main button{
    overflow: hidden;
    text-align: center;
 
-   background: var(--text-color);
-   color: var(--background-color);
+   background: #24252A;
+   color: white;
    width:21rem;
    max-width:90%;
-   height:28.5rem;
+   height:30rem;
    padding:0;
    margin:0;
    animation: fadeIn 1s ease-in-out forwards;
@@ -85,7 +85,7 @@ main button{
 }
 
 .editAccountButton:hover{
-   box-shadow:0 20px 25px -5px #333333, 0 8px 10px -6px #333333;
+   box-shadow:0 20px 25px -5px white, 0 8px 10px -6px white;
 }
 
 @keyframes slideDown {
@@ -126,8 +126,8 @@ main button{
    font-size: 1.5em;
    font-weight: bolder;
 
-   background: var(--text-color);
-   color: var(--background-color);
+   background: #24252A;
+   color: white;
 
    height: 150px;
    transition: transform 1.5s ease-in-out ,opacity 1.5s ease-in-out;
@@ -140,68 +140,82 @@ main button{
 }
 
 #transactionsSection{
-   width:100%;
-
+   width:80%;
    margin:3rem auto;
-
-
 }
 
-#transactionsTable{
-   max-height: 700px;
-   overflow:auto;
-}
 
 .removedTransaction{
    transition: transform 1.5s ease-in-out, height 1.5s ease-in-out, opacity 1.5s ease-in-out;
    animation:slideUp 0.5s ease-in-out forwards;
 }
 
-table{
+#transactionsTable{
    width:100%;
    margin:0 auto;
-   text-align: center;
-   border-collapse:collapse;
-   text-align: center;
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   justify-content: flex-start;
+   gap:0;
 }
 
-
-table th{
+.transactionHeadings{
+   display: grid;
+   grid-template-columns: repeat(6,1fr);
+   align-items: center;
+   font-weight: bolder;
+   width:100%;
    font-size:1.3rem;
    color:#ffffff;
    background-color: #08B0FF;
-   padding:25px;
    border: 0;
-   position: sticky;
-   top: -10px;
-   z-index: 1;
-   height:3.7rem;
+   min-height:7.5rem;
+   text-align: center;
+
+   overflow: hidden;
+   border-top-left-radius: 25px;
+   border-top-right-radius: 25px;
 }
 
-table tbody tr{
+.transactions{
    width:100%;
+   max-height: 700px;
+   overflow:scroll;
+}
+.transactions::-webkit-scrollbar{
+   width:0;
+}
 
+.transactions .transactionRow:last-child{
+   border-bottom-left-radius: 25px;
+   border-bottom-right-radius: 25px;
+}
+
+.transactionRow{
+   display: grid;
+   grid-template-columns: repeat(6,1fr);
+   align-items: center;
+   width:100%;
    font-size:1.1rem;
    font-weight: bolder;
-   background-color: var(--text-color);
-   color:var(--background-color);
-   height:6.2rem;
-   border: 0;
+   background-color: #24252A;
+   color:white;
    transition: transform 2s ease-in-out;
    animation: slideDown 2s ease-in-out forwards;
-   border-bottom: 2px solid var(--background-color);
+   border-top: 5px white;
    text-align: center;
+   overflow: hidden;
 }
 
-table tbody tr:hover{
+.transactionRow:hover{
    transition:none;
    background:#969A96;
 }
 
 
-table button{
+.transactionRow button{
    width:3rem;
-   font-size:2.5rem;
    color:var(--background-color);
    font-size:1.1em;
    max-width:2em;
@@ -209,38 +223,27 @@ table button{
    background:none;
 }
 
-table button:hover{
+.transactionRow button:hover{
    color:#08B0FF;
    cursor:pointer;
    box-shadow:none;
 }
 
-table button[disabled]{
+.transactionRow button[disabled]{
    background:none;
    color:#aca8a8;
 }
 
-td.Income{
+#transactionTable p.Income{
    color:#08B0FF;
 }
 
-td.Expenses{
+#transactionTable p.Expenses{
    color:red;
 }
-table td, th{
+#transactionTable p{
    width:100px;
    padding:10px 25px;
-}
-table td:nth-child(-n+3){
-   max-width:40px;
-
-   white-space: wrap;
-   overflow: hidden;
-   text-overflow: ellipsis;
-}
-
-table td:last-child,table th:last-child{
-   max-width:40px;
 }
 
 @media only screen and (max-width:600px) {

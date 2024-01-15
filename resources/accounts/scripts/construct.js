@@ -53,7 +53,7 @@ export function constructAccount(name,type,balance,ID){
 }
 
 function insertTransactionByDate(container){
-   let mainContainer = document.querySelector('tbody');
+   let mainContainer = document.querySelector('.transactions');
    let possibleTransactions = mainContainer.querySelectorAll('.transactionRow');
    let found = false;
 
@@ -76,7 +76,7 @@ function insertTransactionByDate(container){
 export function constructTransaction(accountID,title,type,categoryID,date,amount,ID){
    let currentAmountFixed = amount.toLocaleString("en-US",{ minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-   let transactionContainer = document.createElement('tr');
+   let transactionContainer = document.createElement('div');
    transactionContainer.className = 'transactionRow';
    transactionContainer.id = ID
 
@@ -100,21 +100,21 @@ export function constructTransaction(accountID,title,type,categoryID,date,amount
    transactionContainer.dataset.account = accountID;
 
    transactionContainer.innerHTML = `
-      <td class = 'accountNameLink'>${accountName}</td>
-      <td>${title}</td>
-      <td>${categoryName}</td>
-      <td>${dateText}</td>
-      <td class = '${type}'>$${currentAmountFixed}</td>
-      <td>
+      <p class = 'accountNameLink'>${accountName}</p>
+      <p>${title}</p>
+      <p>${categoryName}</p>
+      <p>${dateText}</p>
+      <p class = '${type}'>$${currentAmountFixed}</p>
+      <p>
          <button class = "editTransactionIcon">
             <span>
                <i class = "fa-solid fa-pen-to-square"></i>
             </span>
          </button>
-      </td>
+      </p>
    `;
 
-   let possibleSwap = document.querySelector(`tbody #${ID}`);
+   let possibleSwap = document.querySelector(`.transactions #${ID}`);
 
 
    if(possibleSwap){
@@ -185,10 +185,9 @@ export async function getUserData(){
          document.getElementById('accounts').innerHTML = '<h2>No accounts available</h2>';
       }
 
-
-      for(let i = 0; i < accountKeys.length; i++){
-         constructAccount(data.render.accounts[accountKeys[i]].name, data.render.accounts[accountKeys[i]].type, data.render.accounts[accountKeys[i]].balance, accountKeys[i]);
-      }
+      accountKeys.forEach((key) => {
+         constructAccount(data.render.accounts[key].name, data.render.accounts[key].type, data.render.accounts[key].balance, key);
+      })
 
       //Empty option
       document.getElementById('account').innerHTML += `<option value =''></option>`;
@@ -214,17 +213,17 @@ export async function getUserData(){
 
       let expensesShown = false;
 
-
-      for(let i = 0; i < categoriesKeys.length;i++){
+      categoriesKeys.forEach((key) => {
          //Option contains value of ID and   text of actual name
-         if(categories[categoriesKeys[i]].type != 'Income' && !expensesShown) {
+         if(categories[key].type != 'Income' && !expensesShown) {
             //Sorted by Income -> Expenses
             categoryOptions +=  `<option data-type = 'Expenses' value = 'Expenses'>Expenses</option>`;
             expensesShown = true;
          }
 
-         categoryOptions += `<option data-type = '${categories[categoriesKeys[i]].type}' value = ${categoriesKeys[i]}>${categories[categoriesKeys[i]].name}</option>`;
-      }
+         categoryOptions += `<option data-type = '${categories[key].type}' value = ${key}>${categories[key].name}</option>`;
+      });
+
 
       if(!expensesShown){
          //Case of no expenses categories
@@ -236,13 +235,13 @@ export async function getUserData(){
 
       let transactionKeys = Object.keys(data.render.transactions);
 
-      for(let i = 0; i < transactionKeys.length; i++){
-         let currentTransaction = data.render.transactions[transactionKeys[i]];
-         constructTransaction(currentTransaction.accountID, currentTransaction.title, currentTransaction.type, currentTransaction.categoryID, currentTransaction.date, currentTransaction.amount, transactionKeys[i]);
-      }
+      transactionKeys.forEach((key) => {
+         let currentTransaction = data.render.transactions[key];
+         constructTransaction(currentTransaction.accountID, currentTransaction.title, currentTransaction.type, currentTransaction.categoryID, currentTransaction.date, currentTransaction.amount, key);
+      });
 
       if(transactionKeys.length == 0){
-         document.querySelector('tbody').innerHTML = '<tr class = "no-transaction"><td colspan = "6">No transactions available</td></tr>';
+         document.querySelector('.transactions').innerHTML = '<div class = "no-transaction"><p>No transactions available</p></div>';
       }
 
 

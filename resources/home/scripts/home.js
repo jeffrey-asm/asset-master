@@ -327,10 +327,7 @@ function constructFinanceGraph(transactions,budget){
 async function fetchData(){
    try {
       const response = await fetch('./fetchHomeData');
-
       const data = await response.json();
-
-      console.log(data);
 
       constructStories(data.stories);
       constructStocks(data.stocks);
@@ -354,10 +351,5 @@ function updateChartColors(){
       chart.update();
    });
 }
-
-document.querySelector("#mode").addEventListener('change', (event)=>{
-   updateChartColors();
-});
-
 
 fetchData();

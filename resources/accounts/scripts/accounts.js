@@ -1,4 +1,4 @@
-import {openPopUp,exitPopUp,sendRequest,openNotification}  from "../../shared/scripts/shared.js";
+import {openPopUp,exitPopUp,sendRequest}  from "../../shared/scripts/shared.js";
 import {constructAccount,getUserData} from "./construct.js";
 
 let addAccountButton = document.getElementById('addAccountButton');
@@ -33,17 +33,26 @@ exitEditAccountIcon.onclick = function(event){
 
 getUserData();
 
+function disabledAddButton(){
+   addAccountButton.disabled = true;
+
+   setTimeout(()=>{
+      addAccountButton.disabled = false;
+   },1500);
+}
+
 function disableAccountButtons(){
    let editAccountButtons = document.querySelectorAll('.editAccountButton');
 
-   for(let i = 0; i < editAccountButtons.length; i++){
-      editAccountButtons[i].disabled = true;
-   }
+   editAccountButtons.forEach((editButton)=>{
+      editButton.disabled = true;
+   });
+
 
    setTimeout(()=>{
-      for(let i = 0; i < editAccountButtons.length; i++){
-         editAccountButtons[i].disabled = false;
-      }
+      editAccountButtons.forEach((editButton)=>{
+         editButton.disabled = false;
+      });
    },1500);
 }
 
@@ -70,7 +79,7 @@ addAccountForm.onsubmit = async function(event){
 
    }
 
-   let failFunction =  () => {};
+   let failFunction =  () => {return;};
 
    let formData = new FormData(this);
    let structuredFormData = new URLSearchParams(formData).toString();
@@ -98,9 +107,9 @@ editAccountForm.onsubmit = async function(event){
 
                let possibleTransactions = document.querySelectorAll(`.transactionRow[data-account="${data.render.ID}"]`);
 
-               for(let i = 0; i < possibleTransactions.length; i++){
+               possibleTransactions.forEach((transaction)=>{
                   //Update names if applicable!
-                  let accountNameLink = possibleTransactions[i].querySelector('.accountNameLink');
+                  let accountNameLink = transaction.querySelector('.accountNameLink');
                   accountNameLink.innerHTML = data.render.name;
                   accountNameLink.onclick = function(event){
                      let accountContainer = document.querySelector(`#accounts #${data.render.ID}`);
@@ -110,7 +119,7 @@ editAccountForm.onsubmit = async function(event){
                         accountContainer.classList.remove('highlighted');
                      },5000);
                   }
-               }
+               })
             } else{
                document.querySelector(`#accounts #${data.render.ID}`).remove();
                disableAccountButtons();
@@ -123,15 +132,15 @@ editAccountForm.onsubmit = async function(event){
 
                let possibleTransactions = document.querySelectorAll(`.transactionRow[data-account="${data.render.ID}"]`);
 
-               for(let i = 0; i < possibleTransactions.length; i++){
+               possibleTransactions.forEach((transaction)=>{
                   //Reset account ID for transaction
-                  let accountNameLink = possibleTransactions[i].querySelector('.accountNameLink');
+                  let accountNameLink = transaction.querySelector('.accountNameLink');
                   accountNameLink.innerHTML = '';
                   accountNameLink.style.cursor = 'none';
                   accountNameLink.style.color = 'initial';
                   accountNameLink.onclick = null;
-                  possibleTransactions[i].dataset.accountID = '';
-               }
+                  transaction.dataset.accountID = '';
+               });
             }
 
             if(data.render.netWorth < 0) {
@@ -147,7 +156,7 @@ editAccountForm.onsubmit = async function(event){
 
    }
 
-   let failFunction =  () => {};
+   let failFunction =  () => {return;};
 
    let formData = new FormData(this);
    formData.set('name',document.getElementById('editName').value);

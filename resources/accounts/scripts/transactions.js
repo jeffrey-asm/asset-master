@@ -51,7 +51,7 @@ addTransactionForm.onsubmit = async function(event){
       },1100);
    }
 
-   let failFunction =  () => {};
+   let failFunction =  () => {return;};
 
    let formData = new FormData(this);
    //Select options hold possible ID's
@@ -70,18 +70,18 @@ editTransactionForm.onsubmit = async function(event){
       setTimeout(()=>{
          document.getElementById('exitEditTransactionIcon').click();
 
-         if(data.render.remove == true){
+         if(data.render.remove){
             let transaction = document.querySelector(`.transactionRow#${data.render.ID}`);
             transaction.classList.add('removedTransaction');
 
             setTimeout(()=>{
                transaction.remove();
 
-               let possibleTransaction = document.querySelector('tbody .transactionRow');
+               let possibleTransaction = document.querySelector('.transactionRow');
 
                if(!possibleTransaction){
                   //Must have removed only transaction on table
-                  document.querySelector('tbody').innerHTML = '<tr class = "no-transaction"><td colspan = "6">No transactions available</td></tr>';
+                  document.querySelector('.transactions').innerHTML = '<div class = "no-transaction"><p>No transactions available</p></div>';
                }
 
             },500);
@@ -95,7 +95,7 @@ editTransactionForm.onsubmit = async function(event){
       },1100);
    }
 
-   let failFunction =  () => {};
+   let failFunction =  () => {return;};
 
    let formData = new FormData(this);
    //Select options hold possible ID's

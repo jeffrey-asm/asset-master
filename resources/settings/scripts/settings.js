@@ -17,11 +17,6 @@ let exitPasswordIcon = document.getElementById('exitPasswordIcon');
 
 updateProfileInfo();
 
-// Send request to log out method in built controllers
-document.getElementById('logOutIcon').onclick = function(event){
-   window.location.href = './logOut';
-}
-
 //Handling removing disabled inputs individually
 function enableInput(input){
    input.disabled = false;
@@ -45,6 +40,18 @@ exitPasswordIcon.onclick = function(event){
    exitPopUp(passwordFormContainer,passwordForm,exitPasswordIcon,editPasswordPopUp);
 }
 
+let toggle = document.querySelector("#mode");
+
+toggle.onchange = ()=> {
+   if(document.body.classList.contains('dark-mode')){
+      localStorage.mode = 'light';
+      document.body.classList.remove('dark-mode');
+   } else{
+      localStorage.mode =  'dark';
+      document.body.classList.add('dark-mode');
+   }
+};
+
 // Send post request to handle validation and updating values
 detailsForm.onsubmit = async function(event){
    event.preventDefault();
@@ -61,8 +68,11 @@ detailsForm.onsubmit = async function(event){
        editUsername.disabled = editEmail.disabled = username.disabled = email.disabled = changesButton.disabled = true;
 
       setTimeout(()=>{
-         removeMessage(messageContainer)
-         document.getElementById('editUsername').disabled = document.getElementById('editEmail').disabled = false;
+         removeMessage(messageContainer);
+         setTimeout(()=>{
+            document.getElementById('editUsername').disabled = document.getElementById('editEmail').disabled = false;
+         },250);
+
       },2500);
    }
 

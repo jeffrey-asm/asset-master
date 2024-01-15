@@ -14,23 +14,21 @@
 <body>
    <header>
       <i class="fas fa-bars" id="sidebarIcon"></i>
-      <div class = "headerTitle">
-         <i class="fa-solid fa-layer-group fa-xl" id = 'logoIcon'></i>
-         <h1>Asset Master</h1>
-      </div>
 
       <nav>
          <i class="fa-solid fa-angles-left" id = 'exitSideBarIcon'></i>
+         <i class="fa-solid fa-layer-group fa-xl" id = 'logo'></i>
+         <h1>Asset Master</h1>
          <a href = "./home"><i class="fa-solid fa-house"></i> Home</a>
          <a href = "./budget"><i class="fa-solid fa-chart-pie"></i> Budget</a>
          <a href = "./accounts"> <i class="fa-solid fa-building-columns"></i> Accounts</a>
          <a href = "./settings"><i class="fa-solid fa-gear"></i> Settings</a>
 
-         <div class = 'sliderContainer'>
-            <label class="switch mode">
-               <input type="checkbox" name = 'mode' id = 'mode' >
-               <span class="slider mode"></span>
-             </label>
+         <div class = 'featureButtons'>
+            <i class="fa-regular fa-bell"></i>
+            <i class="fa-regular fa-user"></i>
+
+            <i class="fa-solid fa-right-from-bracket logOutIcon"></i>
          </div>
       </nav>
    </header>
@@ -67,37 +65,37 @@
 
    <footer>
       <div class="footerLinkContainers">
-        <h3>Resources</h3>
+         <h3>Resources</h3>
 
-        <ul>
-         <a href="#" onclick="event.preventDefault()" class="footerLinks">Guides</a>
-         <a href="#" onclick="event.preventDefault()" class="footerLinks">News</a>
-         <a href="#" onclick="event.preventDefault()" class="footerLinks">Tools</a>
-         <a href="#" onclick="event.preventDefault()" class="footerLinks">FAQs</a>
-         <a href="#" onclick="event.preventDefault()" class="footerLinks">Blog</a>
-        </ul>
+         <ul>
+            <li><a href="#" onclick="event.preventDefault()" class="footerLinks">Guides</a></li>
+            <li><a href="#" onclick="event.preventDefault()" class="footerLinks">News</a></li>
+            <li><a href="#" onclick="event.preventDefault()" class="footerLinks">Tools</a></li>
+            <li><a href="#" onclick="event.preventDefault()" class="footerLinks">FAQs</a></li>
+            <li><a href="#" onclick="event.preventDefault()" class="footerLinks">Blog</a></li>
+         </ul>
       </div>
       <div class="footerLinkContainers">
-        <h3>Pricing</h3>
+         <h3>Pricing</h3>
 
-        <ul>
-         <a href="#" onclick="event.preventDefault()" class="footerLinks">Plans</a>
-         <a href="#" onclick="event.preventDefault()" class="footerLinks">Fees</a>
-         <a href="#" onclick="event.preventDefault()" class="footerLinks">Costs</a>
-         <a href="#" onclick="event.preventDefault()" class="footerLinks">Rates</a>
-         <a href="#" onclick="event.preventDefault()" class="footerLinks">Billing</a>
-        </ul>
+         <ul>
+            <li><a href="#" onclick="event.preventDefault()" class="footerLinks">Plans</a></li>
+            <li><a href="#" onclick="event.preventDefault()" class="footerLinks">Fees</a></li>
+            <li><a href="#" onclick="event.preventDefault()" class="footerLinks">Costs</a></li>
+            <li><a href="#" onclick="event.preventDefault()" class="footerLinks">Rates</a></li>
+            <li><a href="#" onclick="event.preventDefault()" class="footerLinks">Billing</a></li>
+         </ul>
       </div>
       <div class="footerLinkContainers" id="company_container">
-        <h3>Company</h3>
+         <h3>Company</h3>
 
-        <ul>
-         <a href="#" onclick="event.preventDefault()" class="footerLinks">About</a>
-         <a href="#" onclick="event.preventDefault()" class="footerLinks">Mission</a>
-         <a href="#" onclick="event.preventDefault()" class="footerLinks">Culture</a>
-         <a href="#" onclick="event.preventDefault()" class="footerLinks">Careers</a>
-         <a href="#" onclick="event.preventDefault()" class="footerLinks">Partners</a>
-        </ul>
+         <ul>
+            <li><a href="#" onclick="event.preventDefault()" class="footerLinks">About</a></li>
+            <li><a href="#" onclick="event.preventDefault()" class="footerLinks">Mission</a></li>
+            <li><a href="#" onclick="event.preventDefault()" class="footerLinks">Culture</a></li>
+            <li><a href="#" onclick="event.preventDefault()" class="footerLinks">Careers</a></li>
+            <li><a href="#" onclick="event.preventDefault()" class="footerLinks">Partners</a></li>
+         </ul>
       </div>
 
       <div class="footerLinkContainers">
@@ -107,12 +105,12 @@
             <img src="../resources/shared/images/google.png" alt="">
          </div>
          <div class="footerMediaLinks" id = 'socialLinks'>
-            <a href="#" onclick="event.preventDefault()"><i class="fa-brands fa-facebook"></i></a>
-            <a href="#" onclick="event.preventDefault()" class="fa-brands fa-instagram"></a>
-            <a href="#" onclick="event.preventDefault()"><i class="fa-brands fa-x-twitter"></i></a>
-            <a href="#" onclick="event.preventDefault()" class="fa-brands fa-pinterest"></a>
-            <a href="#" onclick="event.preventDefault()" class="fa-brands fa-linkedin"></a>
-            <a href="https://github.com/jeffreyC4/finance-tracker" class="fa-brands fa-github" id = 'git'></a>
+            <i class="fa-brands fa-facebook"></i>
+            <i class="fa-brands fa-instagram"></i>
+            <i class="fa-brands fa-x-twitter"></i>
+            <i class="fa-brands fa-pinterest"></i>
+            <i class="fa-brands fa-linkedin"></i>
+            <i class="fa-brands fa-github"></i>
          </div>
          <h5>Copyright &copy; <span id = 'footerYear'>2024</span> Asset Master &reg;</h5>
       </div>

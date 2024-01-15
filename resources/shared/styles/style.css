@@ -21,11 +21,9 @@ body.dark-mode {
 
 body{
    font-family: 'Inter', sans-serif;
-   color:black;
    background-color: var(--background-color);
    color: var(--text-color);
    opacity: 0;
-
 
    overflow-x: hidden;
    transition: opacity 0.5s ease-in-out 0.5s background-color 1s ease-in color 1s ease-in;
@@ -39,20 +37,17 @@ main{
 }
 
 header{
-   position: relative;
-   top:2rem;
-   display: grid;
-   grid-template-columns: 2fr 20fr;
+   position: absolute;
+   top:0;
+   left:0;
    width:100%;
    margin:0;
-   padding:0 20px 20px 20px;
 }
-
 
 #sidebarIcon{
    position: fixed;
    margin-top:50px;
-   margin-left:50px;
+   margin-left:60px;
    text-align: center;
    font-size:2rem;
    cursor: pointer;
@@ -65,35 +60,13 @@ header{
    font-size:2rem;
    margin-bottom: 1rem;
 }
-
-
-.headerTitle{
-   box-sizing: border-box;
-   display: flex;
-   flex-direction: row;
-   align-items: center;
-   justify-content: center;
-   flex-wrap: nowrap;
-   gap:20px;
-   font-size: 26px;
-   text-align: center;
-   width:100%;
-   margin:auto;
-   grid-row:1;
-   grid-column: 1/-1;
-}
-
-.headerTitle i{
-   font-size:65px;
-   transform:translateY(2px);
-}
-
-header i:hover{
-   cursor:pointer;
+#exitSideBarIcon:hover,#logo:hover{
    color:#08B0FF;
 }
-
-
+#logo{
+   margin:1rem 0;
+   font-size:2.3rem;
+}
 
 @keyframes showSideBar{
    from{
@@ -131,7 +104,7 @@ nav{
    flex-wrap: nowrap;
    align-items: center;
    justify-content: flex-start;
-   padding-top:75px;
+   padding-top:60px;
    gap:0;
    z-index:1000;
    overflow: hidden;
@@ -158,6 +131,8 @@ nav a{
    padding:0 1rem;
    height:4rem;
 
+   font-size:1.2rem;
+
    display: flex;
    flex-direction: row;
    justify-content: center;
@@ -171,6 +146,31 @@ nav .sliderModeContainer{
 
 nav a:hover{
    background:#969A96;
+}
+
+nav .featureButtons{
+   margin-top: auto;
+   height:20rem;
+   font-size: 2rem;
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+   align-items: center;
+   gap:20px;
+}
+
+nav .featureButtons i{
+   font-size: 2rem;
+}
+
+.logOutIcon{
+   cursor:pointer;
+   font-size:2rem;
+   color:var(--background-color);
+}
+
+.logOutIcon:hover{
+   color:red;
 }
 
 
@@ -231,10 +231,12 @@ button{
 
  @keyframes fadeOut {
    from {
+      transform: scale(1);
       opacity: 1;
    }
    to {
       opacity: 0;
+      transform:scale(0.1);
    }
  }
 
@@ -247,6 +249,7 @@ button{
    text-align: center;
    margin:10px auto 10px auto;
    animation:fadeIn 0.5s ease-in-out forwards;
+   transition: opacity 0.5s ease-in-out forwards transform 0.5s ease-in-out forwards;
 }
 
 .informational{
@@ -330,7 +333,7 @@ footer {
 .footerLinkContainers h3 {
    margin-top:0;
    color: white;
-   font-size: 1.5rem;
+   font-size: 1.7rem;
 }
 
 .footerLinkContainers {
@@ -372,14 +375,26 @@ footer {
 }
 .storeImageContainer img{
    width:10rem;
+   cursor: pointer;
 }
 
-.footerMediaLinks a {
+footer img:hover,footer i:hover,footer li:hover{
+   cursor: pointer;
+   transform: translateY(-2px);
+   transition:transform 0.5s ease-in-out;
+}
+
+.footerMediaLinks i {
    padding: 10px;
    font-size:1.8rem;
 
    color: #08B0FF;
    text-decoration: none;
+   cursor: pointer;
+}
+
+.footerMediaLinks i:hover{
+   color:white;
 }
 
 #socialLinks{
@@ -576,9 +591,6 @@ footer a:hover {
    width:50px;
    height:50px;
    top:-25px;
-}
-
-.popupNotification .popupIconContainer{
    font-size:1.3rem;
 }
 
@@ -637,13 +649,7 @@ footer a:hover {
    nav{
       width:180px;
    }
-   nav a{
-      font-size:1.4rem;
-   }
 
-   nav i{
-      font-size:2rem;
-   }
 }
 
 @media only screen and (max-width:360px){
