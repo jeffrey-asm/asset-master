@@ -11,6 +11,7 @@ loginForm.onsubmit = async function(event){
       document.getElementById("username").classList.remove("errorInput");
       document.getElementById("password").classList.remove('errorInput');
       setTimeout(()=>{
+         submitButton.disabled = false;
          transitionToPage(submitButton,'../users/home');
       },800);
    }

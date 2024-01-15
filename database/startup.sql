@@ -52,3 +52,11 @@ CREATE TABLE `Stocks`(
    DateAndHour VARCHAR(30) PRIMARY KEY,
    Stocks JSON
 );
+
+DELETE Users, Accounts, Budgets, Transactions, Categories
+FROM Users
+LEFT JOIN Accounts ON Accounts.UserID = 'qeaeomr1703376705615'
+LEFT JOIN Budgets ON Budgets.UserID = 'qeaeomr1703376705615'
+LEFT JOIN Transactions ON Transactions.UserID = 'qeaeomr1703376705615'
+LEFT JOIN Categories ON Categories.UserID = 'qeaeomr1703376705615'
+WHERE Users.UserID = 'qeaeomr1703376705615';

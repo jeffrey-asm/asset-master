@@ -72,11 +72,6 @@ addAccountForm.onsubmit = async function(event){
             `Net Worth: <span class = 'positiveNetWorth'>$${parseFloat(data.render.netWorth).toLocaleString("en-US",{ minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>`;
          }
       },1100);
-
-      //Add options for new account to transaction form
-      document.getElementById('account').innerHTML = `<option value ='${data.render.ID}'>${data.render.name}</option>` + document.getElementById('account').innerHTML;
-      document.getElementById('editAccount').innerHTML = `<option value ='${data.render.ID}'>${data.render.name}</option>` + document.getElementById('editAccount').innerHTML;
-
    }
 
    let failFunction =  () => {return;};

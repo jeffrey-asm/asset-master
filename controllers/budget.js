@@ -36,16 +36,16 @@ exports.grabBudgetInformation =  async function(request,result,next){
 
       returnData.categories = {};
 
-      for(let i = 0; i < userCategories.length; i++){
+      for(let category of userCategories){
          // Categories -> ID -> {}
-         returnData.categories[userCategories[i].CategoryID] = {
-            name : userCategories[i].Name,
-            type : userCategories[i].Type,
-            current : parseFloat(userCategories[i].Current),
-            total : parseFloat(userCategories[i].Total),
-            month: userCategories[i].Month,
+         returnData.categories[category.CategoryID] = {
+            name : category.Name,
+            type : category.Type,
+            current : parseFloat(category.Current),
+            total : parseFloat(category.Total),
+            month: category.Month,
          }
-      }
+      };
 
       returnData.Month = userBudget[0].Month;
       request.session.budget = returnData;
@@ -59,6 +59,8 @@ exports.grabBudgetInformation =  async function(request,result,next){
       if(resetBudgetTest){
          //Reset budget for the month ==> all budget values should be 0.00
          returnData = await exports.resetBudget(request,result,next);
+         // Notify user that their current inputs are based on new month
+         returnData.notify = true;
       } else{
          returnData.leftOver = parseFloat((incomeFixed.minus(expensesFixed).toString()));
       }
@@ -134,7 +136,7 @@ exports.addCategory = asyncHandler(async(request,result,next)=>{
    }
 });
 
-exports.updateCategory = asyncHandler(async(request,result,next)=>{
+exports.updateCategory = asyncHandler(async(request,result,next) => {
    try{
       let trimmedInputs = validation.trimInputs(result,request.body,'editAmount');
       if(trimmedInputs.status != undefined) return;
@@ -159,12 +161,12 @@ exports.updateCategory = asyncHandler(async(request,result,next)=>{
 
          await query.runQuery(`UPDATE Transactions SET CategoryID = ? WHERE CategoryID = ?;`,[previousType,trimmedInputs.ID]);
 
-         for(let i = 0; i < possibleTransactionIDs.length; i++){
+         possibleTransactionIDs.forEach((transactionID) => {
             //Update all connected account transactions within the cache and roll back to main type
-            if(request.session.transactions[possibleTransactionIDs[i]].categoryID == trimmedInputs.ID){
-               request.session.transactions[possibleTransactionIDs[i]].categoryID = previousType;
+            if(request.session.transactions[transactionID].categoryID == trimmedInputs.ID){
+               request.session.transactions[transactionID].categoryID = previousType;
             }
-         }
+         });
 
          trimmedInputs.changes = true;
          trimmedInputs.mainOrSub = 'remove';
@@ -196,7 +198,7 @@ exports.updateCategory = asyncHandler(async(request,result,next)=>{
             await request.session.save();
 
             result.status(200);
-            sharedReturn.sendSuccess(result,'Successfully updated category <i class="fa-solid fa-chart-pie" ></i>',trimmedInputs);
+            sharedReturn.sendSuccess(result,'Successfully updated category <i class="fa-solid fa-chart-pie"></i>',trimmedInputs);
             return;
          } else{
             result.status(200);
@@ -247,12 +249,12 @@ exports.updateCategory = asyncHandler(async(request,result,next)=>{
 
             let possibleTransactionIDs = Object.keys(request.session.transactions);
 
-            for(let i = 0; i < possibleTransactionIDs.length; i++){
+            possibleTransactionIDs.forEach((transactionID) => {
                //Update all connected account transactions within the cache
-               if(request.session.transactions[possibleTransactionIDs[i]].categoryID == trimmedInputs.ID){
-                  request.session.transactions[possibleTransactionIDs[i]].type = trimmedInputs.type;
+               if(request.session.transactions[transactionID].categoryID == trimmedInputs.ID){
+                  request.session.transactions[transactionID].type = trimmedInputs.type;
                }
-            }
+            });
 
             //Will need to re-construct containers for changes in several categories
             changesMade = true;
@@ -311,10 +313,10 @@ exports.resetBudget = asyncHandler(async(request,result,next)=>{
 
       let categories = Object.keys(request.session.budget.categories);
 
-      for(let i = 0; i < categories.length; i++){
-         request.session.budget.categories[categories[i]].current = 0.00;
-         request.session.budget.categories[categories[i]].month = currentMonth;
-      }
+      categories.forEach((category) => {
+         request.session.budget.categories[category].current = 0.00;
+         request.session.budget.categories[category].month = currentMonth;
+      });
 
       request.session.budget.leftOver = 0.00;
       request.session.budget.Month = currentMonth;

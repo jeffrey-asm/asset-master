@@ -13,14 +13,14 @@ let exitEditCategoryIcon = document.getElementById('exitEditCategoryIcon');
 function disableEditButtons(){
    let editButtons = document.body.querySelectorAll('.editCategory');
 
-   for(let i = 0; i < editButtons.length; i++){
+   editButtons.forEach((editButton)=>{
       editButtons[i].disabled = true;
-   }
+   });
 
    setTimeout(()=>{
-      for(let i = 0; i < editButtons.length; i++){
+      editButtons.forEach((editButton)=>{
          editButtons[i].disabled = false;
-      }
+      });
    },1500);
 }
 
@@ -41,7 +41,7 @@ addCategoryForm.onsubmit = async function(event){
       },1100);
    }
 
-   let failFunction =  () => {};
+   let failFunction =  () => {return;};
 
    let formData = new FormData(this);
    let structuredFormData = new URLSearchParams(formData).toString();
@@ -56,23 +56,20 @@ editCategoryForm.onsubmit = async function(event){
       setTimeout(()=>{
          document.getElementById('exitEditCategoryIcon').click();
          if(data.render.changes){
-
             if(data.render.mainOrSub == 'reload'){
                getBudget();
+            } else if(data.render.mainOrSub != 'remove'){
+               //Replace current category node
+               constructCategory(data.render.mainOrSub, data.render.type,data.render.ID, data.render.name, data.render.current, data.render.total);
+               disableEditButtons();
             } else{
-               if(data.render.mainOrSub != 'remove'){
-                  //Replace current category node
-                  constructCategory(data.render.mainOrSub, data.render.type,data.render.ID, data.render.name, data.render.current, data.render.total);
-                  disableEditButtons();
-               } else{
-                  document.getElementById(data.render.ID).remove();
-               }
+               document.getElementById(data.render.ID).remove();
             }
          }
       },1100);
    }
 
-   let failFunction =  () => {};
+   let failFunction =  () => {return;};
 
    let formData = new FormData(this);
    //Set name since it could be disabled for main types

@@ -72,17 +72,9 @@ main{
 .currentProgress{
    height:2.3rem;
    width:100%;
+   background-color:#00FF00;
    transition: width 1.5s ease-in-out,background-color 1.5s ease-in-out;
 }
-
-.currentProgress.Income{
-   background-color:#00FF00;
-}
-
-.currentProgress.Expenses{
-   background-color: #FF0000;
-}
-
 .editCategory{
    grid-row:3;
    grid-column: 7/-1;

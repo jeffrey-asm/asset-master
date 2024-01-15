@@ -1,4 +1,4 @@
-import {openPopUp,exitPopUp,openNotification,sendRequest}  from "../../shared/scripts/shared.js";
+import {openPopUp,exitPopUp,openNotification}  from "../../shared/scripts/shared.js";
 
 export const positiveGradient = [
    "#FF0000", // Red
@@ -129,12 +129,12 @@ export async function getBudget(){
    let addCategoryContainer = document.getElementById('addCategoryContainer');
    let addCategoryButtons = document.querySelectorAll('.addCategoryButton');
 
-   for(let i = 0; i < addCategoryButtons.length; i++){
-      addCategoryButtons[i].onclick = function(event){
+   addCategoryButtons.forEach((button) => {
+      button.onclick = function(event){
          categoryType.value = this.dataset.type;
          openPopUp(addCategoryContainer);
       }
-   }
+   });
 
    let addCategoryForm = document.getElementById('addCategoryForm');
    let exitAddCategoryIcon = document.getElementById('exitAddCategoryIcon');
@@ -174,10 +174,10 @@ export async function getBudget(){
          return (categories[a].name).localeCompare(categories[b].name);
        });
 
-      for(let i = 0; i < categoriesKeys.length;i++){
+       categoriesKeys.forEach((key) => {
          //Construct sub categories
-         constructCategory('sub', categories[categoriesKeys[i]].type,categoriesKeys[i], categories[categoriesKeys[i]].name, categories[categoriesKeys[i]].current, categories[categoriesKeys[i]].total);
-      }
+         constructCategory('sub', categories[key].type,key, categories[key].name, categories[key].current, categories[key].total);
+       });
 
 
       let leftOverSpan = document.getElementById('leftOverSpan');
@@ -195,6 +195,11 @@ export async function getBudget(){
          leftOverSpan.style.color = '#178eef';
          leftOverSpan.innerHTML = `$` + data.render.leftOver.toLocaleString("en-US",{ minimumFractionDigits: 2, maximumFractionDigits: 2 });
       }
+
+      if(data.render.notify){
+         openNotification("fa-solid fa-chart-pie", '<p>Updated budget for the month</p>', 'informational');
+      }
+
     } catch (error) {
       console.log(error);
       constructCategory('main', 'Income','mainIncome', 'Income', 0.00, 0.00);

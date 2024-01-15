@@ -139,17 +139,16 @@ form hr{
 }
 
 .popupForm h2{
-   margin:20px auto 0 auto;
+   margin:5px auto 0 auto;
    font-size:2.9rem;
 }
 
 
 .popupFormContainer{
    width:100%;
-   margin-top:2.5rem;
+   margin-top:1rem;
    overflow-y: auto;
 }
-
 
 /* https://loading.io/css/ */
 .lds-facebook {

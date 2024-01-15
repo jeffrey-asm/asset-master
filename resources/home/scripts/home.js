@@ -4,14 +4,13 @@ function constructStories(stories){
    let storiesContainer = document.getElementById('stories');
    let storiesItems = stories.rss.channel[0].item;
 
-   for(let i = 0; i < storiesItems.length; i++){
+   storiesItems.forEach((story)=>{
+      let container = document.createElement('div');
+      container.className = 'story';
 
-      let story = document.createElement('div');
-      story.className = 'story';
-
-      let possibleImageURL = ``;
-      let possibleImageType = ``;
-      let possibleURL = storiesItems[i]['media:content']?.[0]?.['$'] || storiesItems[i]['image'] || 0;
+      let possibleImageURL;
+      let possibleImageType;
+      let possibleURL = story['media:content']?.[0]?.['$'] || story['image'] || 0;
 
       if(possibleURL != '' && possibleURL.url && possibleURL.url.includes('https://images.mktw.net')){
          //https://images.mktw.net is only allowed domain for images
@@ -22,26 +21,28 @@ function constructStories(stories){
          possibleImageType = 'text/jpeg';
       }
 
-      story.innerHTML = `
+      container.innerHTML = `
          <div class = 'imageContainer'>
             <img src="${possibleImageURL}" alt="story-image" type="${possibleImageType}">
          </div>
          <div class = 'storyText'>
-            <h2><a href = '${storiesItems[i].link}'>${storiesItems[i].title[0]}</a></h2>
-            <p>${storiesItems[i].description[0]}</p>
-            <h3><i class="fa-solid fa-at"></i> ${storiesItems[i].author[0]}</h3>
-            <h3><i class="fa-solid fa-calendar-days"></i> ${storiesItems[i].pubDate[0]}</h3>
+            <h2><a href = '${story.link}'>${story.title[0]}</a></h2>
+            <p>${story.description[0]}</p>
+            <h3><i class="fa-solid fa-at"></i> ${story.author[0]}</h3>
+            <h3><i class="fa-solid fa-calendar-days"></i> ${story.pubDate[0]}</h3>
          </div>
       `
-      storiesContainer.append(story);
-   }
+      storiesContainer.append(container);
+   });
 }
 
 let charts = []
 Chart.defaults.font.size = 16;
 Chart.defaults.font.weight = 'bold';
 Chart.defaults.responsive = false;
+Chart.defaults.maintainAspectRatio = true;
 Chart.defaults.plugins.legend.display = false;
+Chart.defaults.datasets.bar.maxBarThickness = 50;
 
 function constructGraph(graphType,graphData,graphOptions,text,container){
    let graphContainer = document.createElement('div');
@@ -75,11 +76,10 @@ function constructStocks(stocks){
       "BITW":"Bitwise 10 Crypto Index Units Beneficial Interest"
    }
 
+   allStocks.forEach((stock) => {
+      let symbol = stock['Meta Data']['2. Symbol'];
 
-   for(let i = 0; i < allStocks.length; i++){
-      let symbol = allStocks[i]['Meta Data']['2. Symbol'];
-
-      let stockData = allStocks[i]['Time Series (Daily)']
+      let stockData = stock['Time Series (Daily)']
       let times = Object.keys(stockData);
 
       let graphDates = [];
@@ -114,7 +114,7 @@ function constructStocks(stocks){
       let options = {};
 
       constructGraph('line',data,options,`<h2><a href = 'https://www.google.com/search?q=${symbol}'>${stockNames[symbol]}</a></h2>`,document.getElementById('markets'));
-   }
+   });
 }
 
 function constructAccountsGraph(accounts,netWorth){
@@ -132,17 +132,17 @@ function constructAccountsGraph(accounts,netWorth){
 
    let accountColors = [];
 
-   for(let i = 0; i < accountData.length; i++){
-      accountNames.push(accountData[i].name);
-      accountValues.push(accountData[i].balance);
+   accountData.forEach((account) => {
+      accountNames.push(account.name);
+      accountValues.push(account.balance);
 
-      if(accountData[i].type == 'Loan' || accountData[i].type == 'Credit Card'){
+      if(account.type == 'Loan' || account.type == 'Credit Card'){
          //Differentiate between negative and positive accounts
          accountColors.push('red');
       } else{
          accountColors.push(backgroundColors[Math.floor(Math.random() * backgroundColors.length)]);
       }
-   }
+   });
 
    let data = {
       labels: accountNames,
@@ -158,8 +158,9 @@ function constructAccountsGraph(accounts,netWorth){
    let options = {
       scales: {
          y: {
-             beginAtZero: true,
+            beginAtZero: true,
          }
+
       },
    }
 
@@ -239,27 +240,24 @@ function constructFinanceGraph(transactions,budget){
             incomeCategoriesData.datasets.push(graphData);
             categoryIndexes[categoryID] = incomeCategoryIndex++;
          }
-      } else{
-         if(!categoryIndexes[categoryID]){
-            expensesCategoriesData.datasets.push(graphData);
-            categoryIndexes[categoryID] = expensesCategoryIndex++;
-         }
+      } else if(!categoryIndexes[categoryID]){
+         expensesCategoriesData.datasets.push(graphData);
+         categoryIndexes[categoryID] = expensesCategoryIndex++;
       }
    });
 
-
-   for(let i = 0; i < transactionData.length; i++){
-      let date = transactionData[i].date.split('-');
+   transactionData.forEach((transaction) => {
+      let date = transaction.date.split('-');
       let year = date[0];
 
       if(year == currentYear){
          //Only construct data for current year
          let monthIndex = date[1] - 1;
-         let amount = transactionData[i].amount;
-         let categoryIndex = categoryIndexes[transactionData[i].categoryID];
+         let amount = transaction.amount;
+         let categoryIndex = categoryIndexes[transaction.categoryID];
 
-         if(transactionData[i].type == 'Income'){
-            if(transactionData[i].categoryID != 'Income'){
+         if(transaction.type == 'Income'){
+            if(transaction.categoryID != 'Income'){
                //Categories Object stores index in array of data
                incomeCategoriesData.datasets[categoryIndex].data[monthIndex] += amount;
             } else{
@@ -269,7 +267,7 @@ function constructFinanceGraph(transactions,budget){
 
             incomeData.data[monthIndex] += amount;
          } else{
-            if(transactionData[i].categoryID != 'Expenses'){
+            if(transaction.categoryID != 'Expenses'){
                expensesCategoriesData.datasets[categoryIndex].data[monthIndex] += amount;
             } else{
                expensesCategoriesData.datasets[0].data[monthIndex] += amount;
@@ -278,8 +276,7 @@ function constructFinanceGraph(transactions,budget){
             expensesData.data[monthIndex] += amount
          }
       }
-   }
-
+   });
 
    let incomeExpensesData = {
       labels: months,

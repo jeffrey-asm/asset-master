@@ -84,7 +84,7 @@ editTransactionForm.onsubmit = async function(event){
                   document.querySelector('.transactions').innerHTML = '<div class = "no-transaction"><p>No transactions available</p></div>';
                }
 
-            },500);
+            },1900);
 
 
          } else if(data.render.changes){

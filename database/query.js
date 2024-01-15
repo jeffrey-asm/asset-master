@@ -59,22 +59,24 @@ exports.randomIdentification = function() {
 
 exports.changesMade = function(inputObject,comparingObject){
    let inputKeys = Object.keys(inputObject);
+   let changesMade = false;
 
    //Shared function to check if any changes were made prior to running queries
-   for(let i = 0; i < inputKeys.length; i++){
-      if(comparingObject.hasOwnProperty(inputKeys[i]) && inputObject[inputKeys[i]] != comparingObject[inputKeys[i]]){
-         if(inputKeys[i] == 'date'){
+   inputKeys.forEach((key) => {
+      if(comparingObject.hasOwnProperty(key) && inputObject[key] != comparingObject[key]){
+         if(key == 'date'){
             //Compare using specific date format in database
-            const inputDate = new Date(inputObject[inputKeys[i]] + 'T05:00:00.000Z');
-            const oldDate = new Date(comparingObject[inputKeys[i]]);
+            const inputDate = new Date(inputObject[key] + 'T05:00:00.000Z');
+            const oldDate = new Date(comparingObject[key]);
 
-            if(inputDate.getTime() != oldDate.getTime()) return true;
+            if(inputDate.getTime() != oldDate.getTime()) changesMade = true;
          } else{
-            return true;
+            changesMade =  true;
          }
       }
-   }
-   return false;
+   });
+
+   return changesMade;
 }
 
 exports.retrieveRandomID = async function(query){

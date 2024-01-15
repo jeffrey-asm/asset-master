@@ -58,8 +58,7 @@ form label{
 .securityContainer{
    display: grid;
    grid-template-columns: 5fr 1fr;
-   grid-template-rows: 40px;
-   row-gap:5px;
+   row-gap:2rem;
    column-gap: 5px;
    margin:15px 0 15px 0;
    text-align: left;
@@ -68,14 +67,12 @@ form label{
 
 .securityTitle{
    font-size:1.4rem;
-   grid-row:1;
-   grid-column: 1;
+   width:100%;
 }
 
 .securityText{
    font-size:1.2rem;
-   grid-row:2;
-   grid-column: 1;
+   width:100%;
    margin:0;
 }
 
@@ -85,15 +82,20 @@ form label{
    color:white;
    border:0;
 }
-
-.securityButton{
-   grid-row: 1/2;
+.securityButtonContainer{
+   height:100%;
+   grid-row: 1/-1;
    grid-column: 2/4;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   text-align: center;
+}
+.securityButton{
    border:2px solid black;
    color:black;
    background-color: white;
    width:8.7rem;
-   max-width: 100%;
    margin:auto;
    font-size:1.1rem;
    white-space: wrap;
@@ -116,15 +118,25 @@ form label{
    grid-column: 2/4;
    max-width: 8.7rem;
 }
+#deletePopUpButton,#deleteIconContainer,#deleteForm button{
+   color:white;
+   background: red;
+}
 
+#deletePopUpButton{
+   border:0;
+}
 
+#deleteForm p{
+   margin:5px;
+}
 
 @media only screen and (max-width:1300px){
    form{
       width:90%;
    }
-   h1{
-      font-size:3.9rem;
+   main h1{
+      font-size:3.4rem;
    }
    form h2{
       font-size:1.8rem;
@@ -139,22 +151,15 @@ form label{
       margin-top:40px;
       margin-bottom:0;
    }
+}
+@media only screen and (max-width:900px){
    .securityContainer{
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       text-align: center;
-      gap:15px;
-   }
-
-   .securityButton{
-      grid-row:3;
-      margin:auto;
-   }
-   .securityText,.securityTitle{
-      width:100%;
-      margin:auto;
+      gap:2rem;
    }
 
 }

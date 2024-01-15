@@ -57,24 +57,27 @@ async function fetchStocks(request,dateAndHour){
       return stocks;
    }
 
-   try {
-      throw error;
-      for(let i = 0; i < symbols.length; i++){
-         const options = {
-            method: 'GET',
-            url: 'https://alpha-vantage.p.rapidapi.com/query',
-            params: {
-              function: 'TIME_SERIES_DAILY',
-              symbol: 'VT',
-              outputsize: 'compact',
-              datatype: 'json'
-            },
-            headers: {
-              'X-RapidAPI-Key': process.env.XRapidAPIKey,
-              'X-RapidAPI-Host': process.env.XRapidAPIHost,
-            }
-         }
 
+   let options = {
+      method: 'GET',
+      url: 'https://alpha-vantage.p.rapidapi.com/query',
+      params: {
+      function: 'TIME_SERIES_DAILY',
+      symbol: 'VT',
+      outputsize: 'compact',
+      datatype: 'json'
+      },
+      headers: {
+      'X-RapidAPI-Key': process.env.XRapidAPIKey,
+      'X-RapidAPI-Host': process.env.XRapidAPIHost,
+      }
+   }
+
+   for(let symbol of symbols) {
+      try{
+         throw error;
+
+         options.symbol = symbol;
          const response = await axios.request(options);
 
          if(!response.data['Meta Data'] ){
@@ -82,14 +85,14 @@ async function fetchStocks(request,dateAndHour){
             throw error;
          }
 
-         stocks[symbols[i]] = await response.data;
+         stocks[symbol] = await response.data;
+      }  catch(error){
+         console.log("BACKUP JSON");
+         const jsonBackup = await fs.readFile('resources/home/backup.json', 'utf8');
+         const data = await JSON.parse(jsonBackup);
+         stocks =  data;
       }
-   } catch(error){
-      console.log("BACKUP JSON");
-      const jsonBackup = await fs.readFile('resources/home/backup.json', 'utf8');
-      const data = await JSON.parse(jsonBackup);
-      stocks =  data;
-   }
+   };
 
    if(initializeData){
       await query.runQuery('DELETE FROM Stocks');
@@ -98,7 +101,6 @@ async function fetchStocks(request,dateAndHour){
 
    request.session.stocks = stocks;
    await request.session.save();
-
    return stocks;
 }
 
@@ -125,7 +127,6 @@ exports.fetchHomeData = asyncHandler(async(request,result,next)=>{
          data.userData = {
             accounts : request.session.accounts,
             transactions : request.session.transactions,
-            accounts : request.session.accounts,
             budget : request.session.budget
          };
       }

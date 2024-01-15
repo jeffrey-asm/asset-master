@@ -13,9 +13,9 @@ function renderOrRedirect(request,result,file){
 
 // Development purposes
 function developmentTest(request){
-  request.session.UserID = 'qeaeomr1703376705615';
+  request.session.UserID = 't037f667eb42f12f7587fd8739f1d1';
   request.session.Username = 'root';
-  request.session.Email = 'jeffrey@gmail.com';
+  request.session.Email = 'root@gmail.com';
   request.session.Verified = 'F';
 }
 

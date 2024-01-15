@@ -100,10 +100,10 @@ export function constructTransaction(accountID,title,type,categoryID,date,amount
    transactionContainer.dataset.account = accountID;
 
    transactionContainer.innerHTML = `
+      <p>${dateText}</p>
       <p class = 'accountNameLink'>${accountName}</p>
       <p>${title}</p>
       <p>${categoryName}</p>
-      <p>${dateText}</p>
       <p class = '${type}'>$${currentAmountFixed}</p>
       <p>
          <button class = "editTransactionIcon">

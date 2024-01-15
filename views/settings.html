@@ -22,13 +22,6 @@
          <a href = "./budget"><i class="fa-solid fa-chart-pie"></i> Budget</a>
          <a href = "./accounts"> <i class="fa-solid fa-building-columns"></i> Accounts</a>
          <a href = "./settings"><i class="fa-solid fa-gear"></i> Settings</a>
-
-         <div class = 'featureButtons'>
-            <i class="fa-regular fa-bell"></i>
-            <i class="fa-regular fa-user"></i>
-
-            <i class="fa-solid fa-right-from-bracket logOutIcon"></i>
-         </div>
       </nav>
    </header>
 
@@ -66,36 +59,49 @@
          <h2>Account Security</h2>
          <hr>
          <div class = 'securityContainer'>
-            <h3 class = 'securityTitle'>Change Password</h3>
-            <p class = 'securityText'>Set a permanent password to login to your account.</p>
-            <button type = 'button' class = 'securityButton' id = 'changePasswordPopUp'>Change Password</button>
-         </div>
-         <div class = 'securityContainer' id = 'emailContainer'>
-            <h3 class = 'securityTitle'>Verify Email</h3>
-            <p class = 'securityText'>Keep your account secure via email verification</p>
-            <button type = 'button' class = 'securityButton' id = 'verifyEmailPopUp'>Verify Email</button>
-         </div>
-         <div class = 'securityContainer'>
-            <h3 class = 'securityTitle'>Appearance</h3>
-            <p class = 'securityText'>Toggle between light and dark mode!</p>
-            <div class = 'sliderContainer '>
-               <label class="switch mode">
-                  <input type="checkbox" name = 'mode' id = 'mode' >
-                  <span class="slider mode"></span>
-                </label>
+            <div class = 'securityTextContainer'>
+               <h3 class = 'securityTitle'>Change Password</h3>
+               <p class = 'securityText'>Set a permanent password to login to your account.</p>
+            </div>
+
+            <div class = 'securityButtonContainer'>
+               <button type = 'button' class = 'securityButton' id = 'changePasswordPopUp'>Change Password</button>
             </div>
          </div>
          <div class = 'securityContainer'>
-            <h3 class = 'securityTitle'>Log Out</h3>
-            <p class = 'securityText'>End your current viewing session.</p>
+            <div class = 'securityTextContainer'>
+               <h3 class = 'securityTitle'>Appearance</h3>
+               <p class = 'securityText'>Toggle between light and dark mode!</p>
+            </div>
+            <div class = 'securityButtonContainer'>
+               <div class = 'sliderContainer'>
+                  <label class="switch mode">
+                     <input type="checkbox" name = 'mode' id = 'mode' >
+                     <span class="slider mode"></span>
+                   </label>
+               </div>
+            </div>
+         </div>
+         <div class = 'securityContainer'>
+            <div class = 'securityTextContainer'>
+               <h3 class = 'securityTitle'>Log Out</h3>
+               <p class = 'securityText'>End your current session.</p>
+            </div>
+
             <div class = 'logOutContainer'>
                <i class="fa-solid fa-right-from-bracket logOutIcon"></i>
             </div>
          </div>
          <div class = 'securityContainer'>
-            <h3 class = 'securityTitle'>Delete Account</h3>
-            <p class = 'securityText'>Permanently delete your account, including all data.</p>
-            <button type = 'button' class = 'securityButton' id = "deleteButtonPopUp">Delete Account</button>
+            <div class = 'securityTextContainer'>
+               <h3 class = 'securityTitle'>Delete Account</h3>
+               <p class = 'securityText'>Permanently delete your account, including all sensitive data.</p>
+            </div>
+
+            <div class = 'securityButtonContainer'>
+               <button type = 'button' class = 'securityButton' id = "deletePopUpButton">Delete Account</button>
+            </div>
+
          </div>
       </form>
 
@@ -131,6 +137,27 @@
                </div>
 
                <button type="submit" id = 'passwordSubmitButton'>Submit</button>
+            </form>
+         </div>
+      </div>
+
+      <div class = 'popup' id = 'popupDeleteContainer'>
+         <div class = 'popupIconContainer' id = 'deleteIconContainer'>
+            <i class="fa-solid fa-user-slash"></i>
+         </div>
+         <div class = 'popupExitContainer'>
+            <i class="fa-solid fa-xmark exitFormIcon" id = 'exitDeleteIcon'></i>
+         </div>
+         <div class ='popupFormContainer'>
+            <form id = "deleteForm" class = 'popupForm' novalidate>
+               <h2>Delete Account</h2>
+               <p>If you wish to delete your account, please enter the message</p>
+               <p id = 'deleteMessage'><strong>sudo deluser ${username}</strong></p>
+
+               <label for="message">Enter Message</label>
+               <input type="text" name="message" id="message">
+
+               <button type="submit" id = 'deleteSubmitButton'>Submit</button>
             </form>
          </div>
       </div>

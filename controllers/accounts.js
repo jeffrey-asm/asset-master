@@ -17,33 +17,32 @@ async function grabUserData(request){
       let accounts = await query.runQuery('SELECT * FROM Accounts WHERE UserID = ?;',[request.session.UserID]);
       let transactions = await query.runQuery('SELECT * FROM Transactions WHERE UserID = ?;',[request.session.UserID]);
 
-      for(let i = 0; i < accounts.length; i++){
-         let preciseBalance = new Decimal(accounts[i].Balance);
+      for(let account of accounts) {
+         let preciseBalance = new Decimal(account.Balance);
 
-         returnData.accounts[accounts[i].AccountID] = {
-            name : accounts[i].Name,
-            type : accounts[i].Type,
+         returnData.accounts[account.AccountID] = {
+            name : account.Name,
+            type : account.Type,
             balance : parseFloat(preciseBalance.toString()),
          }
 
-         if(accounts[i].Type == 'Loan' || accounts[i].Type == 'Credit Card') preciseBalance = preciseBalance.neg();
+         if(account.Type == 'Loan' || account.Type == 'Credit Card') preciseBalance = preciseBalance.neg();
 
          netWorth = netWorth.plus(preciseBalance);
-      }
+      };
 
       returnData.netWorth = parseFloat(netWorth.toString());
 
-      for(let i = 0; i < transactions.length; i++){
-         returnData.transactions[transactions[i].TransactionID] = {
-            title : transactions[i].Title,
-            type : transactions[i].Type,
-            categoryID : transactions[i].CategoryID,
-            accountID : transactions[i].AccountID,
-            date : transactions[i].Date,
-            amount : parseFloat(transactions[i].Amount)
+      for(let transaction of transactions) {
+         returnData.transactions[transaction.TransactionID] = {
+            title : transaction.Title,
+            type : transaction.Type,
+            categoryID : transaction.CategoryID,
+            accountID : transaction.AccountID,
+            date : transaction.Date,
+            amount : parseFloat(transaction.Amount)
          }
-      }
-
+      };
 
       if(!request.session.budget){
          //Need budget for specific categories in transaction form
@@ -177,12 +176,12 @@ exports.editAccount = asyncHandler(async(request,result,next)=>{
 
          let possibleTransactionIDs = Object.keys(request.session.transactions);
 
-         for(let i = 0; i < possibleTransactionIDs.length; i++){
+         possibleTransactionIDs.forEach((transactionID) => {
             //Update all connected account transactions within the cache
-            if(request.session.transactions[possibleTransactionIDs[i]].accountID == trimmedInputs.ID){
-               request.session.transactions[possibleTransactionIDs[i]].accountID = null;
+            if(request.session.transactions[transactionID].accountID == trimmedInputs.ID){
+               request.session.transactions[transactionID].accountID = null;
             }
-         }
+         });
 
          trimmedInputs.remove = true;
          trimmedInputs.changes = true;
@@ -197,6 +196,9 @@ exports.editAccount = asyncHandler(async(request,result,next)=>{
       }
 
       trimmedInputs.remove = false;
+
+      console.log(trimmedInputs);
+      console.log(previousAccount);
 
       if(query.changesMade(trimmedInputs,previousAccount)){
          //Update columns on any change
@@ -296,7 +298,7 @@ exports.addTransaction = asyncHandler(async(request,result,next)=>{
          return;
       }
 
-      let mainCategoryCurrent = new Decimal(`${request.session.budget[`${trimmedInputs.type}`].current}`);
+      let mainCategoryCurrent = new Decimal(request.session.budget[`${trimmedInputs.type}`].current);
       mainCategoryCurrent = mainCategoryCurrent.plus(trimmedInputs.amount);
 
       await query.runQuery(`UPDATE Budgets SET ?? = ? WHERE UserID = ?;`,
@@ -338,7 +340,7 @@ exports.addTransaction = asyncHandler(async(request,result,next)=>{
    }
 });
 
-exports.editTransaction = asyncHandler(async(request,result,next)=>{
+exports.editTransaction = asyncHandler(async(request,result,next) => {
    try{
       let trimmedInputs = validation.trimInputs(result,request.body,'editAmount','editDate');
       if(trimmedInputs.status != undefined) return;
@@ -504,6 +506,7 @@ exports.editTransaction = asyncHandler(async(request,result,next)=>{
             }
          }
       } else {
+         // Handle any changes within same type domain
          if(!fromMainCategory && toMainCategory && previousDateAffectsBudget){
             // Income Category -> Income (No affect on main total)
             previousCategoryCurrent = new Decimal(request.session.budget.categories[previousTransaction.categoryID].current);

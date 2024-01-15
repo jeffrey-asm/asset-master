@@ -12,7 +12,7 @@ exports.validateUsername = function(result,username){
 }
 
 exports.validateEmail = function(result,email){
-   let emailTest = new RegExp(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
+   const emailTest = new RegExp(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);
 
    if(emailTest.test(email) == 0){
       //Ensure valid email for security of account
@@ -44,19 +44,19 @@ exports.trimInputs = function(result,inputs = {},decimalComponentID='amount',dat
    let keys = Object.keys(inputs);
    let trimmedInputs = {};
 
-   for(let i = 0; i < keys.length; i++){
+   keys.forEach((key) => {
       //Only trim inputs of type string
-     if(keys[i] == 'amount' || keys[i] == 'balance'){
+      if(key == 'amount' || key == 'balance'){
          //Amount inputs all have names of amount in request.body
          try{
-            trimmedInputs[keys[i]] = new Decimal(`${parseFloat(inputs[keys[i]]).toFixed(2)}`);
+            trimmedInputs[key] = new Decimal(`${parseFloat(inputs[key]).toFixed(2)}`);
 
-            if(isNaN(trimmedInputs[keys[i]])) throw error;
+            if(isNaN(trimmedInputs[key])) throw error;
 
             let highLimit = new Decimal('99999999999.99');
             let lowLimit = new Decimal('0.00');
 
-            if(trimmedInputs[keys[i]].gt(highLimit) ||  trimmedInputs[keys[i]].lessThanOrEqualTo(lowLimit)){
+            if(trimmedInputs[key].gt(highLimit) ||  trimmedInputs[key].lessThanOrEqualTo(lowLimit)){
                sharedReturn.sendError(result,decimalComponentID,"Amount must be greater than $0.00, but less than $99,999,999,999.99 <i class='fa-brands fa-stack-overflow;'></i>");
                return { status: 'fail' };
             }
@@ -65,9 +65,9 @@ exports.trimInputs = function(result,inputs = {},decimalComponentID='amount',dat
             sharedReturn.sendError(result,decimalComponentID,"Amount should represent a legitimate dollar value <i class='fa-solid fa-money-check-dollar'></i>");
             return { status: 'fail' };
          }
-      } else if(keys[i] == 'date'){
-         trimmedInputs[keys[i]] = inputs[keys[i]].trim();
-         let parts = inputs[keys[i]].split('-');
+      } else if(key == 'date'){
+         trimmedInputs[key] = inputs[key].trim();
+         let parts = inputs[key].split('-');
 
          if (parts.length !== 3) {
             result.status(400);
@@ -95,10 +95,10 @@ exports.trimInputs = function(result,inputs = {},decimalComponentID='amount',dat
                return { status: 'fail' };
             }
          }
-      }else if(typeof inputs[keys[i]] == 'string'){
-         trimmedInputs[keys[i]] = inputs[keys[i]].trim();
+      }else if(typeof inputs[key] == 'string'){
+         trimmedInputs[key] = inputs[key].trim();
       }
-   }
+   });
 
    return trimmedInputs;
 }
@@ -108,7 +108,7 @@ exports.validateBudgetForm = function(result,name,nameComponentID,type,typeCompo
       result.status(400);
       sharedReturn.sendError(result,nameComponentID,"Category names must be between 1 and 30 characters <i class='fa-solid fa-signature'></i>");
       return { status: 'fail' };
-   } else if(editingMainCategory == false && (name == 'Income' || name == 'Expenses')){
+   } else if(!editingMainCategory && (name == 'Income' || name == 'Expenses')){
       result.status(400);
       sharedReturn.sendError(result,typeComponentID,"Category cannot be 'Income' or 'Expenses' <i class='fa-solid fa-signature'></i>");
       return { status: 'fail' };

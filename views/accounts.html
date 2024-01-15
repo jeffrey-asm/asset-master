@@ -22,13 +22,6 @@
          <a href = "./budget"><i class="fa-solid fa-chart-pie"></i> Budget</a>
          <a href = "./accounts"> <i class="fa-solid fa-building-columns"></i> Accounts</a>
          <a href = "./settings"><i class="fa-solid fa-gear"></i> Settings</a>
-
-         <div class = 'featureButtons'>
-            <i class="fa-regular fa-bell"></i>
-            <i class="fa-regular fa-user"></i>
-
-            <i class="fa-solid fa-right-from-bracket logOutIcon"></i>
-         </div>
       </nav>
    </header>
    <main>
@@ -51,10 +44,10 @@
       <div id = "transactionsSection">
          <div id = "transactionsTable">
                <div class = 'transactionHeadings'>
+                  <p>Date</p>
                   <p>Account</p>
                   <p>Title</p>
                   <p>Category</p>
-                  <p>Date</p>
                   <p>Total</p>
                   <p></p>
                </div>
@@ -127,7 +120,7 @@
                <label for="balance">Account Balance</label>
                <input type="number" name="balance" id="editBalance" step="0.01" placeholder="0.00">
                <div class = 'sliderContainer'>
-                  <label for="remove">Remove Category</label>
+                  <label for="remove">Remove Account</label>
                   <label class="switch">
                      <input type="checkbox" name = 'remove' id = 'remove'>
                      <span class="slider"></span>

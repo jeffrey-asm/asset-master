@@ -1,4 +1,4 @@
-var createError = require('http-errors');
+let createError = require('http-errors');
 const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
@@ -9,10 +9,10 @@ const session = require("express-session");
 const MemoryStore = require('memorystore')(session);
 require("dotenv").config();
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+let indexRouter = require('./routes/index');
+let usersRouter = require('./routes/users');
 
-var app = express();
+let app = express();
 app.use(cookieParser());
 
 //Change cookie to secure on HTTPS

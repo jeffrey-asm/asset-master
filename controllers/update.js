@@ -103,3 +103,36 @@ exports.updatePassword = asyncHandler(async(request,result,next)=>{
       return;
    }
 });
+
+exports.deleteAccount = asyncHandler(async(request,result,next)=>{
+   let trimmedInputs = validation.trimInputs(result,request.body);
+
+   console.log(trimmedInputs);
+
+   if(trimmedInputs.message !== `sudo deluser ${request.session.Username}`){
+      result.status(400);
+      sharedReturn.sendError(result,'message',`Incorrect deletion message <i class="fa-regular fa-message"></i>`);
+      return;
+   }
+
+   try{
+      const removeUserQuery = `
+         DELETE Users, Accounts, Budgets, Transactions, Categories
+         FROM Users
+         LEFT JOIN Accounts ON Accounts.UserID = Users.UserID
+         LEFT JOIN Budgets ON Budgets.UserID = Users.UserID
+         LEFT JOIN Transactions ON Transactions.UserID = Users.UserID
+         LEFT JOIN Categories ON Categories.UserID = Users.UserID
+         WHERE Users.UserID = ?;
+      `;
+
+      await query.runQuery(removeUserQuery,[request.session.UserID]);
+      result.status(200);
+      sharedReturn.sendSuccess(result,`Successfully removed account <i class="fa-solid fa-trash"></i>`);
+      return;
+   } catch(error){
+      result.status(500);
+      sharedReturn.sendError(result,'message',`Could not successfully process request <i class='fa-solid fa-database'></i>`);
+      return;
+   }
+});

@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Noto+Sans&family=Oswald&family=Roboto:wght@400;500&display=swap');
 
 :root {
-   --background-color: #fbfbfb;
+   --background-color: white;
    --text-color: #151515;
    --shadow-color:rgba(50, 50, 93, 0.25);
 }
@@ -11,11 +11,13 @@ html, body {
    margin: 0;
    padding: 0;
    overflow-x: hidden !important;
+
+   display: grid;
  }
 
 body.dark-mode {
    --background-color: #151515;
-   --text-color: #fbfbfb;
+   --text-color: white;
    --shadow-color:rgba(178, 178, 192, 0.25);
 }
 
@@ -26,14 +28,17 @@ body{
    opacity: 0;
 
    overflow-x: hidden;
-   transition: opacity 0.5s ease-in-out 0.5s background-color 1s ease-in color 1s ease-in;
+   transition-property: color, background-color;
+   transition-duration: 0.5s;
+   transition-timing-function: ease-in-out;
 }
 
 main{
    width:90%;
-   margin:90px auto 20px auto;
+   margin:90px auto 90px auto;
    opacity:0;
    transition: opacity 1s ease-in-out;
+   grid-column: 2/100;
 }
 
 header{
@@ -42,29 +47,10 @@ header{
    left:0;
    width:100%;
    margin:0;
+   z-index: 100;
 }
 
-#sidebarIcon{
-   position: fixed;
-   margin-top:50px;
-   margin-left:60px;
-   text-align: center;
-   font-size:2rem;
-   cursor: pointer;
-   grid-row:1;
-   grid-column: 1;
-   z-index:2;
-}
-
-#exitSideBarIcon{
-   font-size:2rem;
-   margin-bottom: 1rem;
-}
-#exitSideBarIcon:hover,#logo:hover{
-   color:#08B0FF;
-}
 #logo{
-   margin:1rem 0;
    font-size:2.3rem;
 }
 
@@ -87,8 +73,8 @@ header{
  }
 
 nav{
+   grid-column: 1;
    position: fixed;
-   left:-250px;
    top:0px;
 
    background-color: var(--text-color);
@@ -96,7 +82,7 @@ nav{
 
    height:100%;
    min-height:100%;
-   width:200px;
+   padding:20px;
 
 
    display: flex;
@@ -108,6 +94,7 @@ nav{
    gap:0;
    z-index:1000;
    overflow: hidden;
+   transition:0.5s width ease-in-out;
 }
 .navbarShown{
    animation: showSideBar 1s ease-in-out forwards;
@@ -115,10 +102,27 @@ nav{
 .navbarHidden{
    animation: hideSideBar 1s ease-in-out forwards;
 }
+.navLink{
+   display: flex;
+   flex-direction: row;
+   justify-content: center;
+   align-items: center;
+   gap:10px;
+   padding:10px;
+   width:100%;
+   height:3.5rem;
+}
 
+.navLink:hover{
+   background:#969A96;
+}
+
+.navLink a{
+   visibility: hidden;
+}
 nav a,nav i{
    text-align: center;
-   font-size: 1.2rem;
+   font-size: 1.9rem;
    font-weight: bold;
    text-decoration: none;
    color:var(--background-color);
@@ -144,9 +148,6 @@ nav .sliderModeContainer{
    margin:0;
 }
 
-nav a:hover{
-   background:#969A96;
-}
 
 nav .featureButtons{
    margin-top: auto;
@@ -185,7 +186,7 @@ button{
    color:white;
    margin-top: 10px;
    height:3.5rem;
-   transition:.5s;
+   transition:0.5s ease-in-out;
 }
 
 .sectionTitle{
@@ -208,12 +209,12 @@ button{
 }
 
 .mainImage{
-   width:100%;
+   width:90%;
    margin-left:auto;
    margin-right: auto;
 }
 .mainImage img{
-   max-height: 500px;
+   max-height: 450px;
    width:auto;
    max-width:100%;
 }
@@ -240,16 +241,17 @@ button{
    }
  }
 
-
 .error,.informational{
    color:red;
    font-size: 1.1rem;
    font-weight: bolder;
-   width:60%;
-   text-align: center;
+   width:100%;
    margin:10px auto 10px auto;
+
+   transition-property: opacity, transform;
+   transition-duration: 0.5s;
+   transition-timing-function: ease-in-out;
    animation:fadeIn 0.5s ease-in-out forwards;
-   transition: opacity 0.5s ease-in-out forwards transform 0.5s ease-in-out forwards;
 }
 
 .informational{
@@ -286,8 +288,10 @@ button{
    height: 50px;
    border-radius: 50%;
    transform: scale(1);
-   transition: transform 1s ease-in-out, width 1s ease-in-out, height 1s ease-in-out;
-   z-index: 1001;
+   transition-property: transform, height, width, border;
+   transition-duration: 0.9s;
+   transition-timing-function: ease-in-out forwards;
+   z-index: 2000;
 }
 
 form button.buttonFade{
@@ -553,7 +557,7 @@ footer a:hover {
    visibility: visible;
    opacity:1;
    width:500px;
-   max-width: 70%;
+   max-width: 50%;
    height:200px;
    max-height:5vh;
    text-align: center;
@@ -573,24 +577,11 @@ footer a:hover {
    margin:0;
 }
 
-.popupNotification p:first-child{
-   margin-bottom:0;
-   margin-top:20px;
-}
-
-.popupNotification button{
-   width:100%;
-   margin:auto;
-   padding:0;
-   max-width:120px;
-   font-size:1.2rem;
-   height:2rem;
-}
-
 .popupNotification .popupIconContainer{
    width:50px;
    height:50px;
-   top:-25px;
+   top:-35px;
+   left:initial;
    font-size:1.3rem;
 }
 

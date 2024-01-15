@@ -52,6 +52,24 @@ toggle.onchange = ()=> {
    }
 };
 
+let deletePopUpButton = document.getElementById('deletePopUpButton');
+let deleteFormContainer = document.getElementById('popupDeleteContainer');
+let deleteMessage = document.getElementById('deleteMessage');
+
+let deleteForm = document.getElementById('deleteForm');
+let exitDeleteIcon = document.getElementById('exitDeleteIcon');
+let deleteSubmitButton = document.getElementById('deleteSubmitButton');
+
+deletePopUpButton.onclick = function(event){
+   let username = document.getElementById('username').value;
+   deleteMessage.innerHTML = `<strong>sudo deluser ${username}</strong>`;
+   openPopUp(deleteFormContainer);
+}
+
+exitDeleteIcon.onclick = function(event){
+   exitPopUp(deleteFormContainer,deleteForm,exitDeleteIcon,deletePopUpButton);
+}
+
 // Send post request to handle validation and updating values
 detailsForm.onsubmit = async function(event){
    event.preventDefault();
@@ -76,7 +94,7 @@ detailsForm.onsubmit = async function(event){
       },2500);
    }
 
-   let failFunction =  () => {};
+   let failFunction =  () => {return;};
 
    let formData = new FormData(this);
    //Manually set request body parameters for form validation
@@ -96,10 +114,28 @@ passwordForm.onsubmit = async function(event){
       },2000);
    }
 
-   let failFunction =  () => {};
+   let failFunction =  () => {return;};
 
    let formData = new FormData(this);
    let structuredFormData = new URLSearchParams(formData).toString();
 
    await sendRequest('./updatePassword',structuredFormData,editPasswordButton,'Submit',successFunction,failFunction);
+}
+
+deleteForm.onsubmit = async function(event){
+   event.preventDefault();
+
+   let successFunction = (data,messageContainer) => {
+      setTimeout(()=>{
+         window.location.href = './logOut';
+      },2000)
+
+   }
+
+   let failFunction =  () => {return;};
+
+   let formData = new FormData(this);
+   let structuredFormData = new URLSearchParams(formData).toString();
+
+   await sendRequest('./deleteAccount',structuredFormData,deleteSubmitButton,'Submit',successFunction,failFunction);
 }

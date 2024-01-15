@@ -18,9 +18,8 @@ main button{
    line-height:2.3rem;
    gap:2.3em;
    flex-wrap: wrap;
-   padding:2rem 0 2rem 0;
+   margin:4rem auto;
    width:100%;
-   margin:auto;
 }
 
 
@@ -39,6 +38,7 @@ main button{
    padding:0;
    margin:0;
    animation: fadeIn 1s ease-in-out forwards;
+   white-space: nowrap;
 }
 
 
@@ -90,18 +90,16 @@ main button{
 
 @keyframes slideDown {
    from {
-      opacity: 0;
       transform: translateY(-115px);
    }
    to {
       transform: translateY(0px);
-      opacity: 1;
    }
  }
 
  @keyframes slideUp {
    from {
-      opacity: 1;
+      opacity:1;
       transform: translateY(0px);
    }
    to {
@@ -112,11 +110,9 @@ main button{
 
  @keyframes emptySlideDown {
    from {
-      opacity: 0;
       transform: translateY(-107px);
    }
    to {
-      opacity: 1;
       transform: translateY(0px);
    }
  }
@@ -128,26 +124,34 @@ main button{
 
    background: #24252A;
    color: white;
+   height:150px;
 
-   height: 150px;
-   transition: transform 1.5s ease-in-out ,opacity 1.5s ease-in-out;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   text-align: center;
+
+   transition: transform 1.5s ease-in-out;
    animation:emptySlideDown 1.5s ease-in-out forwards;
 }
 
+
 .addedTransaction{
-   transition: transform 1.5s ease-in-out,opacity 1.5s ease-in-out;
+   transition: transform 1.5s ease-in-out;
    animation:emptySlideUp 1.5s ease-in-out forwards;
 }
 
 #transactionsSection{
-   width:80%;
+   width: 100%;
    margin:3rem auto;
 }
 
 
 .removedTransaction{
-   transition: transform 1.5s ease-in-out, height 1.5s ease-in-out, opacity 1.5s ease-in-out;
-   animation:slideUp 0.5s ease-in-out forwards;
+   transition-property: transform,opacity !important;
+   transition-duration: 2s !important;
+   transition-timing-function: ease-in-out !important;
+   animation:slideUp 2s ease-in-out forwards !important;
 }
 
 #transactionsTable{
@@ -158,11 +162,14 @@ main button{
    align-items: center;
    justify-content: flex-start;
    gap:0;
+   overflow:auto;
 }
 
 .transactionHeadings{
    display: grid;
-   grid-template-columns: repeat(6,1fr);
+   grid-template-columns: 0.5fr 0.5fr 0.5fr 0.1fr 0.5fr 0.1fr;
+   gap:2rem;
+   padding:0 20px;
    align-items: center;
    font-weight: bolder;
    width:100%;
@@ -170,33 +177,24 @@ main button{
    color:#ffffff;
    background-color: #08B0FF;
    border: 0;
-   min-height:7.5rem;
+   min-height:10rem;
    text-align: center;
-
-   overflow: hidden;
-   border-top-left-radius: 25px;
-   border-top-right-radius: 25px;
 }
 
 .transactions{
    width:100%;
    max-height: 700px;
-   overflow:scroll;
+   overflow-y:scroll;
+   transition: all 0.3s ease;
 }
-.transactions::-webkit-scrollbar{
-   width:0;
-}
-
-.transactions .transactionRow:last-child{
-   border-bottom-left-radius: 25px;
-   border-bottom-right-radius: 25px;
-}
-
 .transactionRow{
    display: grid;
-   grid-template-columns: repeat(6,1fr);
+   grid-template-columns: 0.5fr 0.5fr 0.5fr 0.1fr 0.5fr 0.1fr;
+   column-gap: 2rem;
    align-items: center;
-   width:100%;
+   min-width:100%;
+   width:auto;
+   padding:0 20px;
    font-size:1.1rem;
    font-weight: bolder;
    background-color: #24252A;
@@ -205,7 +203,8 @@ main button{
    animation: slideDown 2s ease-in-out forwards;
    border-top: 5px white;
    text-align: center;
-   overflow: hidden;
+   position: relative;
+   left: 0;
 }
 
 .transactionRow:hover{
@@ -234,16 +233,16 @@ main button{
    color:#aca8a8;
 }
 
-#transactionTable p.Income{
+.transactionRow p.Income{
    color:#08B0FF;
 }
 
-#transactionTable p.Expenses{
+.transactionRow p.Expenses{
    color:red;
 }
-#transactionTable p{
-   width:100px;
-   padding:10px 25px;
+
+.transactionRow p, .transactionHeadings p{
+   min-width: 250px;
 }
 
 @media only screen and (max-width:600px) {
@@ -258,7 +257,7 @@ main button{
    }
 
    .specificAccountsContainer{
-      height:30rem;
+      height:32rem;
    }
 }
 

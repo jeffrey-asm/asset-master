@@ -1,5 +1,5 @@
-var express = require('express');
-var router = express.Router();
+let express = require('express');
+let router = express.Router();
 
 const usersController = require("../controllers/users.js");
 const homeController = require("../controllers/home.js");
@@ -8,7 +8,7 @@ const budgetController = require("../controllers/budget.js");
 const accountsController = require("../controllers/accounts.js");
 
 /* GET users listing. */
-// router.get('/', usersController.redirect);
+router.get('/', usersController.redirect);
 
 // Handle home page routing
 router.get('/home', usersController.home);
@@ -51,5 +51,8 @@ router.post('/updatePassword',updateController.updatePassword);
 
 // Logout method using express-session
 router.get('/logout', usersController.logout);
+
+// Delete account method
+router.post('/deleteAccount', updateController.deleteAccount);
 
 module.exports = router;

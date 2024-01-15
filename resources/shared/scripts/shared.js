@@ -1,6 +1,7 @@
 let mode = localStorage.getItem('mode');
 
-if(mode){
+//Landing pages do not have light/dark mode preferences
+if(mode && document.querySelector('footer')){
    if(mode == 'dark'){
       let possibleToggleSwitch = document.querySelector('#mode');
 
@@ -23,6 +24,24 @@ if(homeLogo){
    }
 }
 
+let sidebar = document.querySelector('nav');
+
+if(sidebar){
+   let anchors = sidebar.querySelectorAll('a');
+
+   sidebar.onmouseover = function(event){
+      anchors.forEach((anchorTag)=>{
+         anchorTag.style.visibility = 'visible';
+      });
+   }
+
+   sidebar.onmouseout = function(event){
+
+      anchors.forEach((anchorTag)=>{
+         anchorTag.style.visibility = 'hidden';
+      });
+   }
+}
 
 // Send request to log out method in built controllers
 let logoutIcons = document.querySelectorAll('.logOutIcon');
@@ -223,6 +242,7 @@ async function sendRequest(url,structuredFormData,formButton,formButtonText,succ
         editingContainer.classList.add('errorInput');
         formButton.innerHTML = formButtonText;
         failFunction();
+        formButton.disabled = false;
       } else {
         displayMessage(formButton, data.message, 'informational');
         formButton.innerHTML = formButtonText;
