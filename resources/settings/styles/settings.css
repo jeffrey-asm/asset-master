@@ -79,9 +79,19 @@ form label{
 
 #deleteButtonPopUp{
    background-color: red;
-   color:white;
+   color:#ffffff;
    border:0;
 }
+
+#logOutIcon{
+   cursor:pointer;
+   font-size:2rem;
+}
+
+#logOutIcon:hover{
+   color:red;
+}
+
 .securityButtonContainer{
    height:100%;
    grid-row: 1/-1;

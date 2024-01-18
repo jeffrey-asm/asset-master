@@ -13,35 +13,19 @@
 </head>
 <body>
    <header>
-      <nav>
-         <div class = 'navLink'>
-            <i class="fa-solid fa-layer-group fa-xl" id = 'logo'></i>
-            <a>Asset Master</a>
-         </div>
-
-         <div class = 'navLink'>
-            <i class="fa-solid fa-house"></i>
-            <a href = "./home">Home</a>
-         </div>
-
-         <div class = 'navLink'>
-            <i class="fa-solid fa-chart-pie"></i>
-            <a href = "./budget">Budget</a>
-         </div>
-
-         <div class = 'navLink'>
-            <i class="fa-solid fa-building-columns"></i>
-            <a href = "./accounts">Accounts</a>
-         </div>
-
-         <div class = 'navLink'>
-            <i class="fa-solid fa-gear"></i>
-            <a href = "./settings"> Settings</a>
-         </div>
-
-
-      </nav>
+      <div class = 'navBarContainer'>
+         <i class="fas fa-bars" id="sidebarIcon"></i>
+         <nav>
+            <a href = "./home" id = 'logoContainer'><i class="fa-solid fa-business-time" id = 'logo'></i> Asset Master</a>
+            <a href = "./home"><i class="fa-solid fa-house"></i> Home</a>
+            <a href = "./budget"><i class="fa-solid fa-chart-pie"></i> Budget</a>
+            <a href = "./accounts"><i class="fa-solid fa-building-columns"></i> Accounts</a>
+            <a href = "./settings"><i class="fa-solid fa-gear"></i> Settings</a>
+         </nav>
+      </div>
    </header>
+
+
    <main>
       <div id = 'userData'>
          <div id = 'graphs'>

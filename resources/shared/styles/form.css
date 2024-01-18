@@ -118,7 +118,7 @@ form a{
 }
 
 .editCategory:hover{
-   transform: translateY(-2px);
+   transform: translateY(-4px);
 }
 
 .editingContainer .editCategory[disabled]{
@@ -132,6 +132,185 @@ form hr{
    height:0.2rem;
    background-color:var(--text-color);
 }
+
+.popup,.popupNotification{
+   position:absolute;
+   top:50%;
+   left:50%;
+   transform: translate(-50%,-50%) scale(0.1);
+
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   justify-content: center;
+   background-color: var(--background-color);
+   color: var(--text-color);
+
+   border:2px solid black;
+   border-radius:5px;
+   box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px;
+   padding:30px;
+
+   width:700px;
+   max-width:70%;
+   max-height:72%;
+   z-index:900;
+   visibility: hidden;
+   opacity: 0;
+}
+
+
+@keyframes popIn {
+   from {
+      opacity: 0;
+      transform:translate(-50%,-50%) scale(0.1);
+   }
+   to {
+      opacity: 1;
+      transform: translate(-50%,-50%) scale(1);
+   }
+ }
+
+ @keyframes popOut {
+   from {
+      opacity: 1;
+      transform: translate(-50%,-50%) scale(1);
+   }
+   to {
+      opacity: 0;
+      transform:translate(-50%,-50%) scale(0.1);
+   }
+ }
+
+.popupShown{
+   animation: popIn 1s ease-in-out forwards;
+}
+
+.popupHidden{
+   animation: popOut 1s ease-in-out forwards;
+}
+
+.popupIconContainer{
+   position: absolute;
+   top:-50px;
+   left: 50%;
+   transform: translateX(-50%);
+
+   display: flex;
+   justify-content: center;
+   align-items: center;
+
+   border:2px solid black;
+   border-radius:50%;
+   box-shadow: var(--shadow-color) 0px 10px 20px, var(--shadow-color) 0px 6px 6px;
+   width:100px;
+   height:100px;
+   background:#08B0FF;
+   color:white;
+
+   text-align: center;
+   font-size:2.5rem;
+}
+
+.popupIconContainer.errorType{
+   background-color: red;
+}
+
+
+.popupExitContainer{
+   position: absolute;
+   color: var(--text-color);
+   top:30px;
+   right:40px;
+   font-weight: bolder;
+}
+
+.popupExitContainer i{
+   transition:transform 0.5s ease-in;
+   font-size: 2.6rem;
+   font-weight: bolder;
+   cursor:pointer;
+}
+
+.popupExitContainer i:hover{
+   color:red;
+}
+
+.popupExitContainer i.clicked{
+   color:red;
+   transform: rotate(360deg);
+}
+
+@keyframes notificationShow {
+   from {
+      top:-50%;
+      transform:translate(-50%,-50%) scale(0.1);
+   }
+   to {
+      top:13%;
+      transform: translate(-50%,-50%) scale(1);
+   }
+}
+
+@keyframes notificationHide {
+   from {
+      top:13%;
+      transform: translate(-50%,-50%) scale(1);
+   }
+   to {
+      top:-50%;
+      transform:translate(-50%,-50%) scale(0.1);
+   }
+}
+.popupNotification{
+   position: fixed;
+   top: -50%;
+   left: 50%;
+   transform: translate(-50%, -50%) scale(1);
+   visibility: visible;
+   opacity:1;
+   width:500px;
+   max-width: 50%;
+   height:200px;
+   max-height:5vh;
+   text-align: center;
+}
+
+.notificationShown {
+   animation: notificationShow 2s ease-in-out forwards;
+}
+
+.notificationHidden {
+   animation: notificationHide 2s ease-in-out forwards;
+}
+
+.popupNotification p{
+   font-size:1.1rem;
+   font-weight: bolder;
+   margin:0;
+}
+
+.popupNotification .popupIconContainer{
+   width:50px;
+   height:50px;
+   top:-35px;
+   left:initial;
+   font-size:1.3rem;
+}
+
+.popupNotification .popupExitContainer{
+   top:10px;
+   right:20px;
+}
+
+.popupNotification .popupExitContainer i{
+   font-size:25px;
+}
+
+.popupNotification form{
+   max-height:200px;
+}
+
 
  .popupForm, .popupNotification form{
    box-sizing: border-box;

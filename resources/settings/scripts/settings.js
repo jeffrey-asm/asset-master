@@ -17,6 +17,15 @@ let exitPasswordIcon = document.getElementById('exitPasswordIcon');
 
 updateProfileInfo();
 
+// Send request to log out method in built controllers
+let logoutIcon = document.querySelector('#logOutIcon');
+
+// Some pages may have two log out icons (settings)
+logoutIcon.onclick = function(event){
+   window.location.href = './logOut';
+}
+
+
 //Handling removing disabled inputs individually
 function enableInput(input){
    input.disabled = false;
@@ -120,6 +129,11 @@ passwordForm.onsubmit = async function(event){
    let structuredFormData = new URLSearchParams(formData).toString();
 
    await sendRequest('./updatePassword',structuredFormData,editPasswordButton,'Submit',successFunction,failFunction);
+}
+
+document.getElementById('message').onpaste = function(event){
+   //Don't allow simple copy paste for security reasons
+   event.preventDefault();
 }
 
 deleteForm.onsubmit = async function(event){

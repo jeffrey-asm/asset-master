@@ -11,8 +11,6 @@ html, body {
    margin: 0;
    padding: 0;
    overflow-x: hidden !important;
-
-   display: grid;
  }
 
 body.dark-mode {
@@ -35,145 +33,127 @@ body{
 
 main{
    width:90%;
-   margin:90px auto 90px auto;
+   margin:1rem auto 1rem auto;
    opacity:0;
    transition: opacity 1s ease-in-out;
-   grid-column: 2/100;
 }
 
 header{
-   position: absolute;
-   top:0;
-   left:0;
-   width:100%;
+   box-sizing: border-box;
    margin:0;
-   z-index: 100;
+   padding:1 3.5rem;
+   display: flex;
+   justify-content: flex-start;
+   flex-direction: column;
+   align-items: flex-start;
+   gap:1rem;
+   min-height: 5rem;
 }
 
+.navBarContainer{
+   max-height:1rem;
+   width:18rem;
+   max-width: 80%;
+
+   position:relative;
+   top:3.9rem;
+   left:1rem;
+   clear:both;
+   z-index:1000;
+}
+
+#sidebarIcon{
+   display: block;
+   margin:0;
+   margin-left:10px;
+   font-size: 2rem;
+}
+
+#sidebarIcon:hover{
+   cursor: pointer;
+   color:#08B0FF;
+}
+
+#logoContainer{
+   font-size: 1.8rem;
+   font-weight: bolder;
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+   text-align: center;
+   align-items: center;
+   gap:5px;
+   padding:25px;
+}
 #logo{
-   font-size:2.3rem;
+   margin-top:15px;
+   font-size:2.8rem !important;
+}
+nav{
+   display: none;
+   flex-direction: column;
+   width:100%;
+   margin-top: 10px;
+   margin-left:10px;
+   color:var(--background-color);
+   gap:5px;
 }
 
-@keyframes showSideBar{
-   from{
-      left: -250px;
-   }
-   to{
-      left:0;
-   }
+nav i{
+   font-size:1.3rem !important;
+   margin-right: 10px;
+}
+nav a{
+   padding:1.3rem;
+   text-decoration: none;
+   font-weight: bolder;
+   font-size: 1.2rem;
+   background-color: var(--background-color);
+   color:var(--text-color);
+   border: 3px solid var(--text-color);
+   border-radius: 5px;
 }
 
-@keyframes hideSideBar {
+nav a:hover{
+   background-color: #969A96;
+   color:var(--text-color);
+   transform: translateY(-4px);
+   transition:transform 1s ease-in-out;
+}
+.navShown{
+   display: flex !important;
+   animation: showNav 1.2s ease-in-out forwards !important;
+}
+.navHidden{
+   display: flex;
+   animation: hideNav 1.2s ease-in-out forwards !important;
+}
+
+@keyframes showNav {
    from {
-     left: 0;
+      transform: scale(0.1);
+      opacity: 0;
+      transform-origin: top left;
    }
    to {
-     left: -250px;
+      opacity: 1;
+      transform:scale(1);
+      transform-origin: top left;
    }
  }
 
-nav{
-   grid-column: 1;
-   position: fixed;
-   top:0px;
-
-   background-color: var(--text-color);
-   color:var(--background-color);
-
-   height:100%;
-   min-height:100%;
-   padding:20px;
-
-
-   display: flex;
-   flex-direction: column;
-   flex-wrap: nowrap;
-   align-items: center;
-   justify-content: flex-start;
-   padding-top:60px;
-   gap:0;
-   z-index:1000;
-   overflow: hidden;
-   transition:0.5s width ease-in-out;
-}
-.navbarShown{
-   animation: showSideBar 1s ease-in-out forwards;
-}
-.navbarHidden{
-   animation: hideSideBar 1s ease-in-out forwards;
-}
-.navLink{
-   display: flex;
-   flex-direction: row;
-   justify-content: center;
-   align-items: center;
-   gap:10px;
-   padding:10px;
-   width:100%;
-   height:3.5rem;
-}
-
-.navLink:hover{
-   background:#969A96;
-}
-
-.navLink a{
-   visibility: hidden;
-}
-nav a,nav i{
-   text-align: center;
-   font-size: 1.9rem;
-   font-weight: bold;
-   text-decoration: none;
-   color:var(--background-color);
-   cursor:pointer;
-   transition: 0.5s ease-in-out;
-}
-
-nav a{
-   width:100%;
-   padding:0 1rem;
-   height:4rem;
-
-   font-size:1.2rem;
-
-   display: flex;
-   flex-direction: row;
-   justify-content: center;
-   align-items: center;
-   gap:12px;
-}
-
-nav .sliderModeContainer{
-   margin:0;
-}
-
-
-nav .featureButtons{
-   margin-top: auto;
-   height:20rem;
-   font-size: 2rem;
-   display: flex;
-   flex-direction: column;
-   justify-content: center;
-   align-items: center;
-   gap:20px;
-}
-
-nav .featureButtons i{
-   font-size: 2rem;
-}
-
-.logOutIcon{
-   cursor:pointer;
-   font-size:2rem;
-   color:var(--background-color);
-}
-
-.logOutIcon:hover{
-   color:red;
-}
-
+ @keyframes hideNav {
+   from {
+      transform: scale(1);
+      opacity: 1;
+      transform-origin: top left;
+   }
+   to {
+      opacity: 0;
+      transform:scale(0.1);
+      transform-origin: top left;
+   }
+ }
 
 button{
    cursor: pointer;
@@ -384,7 +364,7 @@ footer {
 
 footer img:hover,footer i:hover,footer li:hover{
    cursor: pointer;
-   transform: translateY(-2px);
+   transform: translateY(-4px);
    transition:transform 0.5s ease-in-out;
 }
 
@@ -420,184 +400,6 @@ footer a:hover {
 }
 
 
-.popup,.popupNotification{
-   position:absolute;
-   top:50%;
-   left:50%;
-   transform: translate(-50%,-50%) scale(0.1);
-
-   display: flex;
-   flex-direction: column;
-   align-items: center;
-   justify-content: center;
-   background-color: var(--background-color);
-   color: var(--text-color);
-
-   border:2px solid black;
-   border-radius:5px;
-   box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px;
-   padding:30px;
-
-   width:700px;
-   max-width:70%;
-   max-height:72%;
-   z-index:900;
-   visibility: hidden;
-   opacity: 0;
-}
-
-
-@keyframes popIn {
-   from {
-      opacity: 0;
-      transform:translate(-50%,-50%) scale(0.1);
-   }
-   to {
-      opacity: 1;
-      transform: translate(-50%,-50%) scale(1);
-   }
- }
-
- @keyframes popOut {
-   from {
-      opacity: 1;
-      transform: translate(-50%,-50%) scale(1);
-   }
-   to {
-      opacity: 0;
-      transform:translate(-50%,-50%) scale(0.1);
-   }
- }
-
-.popupShown{
-   animation: popIn 1s forwards;
-}
-
-.popupHidden{
-   animation: popOut 1s forwards;
-}
-
-.popupIconContainer{
-   position: absolute;
-   top:-50px;
-   left: 50%;
-   transform: translateX(-50%);
-
-   display: flex;
-   justify-content: center;
-   align-items: center;
-
-   border:2px solid black;
-   border-radius:50%;
-   box-shadow: var(--shadow-color) 0px 10px 20px, var(--shadow-color) 0px 6px 6px;
-   width:100px;
-   height:100px;
-   background:#08B0FF;
-   color:white;
-
-   text-align: center;
-   font-size:2.5rem;
-}
-
-.popupIconContainer.errorType{
-   background-color: red;
-}
-
-
-.popupExitContainer{
-   position: absolute;
-   color: var(--text-color);
-   top:30px;
-   right:40px;
-   font-weight: bolder;
-}
-
-.popupExitContainer i{
-   transition:transform 0.5s ease-in;
-   font-size: 2.6rem;
-   font-weight: bolder;
-   cursor:pointer;
-}
-
-.popupExitContainer i:hover{
-   color:red;
-}
-
-.popupExitContainer i.clicked{
-   color:red;
-   transform: rotate(360deg);
-}
-
-@keyframes notificationShow {
-   from {
-      top:-50%;
-      transform:translate(-50%,-50%) scale(0.1);
-   }
-   to {
-      top:13%;
-      transform: translate(-50%,-50%) scale(1);
-   }
-}
-
-@keyframes notificationHide {
-   from {
-      top:13%;
-      transform: translate(-50%,-50%) scale(1);
-   }
-   to {
-      top:-50%;
-      transform:translate(-50%,-50%) scale(0.1);
-   }
-}
-.popupNotification{
-   position: fixed;
-   top: -50%;
-   left: 50%;
-   transform: translate(-50%, -50%) scale(1);
-   visibility: visible;
-   opacity:1;
-   width:500px;
-   max-width: 50%;
-   height:200px;
-   max-height:5vh;
-   text-align: center;
-}
-
-.notificationShown {
-   animation: notificationShow 2s ease-in-out forwards;
-}
-
-.notificationHidden {
-   animation: notificationHide 2s ease-in-out forwards;
-}
-
-.popupNotification p{
-   font-size:1.1rem;
-   font-weight: bolder;
-   margin:0;
-}
-
-.popupNotification .popupIconContainer{
-   width:50px;
-   height:50px;
-   top:-35px;
-   left:initial;
-   font-size:1.3rem;
-}
-
-.popupNotification .popupExitContainer{
-   top:10px;
-   right:20px;
-}
-
-.popupNotification .popupExitContainer i{
-   font-size:25px;
-}
-
-.popupNotification form{
-   max-height:200px;
-}
-
 @media only screen and (max-width:1000px){
    footer{
       flex-wrap: wrap;
@@ -618,34 +420,10 @@ footer a:hover {
       min-width: 90%;
       margin:auto;
    }
-   header{
-      padding:0 10px 0 10px;
-   }
-   .headerTitle{
-      margin-top:50px;
-      flex-direction: column;
-   }
-
    .headerTitle h1{
       font-size:2.5rem;
    }
    .headerTitle i{
       font-size:3rem;
-   }
-
-   #sidebarIcon{
-      font-size:2rem;
-      margin-left:10px;
-   }
-   nav{
-      width:180px;
-   }
-
-}
-
-@media only screen and (max-width:360px){
-   .storeImageContainer{
-      flex-direction: column;
-      justify-content: center;
    }
 }

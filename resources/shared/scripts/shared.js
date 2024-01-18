@@ -16,43 +16,25 @@ if(mode && document.querySelector('footer')){
    document.body.style.opacity = '1';
 }
 
-let homeLogo = document.getElementById('logo');
+let sideBarIcon = document.getElementById('sidebarIcon');
 
-if(homeLogo){
-   homeLogo.onclick = (event) =>{
-      window.location.href = './home';
-   }
-}
+if(sideBarIcon){
+   let nav = document.querySelector('nav');
 
-let sidebar = document.querySelector('nav');
 
-if(sidebar){
-   let anchors = sidebar.querySelectorAll('a');
+   sideBarIcon.onclick = function(event){
+      if(nav.classList.contains('navShown')){
+         nav.classList.remove('navShown');
+         nav.classList.add('navHidden');
 
-   sidebar.onmouseover = function(event){
-      anchors.forEach((anchorTag)=>{
-         anchorTag.style.visibility = 'visible';
-      });
-   }
-
-   sidebar.onmouseout = function(event){
-
-      anchors.forEach((anchorTag)=>{
-         anchorTag.style.visibility = 'hidden';
-      });
-   }
-}
-
-// Send request to log out method in built controllers
-let logoutIcons = document.querySelectorAll('.logOutIcon');
-
-if(logoutIcons){
-   logoutIcons.forEach((icon)=>{
-      // Some pages may have two log out icons (settings)
-      icon.onclick = function(event){
-         window.location.href = './logOut';
+         setTimeout(()=>{
+            nav.style.display = 'none;';
+         },1300);
+      } else{
+         nav.classList.remove('navHidden');
+         nav.classList.add('navShown');
       }
-   });
+   }
 }
 
 function checkDimensions(component,link) {
@@ -282,28 +264,6 @@ passwordIcons.forEach((icon) => {
       }
    }
 });
-
-// navbar
-let sideBarIcon = document.getElementById('sidebarIcon');
-let exitSideBarIcon = document.getElementById('exitSideBarIcon');
-let navbar = document.querySelector('nav');
-
-if(document.contains(sideBarIcon)){
-   //Only apply to valid component on user pages
-   sideBarIcon.onclick = function(event){
-      if(!navbar.classList.contains('navbarShown')){
-         navbar.classList.remove('navbarHidden');
-         navbar.classList.add('navbarShown');
-      }
-   }
-   exitSideBarIcon.onclick = function(event){
-      if(!navbar.classList.contains('navbarHidden')){
-         navbar.classList.remove('navbarShown');
-         navbar.classList.add('navbarHidden');
-      }
-   }
-
-}
 
 let logoIcon = document.getElementById('logoIcon');
 

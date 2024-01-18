@@ -9,7 +9,6 @@ main button{
    margin:40px auto 40px auto;
 }
 
-
 #accounts{
    display: flex;
    flex-direction: row;
@@ -22,53 +21,60 @@ main button{
    width:100%;
 }
 
-
-
-.specificAccountsContainer {
-   border-radius: 7px;
-   box-shadow: var(--text-color) 0px 0px 4px;
-   overflow: hidden;
-   text-align: center;
-
-   background: #24252A;
+.specificAccountsContainer{
+   --bg-filter-opacity: 0.8;
+   height: 25rem;
+   width: 18rem;
+   font-size: 1.5em;
    color: white;
-   width:21rem;
-   max-width:90%;
-   height:30rem;
-   padding:0;
-   margin:0;
+   border-radius: 1rem;
+   padding: 1rem;
+   display: flex;
+   align-items: flex-end;
+   justify-content: flex-start;
+   background-size: cover;
+   background-position: center;
+   box-shadow: 0 0 3rem -1rem var(--text-color);
+   overflow: hidden;
+   border: 2px solid var(--text-color);
+   text-decoration: none;
+   background-image: linear-gradient(rgba(0,0,0,var(--bg-filter-opacity)),rgba(0,0,0,var(--bg-filter-opacity))),url( '../images/property.png');
    animation: fadeIn 1s ease-in-out forwards;
    white-space: nowrap;
+   text-align: left;
 }
-
 
 .highlighted {
    box-shadow: var(--text-color) 0px 0px 100px;
 }
-
-.imageContainer img{
-   overflow: hidden;
-   width: 100%;
-   height: 12.5rem;
-   object-fit: cover;
-   box-shadow: var(--background-color) 0px 0px 3px;
+.accountDetails{
+   padding:0 0 0.4rem 0.4rem;
 }
-.accountDetails {
-   padding:2rem;
+.accountValue{
+   max-width: 90%;
+   overflow: hidden;
+}
+.accountValue.standard{
+   color:#15CF74;
+}
+
+.accountValue.debt{
+   color:red;
 }
 
 .specificAccountsContainer h1{
-   font-size: 2rem;
-
-   white-space: wrap;
+   font-size: 1.7rem;
+   white-space: nowrap;
    overflow: hidden;
    text-overflow: ellipsis;
 }
 
 
 .specificAccountsContainer h3{
-   font-size: 1.4rem;
-   word-wrap: break-word;
+   font-size: 1.2rem;
+   white-space: nowrap;
+   overflow: hidden;
+   text-overflow: ellipsis;
 }
 
 .editAccountButton{
@@ -82,10 +88,6 @@ main button{
    border-radius: 25px;
    background: #15CF74;
    cursor:pointer;
-}
-
-.editAccountButton:hover{
-   box-shadow:0 20px 25px -5px white, 0 8px 10px -6px white;
 }
 
 @keyframes slideDown {
@@ -256,8 +258,5 @@ main button{
       padding: 0;
    }
 
-   .specificAccountsContainer{
-      height:32rem;
-   }
 }
 

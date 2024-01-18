@@ -7,14 +7,12 @@ export function constructAccount(name,type,balance,ID){
    //Store name in dataset to grab value for transaction table
    container.dataset.name = name;
 
-   container.innerHTML = `
-      <div class="imageContainer">
-         <img src="../resources/accounts/images/${type.toLowerCase()}.png" alt="">
-      </div>
+   let accountValueType = (type == 'Loan' || type == 'Credit Card') ? 'debt' : 'standard';
 
+   container.innerHTML = `
       <div class = "accountDetails">
          <h1 class = "accountName">${name}</h1>
-         <h3 class = "accountValue" >$${balance.toLocaleString("en-US",{ minimumFractionDigits: 2, maximumFractionDigits: 2 })}</h3>
+         <h3 class = 'accountValue ${accountValueType}' >$${balance.toLocaleString("en-US",{ minimumFractionDigits: 2, maximumFractionDigits: 2 })}</h3>
          <button type = 'button' class = 'editAccountButton'><i class = "fa-solid fa-pen-to-square"></i> Edit</button>
       </div>
    `;
@@ -37,6 +35,8 @@ export function constructAccount(name,type,balance,ID){
       //Replace HTML Node for a edit to maintain placement
       accountsContainer.replaceChild(container, possibleSwap)
    }
+   // ""
+   container.style.backgroundImage = `background-image: linear-gradient(rgba(0,0,0,var(--bg-filter-opacity)),rgba(0,0,0,var(--bg-filter-opacity))), url('../images/${type.toLowerCase()}.png');`;
 
 
    let editAccountButton = container.querySelector('.editAccountButton');
