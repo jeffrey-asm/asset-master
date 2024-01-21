@@ -39,7 +39,6 @@ main{
 }
 
 header{
-   box-sizing: border-box;
    margin:0;
    padding:1 3.5rem;
    display: flex;
@@ -47,7 +46,7 @@ header{
    flex-direction: column;
    align-items: flex-start;
    gap:1rem;
-   min-height: 5rem;
+   min-height: 8rem;
 }
 
 .navBarContainer{
@@ -71,7 +70,6 @@ header{
 
 #sidebarIcon:hover{
    cursor: pointer;
-   color:#08B0FF;
 }
 
 #logoContainer{
@@ -85,9 +83,8 @@ header{
    gap:5px;
    padding:25px;
 }
-#logo{
-   margin-top:15px;
-   font-size:2.8rem !important;
+#logoContainer img{
+   max-height:90px;
 }
 nav{
    display: none;

@@ -22,9 +22,9 @@ main button{
 }
 
 .specificAccountsContainer{
-   --bg-filter-opacity: 0.8;
-   height: 25rem;
-   width: 18rem;
+   --bg-filter-opacity: 0.7;
+   height: 27rem;
+   width: 19rem;
    font-size: 1.5em;
    color: white;
    border-radius: 1rem;
@@ -36,18 +36,24 @@ main button{
    background-position: center;
    box-shadow: 0 0 3rem -1rem var(--text-color);
    overflow: hidden;
-   border: 2px solid var(--text-color);
    text-decoration: none;
-   background-image: linear-gradient(rgba(0,0,0,var(--bg-filter-opacity)),rgba(0,0,0,var(--bg-filter-opacity))),url( '../images/property.png');
-   animation: fadeIn 1s ease-in-out forwards;
+   background-image: linear-gradient(rgba(0,0,0,var(--bg-filter-opacity)),rgba(0,0,0,var(--bg-filter-opacity))),url( '../images/retirement.png');
+   animation: fadeIn 1s ease-in-out, transform 1s ease-in-out;
    white-space: nowrap;
    text-align: left;
 }
 
+.specificAccountsContainer:hover{
+   transform: scale(1.05);
+   cursor: pointer;
+}
+
 .highlighted {
    box-shadow: var(--text-color) 0px 0px 100px;
+   transform: scale(1.10);
 }
 .accountDetails{
+   width: 100%;
    padding:0 0 0.4rem 0.4rem;
 }
 .accountValue{
@@ -137,17 +143,10 @@ main button{
    animation:emptySlideDown 1.5s ease-in-out forwards;
 }
 
-
 .addedTransaction{
    transition: transform 1.5s ease-in-out;
    animation:emptySlideUp 1.5s ease-in-out forwards;
 }
-
-#transactionsSection{
-   width: 100%;
-   margin:3rem auto;
-}
-
 
 .removedTransaction{
    transition-property: transform,opacity !important;
@@ -156,96 +155,219 @@ main button{
    animation:slideUp 2s ease-in-out forwards !important;
 }
 
-#transactionsTable{
-   width:100%;
-   margin:0 auto;
+/* https://colorlib.com/etc/tb/Table_Responsive_v1/index.html */
+.limiter {
+   width: 100%;
+   margin: 0 auto
+}
+
+.container-table100 {
+   width: 100%;
    display: flex;
-   flex-direction: column;
    align-items: center;
-   justify-content: flex-start;
-   gap:0;
-   overflow:auto;
+   justify-content: center;
+   flex-wrap: wrap;
+   /* padding: 33px 30px */
 }
 
-.transactionHeadings{
-   display: grid;
-   grid-template-columns: 0.5fr 0.5fr 0.5fr 0.1fr 0.5fr 0.1fr;
-   gap:2rem;
-   padding:0 20px;
-   align-items: center;
-   font-weight: bolder;
-   width:100%;
-   font-size:1.3rem;
-   color:#ffffff;
-   background-color: #08B0FF;
-   border: 0;
-   min-height:10rem;
-   text-align: center;
+.wrap-table100 {
+   width: 90%;
 }
 
-.transactions{
-   width:100%;
-   max-height: 700px;
-   overflow-y:scroll;
-   transition: all 0.3s ease;
-}
-.transactionRow{
-   display: grid;
-   grid-template-columns: 0.5fr 0.5fr 0.5fr 0.1fr 0.5fr 0.1fr;
-   column-gap: 2rem;
-   align-items: center;
-   min-width:100%;
-   width:auto;
-   padding:0 20px;
-   font-size:1.1rem;
-   font-weight: bolder;
-   background-color: #24252A;
-   color:white;
-   transition: transform 2s ease-in-out;
-   animation: slideDown 2s ease-in-out forwards;
-   border-top: 5px white;
-   text-align: center;
+table {
+   border-spacing: 1;
+   border-collapse: collapse;
+   background: #fff;
+   border-radius: 10px;
+   overflow: hidden;
+   width: 100%;
+   margin: 0 auto;
    position: relative;
-   left: 0;
+   font-weight: bolder;
 }
 
-.transactionRow:hover{
-   transition:none;
-   background:#969A96;
+table * {
+   position: relative
 }
 
+table td,table th {
+   padding-left: 8px
+}
 
-.transactionRow button{
-   width:3rem;
-   color:var(--background-color);
-   font-size:1.1em;
-   max-width:2em;
-   max-height:2em;
+table thead tr {
+   height: 100px;
+   background: #15CF74;
+}
+
+table tbody tr {
+   height: 50px
+}
+
+table tbody tr:last-child {
+   border: 0
+}
+
+table td,table th {
+   text-align: left
+}
+
+table td.l,table th.l {
+   text-align: right
+}
+
+table td.c,table th.c {
+   text-align: center
+}
+
+table td.r,table th.r {
+   text-align: center
+}
+
+.table100-head th {
+   font-size: 1.4rem;
+   color: #fff;
+   line-height: 1.2;
+   font-weight: unset
+}
+
+tbody tr:nth-child(even) {
+   background-color: #f5f5f5
+}
+
+tbody tr {
+   font-size: 1rem;
+   color: gray;
+   line-height: 1.2;
+   font-weight: unset
+}
+
+tbody tr:hover {
+   color: #555;
+   background-color: #f5f5f5;
+}
+
+.column1 {
+   width: 260px;
+   padding-left: 40px
+}
+
+.column2 {
+   width: 160px
+}
+
+.column3 {
+   width: 245px
+}
+
+.column4 {
+   width: 110px;
+   text-align: right
+}
+
+.column5 {
+   width: 170px;
+   text-align: right
+}
+
+.column6 {
+   width: 222px;
+   text-align: right;
+   padding-right: 62px
+}
+
+.column6 button{
+   max-width: 90%;
    background:none;
+   color:black;
 }
 
-.transactionRow button:hover{
-   color:#08B0FF;
-   cursor:pointer;
-   box-shadow:none;
+.column6 button:hover{
+   box-shadow: none;
+   transform:translateY(-4px);
 }
 
-.transactionRow button[disabled]{
-   background:none;
-   color:#aca8a8;
+@media screen and (max-width: 992px) {
+   table {
+       display:block
+   }
+
+   table>*,table tr,table td,table th {
+       display: block
+   }
+
+   table thead {
+       display: none
+   }
+
+   table tbody tr {
+       height: auto;
+       padding: 37px 0
+   }
+
+   table tbody tr td {
+       padding-left: 40%!important;
+       margin-bottom: 24px
+   }
+
+   table tbody tr td:last-child {
+       margin-bottom: 0
+   }
+
+   table tbody tr td:before {
+       font-size: 14px;
+       color: #999;
+       line-height: 1.2;
+       font-weight: unset;
+       position: absolute;
+       width: 40%;
+       left: 30px;
+       top: 0
+   }
+
+   table tbody tr td:nth-child(1):before {
+       content: "Date"
+   }
+
+   table tbody tr td:nth-child(2):before {
+       content: "Account"
+   }
+
+   table tbody tr td:nth-child(3):before {
+       content: "Title"
+   }
+
+   table tbody tr td:nth-child(4):before {
+       content: "Category"
+   }
+
+   table tbody tr td:nth-child(5):before {
+       content: "Total"
+   }
+
+   table tbody tr td:nth-child(6):before {
+       content: "Edit"
+   }
+
+   .column4,.column5,.column6 {
+       text-align: left
+   }
+
+   .column4,.column5,.column6,.column1,.column2,.column3 {
+       width: 100%
+   }
+
+   tbody tr {
+       font-size: 14px
+   }
 }
 
-.transactionRow p.Income{
-   color:#08B0FF;
+@media(max-width: 576px) {
+   .container-table100 {
+       padding-left:15px;
+       padding-right: 15px
+   }
 }
 
-.transactionRow p.Expenses{
-   color:red;
-}
-
-.transactionRow p, .transactionHeadings p{
-   min-width: 250px;
-}
 
 @media only screen and (max-width:600px) {
    main{

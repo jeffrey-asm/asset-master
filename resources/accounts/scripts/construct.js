@@ -17,6 +17,8 @@ export function constructAccount(name,type,balance,ID){
       </div>
    `;
 
+   container.style.backgroundImage = `linear-gradient(rgba(0,0,0,var(--bg-filter-opacity)),rgba(0,0,0,var(--bg-filter-opacity))),url( '../resources/accounts/images/${type.toLowerCase()}.png')`;
+
    let accountsContainer = document.getElementById('accounts');
    if(document.querySelectorAll('.specificAccountsContainer').length == 0) {
       //Remove no accounts message
@@ -35,9 +37,6 @@ export function constructAccount(name,type,balance,ID){
       //Replace HTML Node for a edit to maintain placement
       accountsContainer.replaceChild(container, possibleSwap)
    }
-   // ""
-   container.style.backgroundImage = `background-image: linear-gradient(rgba(0,0,0,var(--bg-filter-opacity)),rgba(0,0,0,var(--bg-filter-opacity))), url('../images/${type.toLowerCase()}.png');`;
-
 
    let editAccountButton = container.querySelector('.editAccountButton');
    let editAccountContainer = document.getElementById('editAccountContainer');
@@ -50,11 +49,16 @@ export function constructAccount(name,type,balance,ID){
       editAccountForm.dataset.identification = ID;
       openPopUp(editAccountContainer);
    }
+
+   container.onclick = () => {
+      editAccountButton.click();
+   }
+
 }
 
 function insertTransactionByDate(container){
-   let mainContainer = document.querySelector('.transactions');
-   let possibleTransactions = mainContainer.querySelectorAll('.transactionRow');
+   let mainContainer = document.querySelector('tbody');
+   let possibleTransactions = mainContainer.querySelectorAll('tr');
    let found = false;
 
    possibleTransactions.forEach((transaction)=>{
@@ -76,7 +80,7 @@ function insertTransactionByDate(container){
 export function constructTransaction(accountID,title,type,categoryID,date,amount,ID){
    let currentAmountFixed = amount.toLocaleString("en-US",{ minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-   let transactionContainer = document.createElement('div');
+   let transactionContainer = document.createElement('tr');
    transactionContainer.className = 'transactionRow';
    transactionContainer.id = ID
 
@@ -100,22 +104,21 @@ export function constructTransaction(accountID,title,type,categoryID,date,amount
    transactionContainer.dataset.account = accountID;
 
    transactionContainer.innerHTML = `
-      <p>${dateText}</p>
-      <p class = 'accountNameLink'>${accountName}</p>
-      <p>${title}</p>
-      <p>${categoryName}</p>
-      <p class = '${type}'>$${currentAmountFixed}</p>
-      <p>
+      <td class = 'column1'>${dateText}</td>
+      <td class = 'column2 accountNameLink'>${accountName}</td>
+      <td class = 'column3'>${title}</td>
+      <td class = 'column4'>${categoryName}</td>
+      <td class = 'column5 ${type}'>$${currentAmountFixed}</td>
+      <td class = 'column6'>
          <button class = "editTransactionIcon">
             <span>
                <i class = "fa-solid fa-pen-to-square"></i>
             </span>
          </button>
-      </p>
+      </td>
    `;
 
-   let possibleSwap = document.querySelector(`.transactions #${ID}`);
-
+   let possibleSwap = document.querySelector(`tr#${ID}`);
 
    if(possibleSwap){
       //Must always re-adjust date insertion
@@ -157,8 +160,15 @@ export function constructTransaction(accountID,title,type,categoryID,date,amount
          accountContainer.scrollIntoView({behavior:'smooth'});
          accountContainer.classList.add('highlighted');
 
+         const removeHighlightOnHover = () => {
+            accountContainer.classList.remove('highlighted');
+         }
+
+         accountContainer.addEventListener('mouseover',removeHighlightOnHover);
+
          setTimeout(()=>{
             accountContainer.classList.remove('highlighted');
+            accountContainer.removeEventListener('mouseover', removeHighlightOnHover);
          },5000);
       }
    }

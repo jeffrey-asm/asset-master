@@ -15,7 +15,7 @@
       <div class = 'navBarContainer'>
          <i class="fas fa-bars" id="sidebarIcon"></i>
          <nav>
-            <a href = "./home" id = 'logoContainer'><i class="fa-solid fa-business-time" id = 'logo'></i> Asset Master</a>
+            <a href = "./home" id = 'logoContainer'><img src="../resources/shared/images/logo.png" alt="logo"> Asset Master</a>
             <a href = "./home"><i class="fa-solid fa-house"></i> Home</a>
             <a href = "./budget"><i class="fa-solid fa-chart-pie"></i> Budget</a>
             <a href = "./accounts"><i class="fa-solid fa-building-columns"></i> Accounts</a>
@@ -24,9 +24,6 @@
       </div>
    </header>
    <main>
-      <div id = 'cardTest'>
-         <h1>HELLo</h1>
-      </div>
       <div class = 'mainImage'>
          <img src="../resources/accounts/images/account.png" alt="">
       </div>
@@ -43,7 +40,7 @@
          </div>
       </div>
 
-      <div id = "transactionsSection">
+      <!-- <div id = "transactionsSection">
          <div id = "transactionsTable">
                <div class = 'transactionHeadings'>
                   <p>Date</p>
@@ -57,12 +54,36 @@
 
                </div>
          </div>
-         <div>
-            <button type="button" id = "addTransactionButton" class = "addButton">
-               Add Transaction <i class="fa-solid fa-plus"></i>
-            </button>
+
+      </div> -->
+      <div class="limiter">
+         <div class="container-table100">
+            <div class="wrap-table100">
+               <div class="table100">
+                  <table>
+                     <thead>
+                        <tr class="table100-head">
+                           <th class="column1">Date</th>
+                           <th class="column2">Account</th>
+                           <th class="column3">Title</th>
+                           <th class="column4">Category</th>
+                           <th class="column5">Total</th>
+                           <th class="column6"></th>
+                        </tr>
+                     </thead>
+                     <tbody>
+                     </tbody>
+               </table>
+               </div>
+            </div>
          </div>
+      <div>
+         <button type="button" id = "addTransactionButton" class = "addButton">
+            Add Transaction <i class="fa-solid fa-plus"></i>
+         </button>
       </div>
+   </div>
+
 
    </main>
 
