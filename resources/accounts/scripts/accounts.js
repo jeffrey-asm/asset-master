@@ -116,12 +116,18 @@ editAccountForm.onsubmit = async function(event){
                   }
                })
             } else{
-               document.querySelector(`#accounts #${data.render.ID}`).remove();
+               let accountContainer = document.querySelector(`.accountContainer#${data.render.ID}`);
+               console.log(accountContainer);
+               accountContainer.style.animation = 'fadeOut 2s ease-in-out forwards';
                disableAccountButtons();
+
+               setTimeout(()=>{
+                  accountContainer.remove();
+               },1600);
 
                //In case a remove leads to no accounts
                let accountsContainer = document.getElementById('accounts');
-               if(document.querySelectorAll('.specificAccountsContainer').length == 0) {
+               if(document.querySelectorAll('.accountContainer').length == 0) {
                   accountsContainer.innerHTML = '<h2>No accounts available</h2>';
                }
 

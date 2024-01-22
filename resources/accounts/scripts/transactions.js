@@ -70,21 +70,21 @@ editTransactionForm.onsubmit = async function(event){
       setTimeout(()=>{
          document.getElementById('exitEditTransactionIcon').click();
 
-         if(data.render.remove){
+         if(data.render.remove === true){
             let transaction = document.querySelector(`tbody tr#${data.render.ID}`);
             transaction.classList.add('removedTransaction');
 
             setTimeout(()=>{
                transaction.remove();
 
-               let possibleTransaction = document.querySelector('tr');
+               let possibleTransaction = document.querySelector('tbody tr');
 
                if(!possibleTransaction){
                   //Must have removed only transaction on table
-                  document.querySelector('tbody').innerHTML = '<tr><td>No transactions available</td></tr>';
+                  document.querySelector('tbody').innerHTML = '<tr class = "no-transaction"><td>No transactions available</td></tr>';
                }
 
-            },1900);
+            },1600);
 
 
          } else if(data.render.changes){

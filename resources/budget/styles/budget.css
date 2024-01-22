@@ -82,7 +82,7 @@ main{
    border:none;
    background:transparent;
    color:#08B0FF;
-   font-size:1.1rem;
+   font-size:1rem;
    font-weight: bold;
    text-align: right;
    margin:0;
@@ -113,7 +113,7 @@ main{
 .addButton button{
    width: 9.2rem;
    height:3.4rem;
-   font-size:1.1rem;
+   font-size:1rem;
    background: #08B0FF;
 }
 .addButton button[disabled]{

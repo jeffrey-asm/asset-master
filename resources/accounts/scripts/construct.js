@@ -2,7 +2,7 @@ import {openPopUp,openNotification}  from "../../shared/scripts/shared.js";
 
 export function constructAccount(name,type,balance,ID){
    let container = document.createElement('div');
-   container.className = 'specificAccountsContainer';
+   container.className = 'accountContainer';
    container.id = ID;
    //Store name in dataset to grab value for transaction table
    container.dataset.name = name;
@@ -20,7 +20,7 @@ export function constructAccount(name,type,balance,ID){
    container.style.backgroundImage = `linear-gradient(rgba(0,0,0,var(--bg-filter-opacity)),rgba(0,0,0,var(--bg-filter-opacity))),url( '../resources/accounts/images/${type.toLowerCase()}.png')`;
 
    let accountsContainer = document.getElementById('accounts');
-   if(document.querySelectorAll('.specificAccountsContainer').length == 0) {
+   if(document.querySelectorAll('.accountContainer').length == 0) {
       //Remove no accounts message
       accountsContainer.innerHTML = '';
    }
@@ -81,7 +81,7 @@ export function constructTransaction(accountID,title,type,categoryID,date,amount
    let currentAmountFixed = amount.toLocaleString("en-US",{ minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
    let transactionContainer = document.createElement('tr');
-   transactionContainer.className = 'transactionRow';
+   transactionContainer.className = 'transactionRow addedTransaction';
    transactionContainer.id = ID
 
    let accountName = '';
@@ -251,7 +251,7 @@ export async function getUserData(){
       });
 
       if(transactionKeys.length == 0){
-         document.querySelector('.transactions').innerHTML = '<div class = "no-transaction"><p>No transactions available</p></div>';
+         document.querySelector('tbody').innerHTML = '<tr class = "no-transaction"><td>No transactions available</td></tr>';
       }
 
 

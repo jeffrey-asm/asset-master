@@ -107,7 +107,7 @@ form label{
    background-color: white;
    width:8.7rem;
    margin:auto;
-   font-size:1.1rem;
+   font-size:1rem;
    white-space: wrap;
    padding:0;
    height:4rem;
@@ -129,6 +129,7 @@ form label{
    max-width: 8.7rem;
 }
 #deletePopUpButton,#deleteIconContainer,#deleteForm button{
+   border:0;
    color:white;
    background: red;
 }

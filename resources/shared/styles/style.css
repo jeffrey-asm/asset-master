@@ -73,7 +73,7 @@ header{
 }
 
 #logoContainer{
-   font-size: 1.8rem;
+   font-size: 2rem;
    font-weight: bolder;
    display: flex;
    flex-direction: column;
@@ -84,16 +84,20 @@ header{
    padding:25px;
 }
 #logoContainer img{
-   max-height:90px;
+   max-height:110px;
 }
 nav{
    display: none;
    flex-direction: column;
+   align-items: center;
+   justify-content: space-between;
    width:100%;
    margin-top: 10px;
    margin-left:10px;
    color:var(--background-color);
-   gap:5px;
+   background-color: var(--background-color);
+   border: 3px solid var(--text-color);
+   border-radius: 7px;
 }
 
 nav i{
@@ -101,21 +105,23 @@ nav i{
    margin-right: 10px;
 }
 nav a{
+   box-sizing: border-box;
    padding:1.3rem;
    text-decoration: none;
    font-weight: bolder;
-   font-size: 1.2rem;
-   background-color: var(--background-color);
+   font-size: 1.4rem;
    color:var(--text-color);
-   border: 3px solid var(--text-color);
-   border-radius: 5px;
+
+   width:100%;
+   text-align: center;
 }
 
-nav a:hover{
+nav a:first-child:hover{
+   cursor:initial;
+}
+
+nav a:not(:first-child):hover{
    background-color: #969A96;
-   color:var(--text-color);
-   transform: translateY(-4px);
-   transition:transform 1s ease-in-out;
 }
 .navShown{
    display: flex !important;
@@ -157,8 +163,8 @@ button{
    box-sizing: border-box;
    background-color: #08B0FF;
    border:0;
-   border-radius: 5px;
-   font-size: 1.2rem;
+   border-radius: 7px;
+   font-size: 1.1rem;
    font-weight: bold;
    color:white;
    margin-top: 10px;
@@ -186,7 +192,7 @@ button{
 }
 
 .mainImage{
-   width:90%;
+   width:100%;
    margin-left:auto;
    margin-right: auto;
 }
@@ -243,7 +249,7 @@ button{
    color:red;
 }
 .positiveNetWorth{
-   color:green;
+   color:#15CF74;
 }
 
 #errorContainer{
@@ -293,7 +299,7 @@ footer {
    width:100%;
    margin:5rem auto 0 auto;
 
-   min-height: 350px;
+   min-height: 310px;
    border-top: 5px solid;
    border-color: #08B0FF;
    border-image: linear-gradient(160deg, #08B0FF 0%, #80D0C7 100%);
