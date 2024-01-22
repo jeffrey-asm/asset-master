@@ -64,7 +64,7 @@ header{
 #sidebarIcon{
    display: block;
    margin:0;
-   margin-left:10px;
+   width:32px;
    font-size: 2rem;
 }
 
@@ -73,44 +73,61 @@ header{
 }
 
 #logoContainer{
-   font-size: 2rem;
+   font-size: 1rem;
+   text-align: center;
+   white-space: nowrap;
    font-weight: bolder;
    display: flex;
    flex-direction: column;
    justify-content: center;
-   text-align: center;
    align-items: center;
-   gap:5px;
-   padding:25px;
+   width:100%;
+   margin:auto;
+   padding-top:1rem;
 }
+
 #logoContainer img{
-   max-height:110px;
+   max-height:80px;
 }
+
+#logoContainer h1{
+   text-decoration: underline;
+   text-underline-position: under;
+   margin:0.8rem 0;
+}
+
 nav{
-   display: none;
+   display: flex;
    flex-direction: column;
    align-items: center;
    justify-content: space-between;
-   width:100%;
+   width:200px;
    margin-top: 10px;
    margin-left:10px;
    color:var(--background-color);
-   background-color: var(--background-color);
-   border: 3px solid var(--text-color);
-   border-radius: 7px;
+   background-color: var(--text-color);
+   border: 3px solid var(--background-color);
+   border-radius: 15px;
+
+   border-top-left-radius: 0px;
+   border-bottom-left-radius: 0px;
+
+   position: relative;
+   top: 0;
+   left: -350px;
+   overflow: hidden;
 }
 
 nav i{
-   font-size:1.3rem !important;
    margin-right: 10px;
 }
 nav a{
    box-sizing: border-box;
-   padding:1.3rem;
+   padding:1.5rem;
    text-decoration: none;
    font-weight: bolder;
-   font-size: 1.4rem;
-   color:var(--text-color);
+   font-size: 1.2rem;
+   color:var(--background-color);
 
    width:100%;
    text-align: center;
@@ -123,38 +140,29 @@ nav a:first-child:hover{
 nav a:not(:first-child):hover{
    background-color: #969A96;
 }
+
 .navShown{
-   display: flex !important;
    animation: showNav 1.2s ease-in-out forwards !important;
 }
 .navHidden{
-   display: flex;
    animation: hideNav 1.2s ease-in-out forwards !important;
 }
 
 @keyframes showNav {
    from {
-      transform: scale(0.1);
-      opacity: 0;
-      transform-origin: top left;
+      left:-350px;
    }
    to {
-      opacity: 1;
-      transform:scale(1);
-      transform-origin: top left;
+      left: -28.6px;
    }
  }
 
  @keyframes hideNav {
    from {
-      transform: scale(1);
-      opacity: 1;
-      transform-origin: top left;
+      left: -28.6px;
    }
    to {
-      opacity: 0;
-      transform:scale(0.1);
-      transform-origin: top left;
+      left:-350px;
    }
  }
 
@@ -197,7 +205,7 @@ button{
    margin-right: auto;
 }
 .mainImage img{
-   max-height: 450px;
+   max-height: 400px;
    width:auto;
    max-width:100%;
 }

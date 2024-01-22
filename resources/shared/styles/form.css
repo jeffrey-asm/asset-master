@@ -285,7 +285,9 @@ form hr{
 }
 
 .popupNotification p{
-   font-size:1.1rem;
+   margin-top:10px !important;
+   font-size:1rem;
+   max-width: 80%;
    font-weight: bolder;
    margin:0;
 }
@@ -294,7 +296,6 @@ form hr{
    width:50px;
    height:50px;
    top:-35px;
-   left:initial;
    font-size:1.3rem;
 }
 

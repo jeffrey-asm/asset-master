@@ -21,18 +21,25 @@ let sideBarIcon = document.getElementById('sidebarIcon');
 if(sideBarIcon){
    let nav = document.querySelector('nav');
 
+   sideBarIcon.onmouseover = function(event){
+      //Only open navbar should occur on hover
+      if(!nav.classList.contains('navShown')){
+         nav.classList.remove('navHidden');
+         nav.classList.add('navShown');
+         sideBarIcon.setAttribute('class', 'fa-solid fa-angles-right');
+      }
+   }
 
    sideBarIcon.onclick = function(event){
       if(nav.classList.contains('navShown')){
          nav.classList.remove('navShown');
          nav.classList.add('navHidden');
 
-         setTimeout(()=>{
-            nav.style.display = 'none;';
-         },1300);
+         sideBarIcon.setAttribute('class', 'fas fa-bars');
       } else{
          nav.classList.remove('navHidden');
          nav.classList.add('navShown');
+         sideBarIcon.setAttribute('class', 'fa-solid fa-angles-right');
       }
    }
 }
@@ -234,7 +241,7 @@ async function sendRequest(url,structuredFormData,formButton,formButtonText,succ
       }
     } catch (error) {
       // Handle errors if the request fails
-      openNotification("fa-solid fa-layer-group", '<p>Could not successfully process request</p>', 'errorType');
+      openNotification("fa-solid fa-triangle-exclamation", '<p>Could not successfully process request</p>', 'errorType');
       formButton.innerHTML = formButtonText;
       failFunction();
     }

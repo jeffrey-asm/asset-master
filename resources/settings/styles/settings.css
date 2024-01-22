@@ -58,7 +58,7 @@ form label{
 .securityContainer{
    display: grid;
    grid-template-columns: 5fr 1fr;
-   row-gap:2rem;
+   row-gap:1.2rem;
    column-gap: 5px;
    margin:15px 0 15px 0;
    text-align: left;
@@ -68,6 +68,7 @@ form label{
 .securityTitle{
    font-size:1.4rem;
    width:100%;
+   margin-top:0;
 }
 
 .securityText{
@@ -131,6 +132,7 @@ form label{
 #deletePopUpButton,#deleteIconContainer,#deleteForm button{
    border:0;
    color:white;
+   font-weight: bolder;
    background: red;
 }
 
@@ -147,10 +149,10 @@ form label{
       width:90%;
    }
    main h1{
-      font-size:3.4rem;
+      font-size:3.2rem;
    }
    form h2{
-      font-size:1.8rem;
+      font-size:1.6rem;
       margin:10px auto 0 auto;
    }
 
@@ -170,7 +172,16 @@ form label{
       justify-content: center;
       align-items: center;
       text-align: center;
-      gap:2rem;
+   }
+
+   .securityTitle{
+      text-decoration: underline;
+      text-underline-position: under;
+   }
+
+   .securityText{
+      max-width: 18rem;
+      margin:auto;
    }
 
 }

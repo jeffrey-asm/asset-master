@@ -205,6 +205,6 @@ export async function getBudget(){
       constructCategory('main', 'Income','mainIncome', 'Income', 0.00, 0.00);
       constructCategory('main', 'Expenses','mainExpenses', 'Expenses', 0.00, 0.00);
       mainTag.style.opacity = '1';
-      openNotification("fa-solid fa-triangle-exclamation", '<p>Could not successfully process request</p>', 'errorType');
+      openNotification("fa-solid fa-circle-exclamation", '<p>Could not successfully process request</p>', 'errorType');
     }
 }

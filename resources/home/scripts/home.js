@@ -39,8 +39,8 @@ function constructStories(stories){
 let charts = []
 Chart.defaults.font.size = 16;
 Chart.defaults.font.weight = 'bold';
-Chart.defaults.responsive = false;
-Chart.defaults.maintainAspectRatio = true;
+Chart.defaults.responsive = true;
+Chart.defaults.maintainAspectRatio = false;
 Chart.defaults.plugins.legend.display = false;
 Chart.defaults.datasets.bar.maxBarThickness = 50;
 
@@ -51,7 +51,7 @@ function constructGraph(graphType,graphData,graphOptions,text,container){
       <div>
         ${text}
       </div>
-      <div>
+      <div class = 'graph'>
          <canvas></canvas>
       </div>`;
 
@@ -162,6 +162,16 @@ function constructAccountsGraph(accounts,netWorth){
          }
 
       },
+      elements: {
+         bar: {
+             borderWidth: 3,
+             borderRadius: 3,
+             barThickness: function(context) {
+                 var minBarThickness = 50;
+                 return Math.max(minBarThickness, context.parsed.y) / 2;
+             },
+         }
+     }
    }
 
    let innerText = `<h2><a href = './accounts#accounts'>Accounts</h2></a>`;
@@ -293,6 +303,12 @@ function constructFinanceGraph(transactions,budget){
             }
          }
       },
+      elements: {
+         bar: {
+             borderWidth: 3,
+             borderRadius: 3
+         }
+     }
    };
 
    let stackedOptions = {
@@ -309,6 +325,12 @@ function constructFinanceGraph(transactions,budget){
            }
          },
       },
+      elements: {
+         bar: {
+             borderWidth: 3,
+             borderRadius: 3,
+         }
+     }
    };
 
    let categoryData = {
@@ -316,7 +338,7 @@ function constructFinanceGraph(transactions,budget){
       datasets: [...incomeCategoriesData.datasets,...expensesCategoriesData.datasets],
    };
 
-   constructGraph('bar', incomeExpensesData, options, `<h2><a href = "./accounts#transactionsSection">Monthly Trends</a></h2>`, document.getElementById('finances'));
+   constructGraph('bar', incomeExpensesData, options, `<h2><a href = "./accounts">Monthly Trends</a></h2>`, document.getElementById('finances'));
 
    constructGraph('bar', categoryData, stackedOptions, `<h2><a href = "./budget">Category Trends</a></h2>`, document.getElementById('finances'));
 }
@@ -331,12 +353,44 @@ async function fetchData(){
       constructAccountsGraph(data.userData.accounts,data.userData.netWorth);
       constructFinanceGraph(data.userData.transactions,data.userData.budget);
       updateChartColors();
+
+      var showZeroPlugin = {
+         beforeRender: function (charts) {
+            console.log(charts);
+             var datasets = chartInstance.config.data.datasets;
+
+             for (var i = 0; i < datasets.length; i++) {
+                 var meta = datasets[i]._meta;
+                 var metaData = meta[Object.keys(meta)[0]];
+                 var bars = metaData.data;
+
+                 for (var j = 0; j < bars.length; j++) {
+                     var model = bars[j]._model;
+
+                     if (metaData.type === "horizontalBar" && model.base === model.x) {
+                         model.x = model.base + 2;
+                     }
+                     if (model.base === model.y) {
+                         model.y = model.base - 2;
+
+                         // Adjust the minimum height condition
+                         if (model.y - model.base < 3) {
+                             model.y = model.base - 3;
+                         }
+                     }
+                 }
+             }
+         }
+      };
+
+      Chart.pluginService.register(showZeroPlugin);
+
       document.querySelector('main').style.opacity = '1';
     } catch (error) {
       console.log(error);
       document.querySelector('main').style.opacity = '1';
       // Handle errors if the request fails
-      openNotification("fa-solid fa-layer-group", '<p>Could not successfully process request</p>', 'errorType');
+      openNotification("fa-solid fa-circle-exclamation", '<p>Could not successfully process request</p>', 'errorType');
     }
 }
 
@@ -348,5 +402,6 @@ function updateChartColors(){
       chart.update();
    });
 }
+
 
 fetchData();

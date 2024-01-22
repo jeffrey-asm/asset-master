@@ -22,6 +22,6 @@ export async function updateProfileInfo(){
       mainTag.style.opacity = '1';
       username.value = `N/A`;
       email.value = `N/A`;
-      openNotification("fa-solid fa-triangle-exclamation", '<p>Could not successfully process request</p>', 'errorType');
+      openNotification("fa-solid fa-circle-exclamation", '<p>Could not successfully process request</p>', 'errorType');
     }
 }

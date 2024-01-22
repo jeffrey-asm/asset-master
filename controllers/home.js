@@ -9,7 +9,6 @@ const accountController = require('./accounts.js');
 
 async function fetchStories() {
    try {
-      throw error;
       const response = await axios.get('https://feeds.content.dowjones.io/public/rss/mw_topstories');
       const data = await parseXML(response.data);
       return data;
@@ -75,8 +74,6 @@ async function fetchStocks(request,dateAndHour){
 
    for(let symbol of symbols) {
       try{
-         throw error;
-
          options.symbol = symbol;
          const response = await axios.request(options);
 

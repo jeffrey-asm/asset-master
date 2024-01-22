@@ -166,7 +166,7 @@ main button{
 /* https://colorlib.com/etc/tb/Table_Responsive_v1/index.html */
 .limiter {
    width: 100%;
-   margin: top 4rem;
+   margin: 4rem auto;
 }
 
 .container-table100 {
@@ -378,7 +378,7 @@ tbody tr {
    }
 
    table tbody tr td:nth-child(5):before {
-       content: "Total:"
+       content: "Amount:"
    }
 
    table tbody tr td:nth-child(6):before {
@@ -403,6 +403,7 @@ tbody tr {
       box-sizing: border-box;
       min-width: 90% !important;
       max-width:90%;
+      min-height:50px;
    }
 
    tbody tr {
