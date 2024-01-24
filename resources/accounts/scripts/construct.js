@@ -184,7 +184,6 @@ export async function getUserData(){
       });
 
       let data = await response.json();
-      console.log(data);
       //Render object holds all variables essential to constructing front end data
       mainTag.style.opacity = '1';
 
@@ -258,7 +257,7 @@ export async function getUserData(){
     } catch (error) {
       console.log(error);
       mainTag.style.opacity = '1';
-      openNotification("fa-solid fa-circle-exclamation", '<p>Could not successfully process request</p>', 'errorType');
+      openNotification("fa-solid fa-triangle-exclamation", '<p>Could not successfully process request</p>', 'errorType');
    }
 
 }

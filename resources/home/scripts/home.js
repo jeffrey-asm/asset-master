@@ -10,7 +10,8 @@ function constructStories(stories){
 
       let possibleImageURL;
       let possibleImageType;
-      let possibleURL = story['media:content']?.[0]?.['$'] || story['image'] || 0;
+      let possibleURL = story['media:content']?.[0]?.['$'] || story['image'] || '';
+
 
       if(possibleURL != '' && possibleURL.url && possibleURL.url.includes('https://images.mktw.net')){
          //https://images.mktw.net is only allowed domain for images
@@ -21,17 +22,22 @@ function constructStories(stories){
          possibleImageType = 'text/jpeg';
       }
 
+      function getStoryItem(array, index) {
+         // Some RSS feeds will not include specific tags, so ensure they exist
+         return array?.[index] || '';
+      }
+
       container.innerHTML = `
-         <div class = 'imageContainer'>
-            <img src="${possibleImageURL}" alt="story-image" type="${possibleImageType}">
+         <div class='imageContainer'>
+           <img src="${possibleImageURL}" alt="story-image" type="${getStoryItem(possibleImageType, 0)}">
          </div>
-         <div class = 'storyText'>
-            <h2><a href = '${story.link}'>${story.title[0]}</a></h2>
-            <p>${story.description[0]}</p>
-            <h3><i class="fa-solid fa-at"></i> ${story.author[0]}</h3>
-            <h3><i class="fa-solid fa-calendar-days"></i> ${story.pubDate[0]}</h3>
+         <div class='storyText'>
+           <h2><a href='${getStoryItem(story.link)}'>${getStoryItem(story.title, 0)}</a></h2>
+           <p>${getStoryItem(story.description, 0)}</p>
+           <h3><i class="fa-solid fa-at"></i> ${getStoryItem(story.author, 0)}</h3>
+           <h3><i class="fa-solid fa-calendar-days"></i> ${getStoryItem(story.pubDate, 0)}</h3>
          </div>
-      `
+      `;
       storiesContainer.append(container);
    });
 }
@@ -354,43 +360,12 @@ async function fetchData(){
       constructFinanceGraph(data.userData.transactions,data.userData.budget);
       updateChartColors();
 
-      var showZeroPlugin = {
-         beforeRender: function (charts) {
-            console.log(charts);
-             var datasets = chartInstance.config.data.datasets;
-
-             for (var i = 0; i < datasets.length; i++) {
-                 var meta = datasets[i]._meta;
-                 var metaData = meta[Object.keys(meta)[0]];
-                 var bars = metaData.data;
-
-                 for (var j = 0; j < bars.length; j++) {
-                     var model = bars[j]._model;
-
-                     if (metaData.type === "horizontalBar" && model.base === model.x) {
-                         model.x = model.base + 2;
-                     }
-                     if (model.base === model.y) {
-                         model.y = model.base - 2;
-
-                         // Adjust the minimum height condition
-                         if (model.y - model.base < 3) {
-                             model.y = model.base - 3;
-                         }
-                     }
-                 }
-             }
-         }
-      };
-
-      Chart.pluginService.register(showZeroPlugin);
-
       document.querySelector('main').style.opacity = '1';
     } catch (error) {
       console.log(error);
       document.querySelector('main').style.opacity = '1';
       // Handle errors if the request fails
-      openNotification("fa-solid fa-circle-exclamation", '<p>Could not successfully process request</p>', 'errorType');
+      openNotification("fa-solid fa-triangle-exclamation", '<p>Could not successfully process request</p>', 'errorType');
     }
 }
 

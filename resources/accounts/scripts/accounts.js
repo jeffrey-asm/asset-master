@@ -117,7 +117,6 @@ editAccountForm.onsubmit = async function(event){
                })
             } else{
                let accountContainer = document.querySelector(`.accountContainer#${data.render.ID}`);
-               console.log(accountContainer);
                accountContainer.style.animation = 'fadeOut 2s ease-in-out forwards';
                disableAccountButtons();
 

@@ -56,9 +56,9 @@ header{
 
    position:relative;
    top:3.9rem;
-   left:1rem;
+   left:0rem;
    clear:both;
-   z-index:1000;
+   z-index:999;
 }
 
 #sidebarIcon{
@@ -66,6 +66,7 @@ header{
    margin:0;
    width:32px;
    font-size: 2rem;
+   margin-left:25px;
 }
 
 #sidebarIcon:hover{
@@ -73,7 +74,7 @@ header{
 }
 
 #logoContainer{
-   font-size: 1rem;
+   font-size: 0.9rem;
    text-align: center;
    white-space: nowrap;
    font-weight: bolder;
@@ -126,7 +127,7 @@ nav a{
    padding:1.5rem;
    text-decoration: none;
    font-weight: bolder;
-   font-size: 1.2rem;
+   font-size: 1.1rem;
    color:var(--background-color);
 
    width:100%;
@@ -307,7 +308,7 @@ footer {
    width:100%;
    margin:5rem auto 0 auto;
 
-   min-height: 310px;
+   min-height: 290px;
    border-top: 5px solid;
    border-color: #08B0FF;
    border-image: linear-gradient(160deg, #08B0FF 0%, #80D0C7 100%);
@@ -323,18 +324,18 @@ footer {
    justify-content: space-evenly;
    align-items: center;
    column-gap: 1rem;
+   flex-wrap: wrap;
 }
 
 .footerLinkContainers h3 {
    margin-top:0;
    color: white;
-   font-size: 1.7rem;
+   font-size: 1.3rem;
 }
 
 .footerLinkContainers {
-   height:15rem;
+   height:12rem;
    padding:5px;
-   margin: 1.1rem 2.2rem;
 
    color: #08B0FF;
 }
@@ -343,7 +344,7 @@ footer {
    padding: 0;
    list-style-type: none;
 
-   font-size: 1.1rem;
+   font-size: 1rem;
 
    display: flex;
    flex-direction: column;
@@ -361,15 +362,15 @@ footer {
    flex-direction: row;
    flex-wrap: nowrap;
    align-items: center;
-   justify-content: flex-start;
+   justify-content: center;
    text-align: center;
-   gap:1.9rem;
+   gap:2.3rem;
 }
 .footerMediaLinks{
    gap:0.95rem;
 }
 .storeImageContainer img{
-   width:10rem;
+   width:9rem;
    cursor: pointer;
 }
 
@@ -400,8 +401,9 @@ footer h5{
    flex:0;
    width:100%;
    text-align: center;
-   line-height: 2rem;
+   margin:25px 0 0 0;
    color:white;
+   font-size: 0.9rem;
 }
 
 footer a:hover {
@@ -411,9 +413,8 @@ footer a:hover {
 }
 
 
-@media only screen and (max-width:1000px){
+@media only screen and (max-width:700px){
    footer{
-      flex-wrap: wrap;
       text-align: center;
       padding-top:2rem;
    }
@@ -438,3 +439,9 @@ footer a:hover {
       font-size:3rem;
    }
 }
+@media only screen and (max-width:380px){
+   .storeImageContainer{
+      flex-direction: column;
+   }
+}
+

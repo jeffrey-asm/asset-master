@@ -21,20 +21,10 @@ let sideBarIcon = document.getElementById('sidebarIcon');
 if(sideBarIcon){
    let nav = document.querySelector('nav');
 
-   sideBarIcon.onmouseover = function(event){
-      //Only open navbar should occur on hover
-      if(!nav.classList.contains('navShown')){
-         nav.classList.remove('navHidden');
-         nav.classList.add('navShown');
-         sideBarIcon.setAttribute('class', 'fa-solid fa-angles-right');
-      }
-   }
-
    sideBarIcon.onclick = function(event){
       if(nav.classList.contains('navShown')){
          nav.classList.remove('navShown');
          nav.classList.add('navHidden');
-
          sideBarIcon.setAttribute('class', 'fas fa-bars');
       } else{
          nav.classList.remove('navHidden');
@@ -220,7 +210,7 @@ async function sendRequest(url,structuredFormData,formButton,formButtonText,succ
       });
 
       const data = await response.json();
-      console.log(data);
+
       if(data.error){
          throw error;
       }

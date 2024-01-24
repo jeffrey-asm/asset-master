@@ -14,7 +14,6 @@ async function fetchStories() {
       return data;
    } catch (error) {
       // Use backup XML Feed
-      console.log('BACKUP XML');
       const xmlBackup = await fs.readFile('resources/home/backup.xml', 'utf8');
       const data = await parseXML(xmlBackup);
       return data;
@@ -84,7 +83,6 @@ async function fetchStocks(request,dateAndHour){
 
          stocks[symbol] = await response.data;
       }  catch(error){
-         console.log("BACKUP JSON");
          const jsonBackup = await fs.readFile('resources/home/backup.json', 'utf8');
          const data = await JSON.parse(jsonBackup);
          stocks =  data;
@@ -109,10 +107,10 @@ exports.fetchHomeData = asyncHandler(async(request,result,next)=>{
 
       // Assume for YY-MM-DD-HR
       let currentDate = new Date();
-      let dateAndHour = `${currentDate.getUTCFullYear()}-${(currentDate.getUTCMonth() + 1)}-${currentDate.getUTCDay()}-${currentDate.getUTCHours()}`
-      console.log(dateAndHour)
+      let dateAndHour = `${currentDate.getUTCFullYear()}-${(currentDate.getUTCMonth() + 1)}-${currentDate.getUTCDate()}-${currentDate.getUTCHours()}`
+      console.log(currentDate.getUTCDate())
+      console.log(dateAndHour);
       if(request.session.dateAndHour && request.session.dateAndHour == dateAndHour){
-         console.log('SAME HOUR');
          data.stocks = request.session.stocks;
       } else{
          data.stocks = await fetchStocks(request,dateAndHour);

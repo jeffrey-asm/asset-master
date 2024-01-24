@@ -107,8 +107,6 @@ exports.updatePassword = asyncHandler(async(request,result,next)=>{
 exports.deleteAccount = asyncHandler(async(request,result,next)=>{
    let trimmedInputs = validation.trimInputs(result,request.body);
 
-   console.log(trimmedInputs);
-
    if(trimmedInputs.message !== `sudo deluser ${request.session.Username}`){
       result.status(400);
       sharedReturn.sendError(result,'message',`Incorrect deletion message <i class="fa-regular fa-message"></i>`);

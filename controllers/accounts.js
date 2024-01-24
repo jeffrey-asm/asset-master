@@ -197,9 +197,6 @@ exports.editAccount = asyncHandler(async(request,result,next)=>{
 
       trimmedInputs.remove = false;
 
-      console.log(trimmedInputs);
-      console.log(previousAccount);
-
       if(query.changesMade(trimmedInputs,previousAccount)){
          //Update columns on any change
          await query.runQuery('UPDATE Accounts SET Name = ?, Type = ?, Balance = ? WHERE AccountID = ?;',

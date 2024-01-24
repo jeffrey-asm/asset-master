@@ -154,9 +154,9 @@ form hr{
    width:700px;
    max-width:70%;
    max-height:72%;
-   z-index:900;
    visibility: hidden;
    opacity: 0;
+   z-index:1000;
 }
 
 
@@ -270,7 +270,7 @@ form hr{
    visibility: visible;
    opacity:1;
    width:500px;
-   max-width: 50%;
+   max-width: 40%;
    height:200px;
    max-height:5vh;
    text-align: center;
@@ -468,7 +468,10 @@ form hr{
    .popupExitContainer{
       top:15px;
       right:15px;
+   }
 
+   .popupNotification{
+      max-width: 60%;
    }
 
    .popupExitContainer i{
