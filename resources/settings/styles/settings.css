@@ -1,6 +1,7 @@
 form{
    width:70%;
    max-width: 95%;
+   padding:1rem;
 }
 form h2{
    font-size:2.2rem;
@@ -14,6 +15,9 @@ form h2{
    display: grid;
    align-items: center;
    row-gap: 0.5rem;
+
+   box-sizing: border-box;
+   padding:0.5rem;
 }
 
 .editingContainer label{
@@ -32,7 +36,10 @@ form h2{
    background-color: none;
 }
 
-
+#changesButton{
+   width: calc(100% - 1rem);
+   margin:auto;
+}
 
 .editingContainer .error{
    grid-row:3;
@@ -63,6 +70,8 @@ form label{
    margin:15px 0 15px 0;
    text-align: left;
    width:100%;
+   box-sizing: border-box;
+   padding:0.5rem;
 }
 
 .securityTitle{
@@ -105,21 +114,14 @@ form label{
    min-width:8rem;
 }
 .securityButton{
-   border:2px solid black;
-   color:black;
-   background-color: white;
-   width:8.7rem;
+   color:white;
+   background-color: #08B0FF;
+   width:8rem;
    margin:auto;
    font-size:1rem;
-   white-space: wrap;
-   padding:0;
-   height:4rem;
-}
-.logOutContainer{
-   display: flex;
-   align-items: center;
-   justify-content: center;
-   text-align: center;
+   word-wrap: break-word;
+   padding:5px;
+   height:3.8rem;
 }
 
 .logOutIcon{
@@ -135,8 +137,14 @@ form label{
    border:0;
    color:white;
    font-weight: bolder;
-   background: red;
+   background-color: red;
 }
+
+
+#deletePopUpButton[disabled]{
+   background-color: #aca8a8;
+}
+
 
 #deletePopUpButton{
    border:0;
@@ -154,11 +162,7 @@ form label{
       font-size:3.2rem;
    }
    form h2{
-      font-size:1.6rem;
-   }
-
-   .securityTitle{
-      font-size: 1.3rem;
+      font-size:1.8rem;
    }
 
    #securityForm{
@@ -166,22 +170,23 @@ form label{
       margin-bottom:0;
    }
 }
-@media only screen and (max-width:600px){
+@media only screen and (max-width:500px){
+
    .securityContainer{
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      justify-content:space-between;
       align-items: center;
       text-align: center;
    }
 
-   .securityTitle{
-      text-decoration: underline;
-      text-underline-position: under;
-   }
-
-   .securityText{
-      width:80%;
+   .securityTextContainer,.securityButtonContainer,.securityText,form h2{
+      width:100%;
       margin:auto;
    }
+
+   .securityButtonContainer{
+      margin-top:1rem;
+   }
+
 }

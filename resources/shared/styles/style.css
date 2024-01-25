@@ -33,7 +33,7 @@ body{
 
 main{
    width:90%;
-   margin:1rem auto 1rem auto;
+   margin:1rem auto 5rem auto;
    opacity:0;
    transition: opacity 1s ease-in-out;
 }

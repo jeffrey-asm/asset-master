@@ -113,7 +113,7 @@ function constructStocks(stocks){
             pointHoverBorderColor: stockColor,
             pointHitRadius: 10,
             pointBorderWidth: 2,
-            tension: 0.2
+            tension: 0.4
          }],
       };
 

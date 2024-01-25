@@ -53,7 +53,9 @@
             </button>
             <input type="email" name="email" id="email" value = "email" disabled>
          </div>
+
          <button type="submit" id = "changesButton" disabled>Save Changes</button>
+
       </form>
 
       <form id = "securityForm" novalidate>
@@ -89,7 +91,7 @@
                <p class = 'securityText'>End your current session.</p>
             </div>
 
-            <div class = 'logOutContainer'>
+            <div class = 'securityButtonContainer'>
                <i class="fa-solid fa-right-from-bracket" id = 'logOutIcon'></i>
             </div>
          </div>
@@ -152,7 +154,7 @@
          <div class ='popupFormContainer'>
             <form id = "deleteForm" class = 'popupForm' novalidate>
                <h2>Delete Account</h2>
-               <p>If you wish to delete your account, please enter the message</p>
+               <p>Please enter the message</p>
                <p id = 'deleteMessage'><strong>sudo deluser ${username}</strong></p>
 
                <label for="message">Enter Message</label>

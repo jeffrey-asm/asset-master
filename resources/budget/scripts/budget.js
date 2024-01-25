@@ -11,15 +11,15 @@ let exitEditCategoryIcon = document.getElementById('exitEditCategoryIcon');
 
 
 function disableEditButtons(){
-   let editButtons = document.body.querySelectorAll('.editCategory');
+   let editButtons = document.querySelectorAll('.editCategory');
 
    editButtons.forEach((editButton)=>{
-      editButtons[i].disabled = true;
+      editButton.disabled = true;
    });
 
    setTimeout(()=>{
       editButtons.forEach((editButton)=>{
-         editButtons[i].disabled = false;
+         editButton.disabled = false;
       });
    },1500);
 }
@@ -27,6 +27,7 @@ function disableEditButtons(){
 
 exitEditCategoryIcon.onclick = function(event){
    exitPopUp(editCategoryContainer,editCategoryForm,exitEditCategoryIcon);
+   disableEditButtons();
 }
 
 getBudget();
@@ -61,11 +62,11 @@ editCategoryForm.onsubmit = async function(event){
             } else if(data.render.mainOrSub != 'remove'){
                //Replace current category node
                constructCategory(data.render.mainOrSub, data.render.type,data.render.ID, data.render.name, data.render.current, data.render.total);
-               disableEditButtons();
             } else{
                document.getElementById(data.render.ID).remove();
             }
          }
+         disableEditButtons();
       },1100);
    }
 

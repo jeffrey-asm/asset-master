@@ -18,7 +18,7 @@ main{
    gap:1.5rem;
    margin:1em auto;
    line-height: 1.2rem;
-   width:100%;
+   width:90%;
 }
 
 .story{
@@ -113,7 +113,7 @@ main{
 
 .graphContainer h2,.graphContainer a{
    margin-top:1rem;
-   font-size:2.7rem;
+   font-size:2.5rem;
    color:#08B0FF;
    margin:1rem auto;
    text-decoration: none;
@@ -122,7 +122,7 @@ main{
 
 
 #markets .graphContainer h2,#markets .graphContainer a{
-   font-size: 2rem;
+   font-size: 1.6rem;
 }
 
 
@@ -228,7 +228,7 @@ cite {
 
 
    #stories,#markets{
-      width:100%;
+      width:90%;
    }
 
    .story{
@@ -254,8 +254,11 @@ cite {
 }
 
 @media only screen and (max-width:550px) {
-   .graphContainer a, .graphContainer h2{
-      font-size: 2.1rem;
+   .graphContainer h2,.graphContainer a{
+      font-size: 2.2rem;
+   }
+   #markets .graphContainer a, #markets .graphContainer h2{
+      font-size: 1.3rem;
    }
    blockquote{
       max-width: 70%;

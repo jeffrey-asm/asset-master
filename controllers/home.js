@@ -108,8 +108,7 @@ exports.fetchHomeData = asyncHandler(async(request,result,next)=>{
       // Assume for YY-MM-DD-HR
       let currentDate = new Date();
       let dateAndHour = `${currentDate.getUTCFullYear()}-${(currentDate.getUTCMonth() + 1)}-${currentDate.getUTCDate()}-${currentDate.getUTCHours()}`
-      console.log(currentDate.getUTCDate())
-      console.log(dateAndHour);
+
       if(request.session.dateAndHour && request.session.dateAndHour == dateAndHour){
          data.stocks = request.session.stocks;
       } else{

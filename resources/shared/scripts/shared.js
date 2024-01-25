@@ -275,4 +275,15 @@ if(footerYear){
    footerYear.innerText = (new Date().getUTCFullYear()).toString();
 }
 
+document.addEventListener('keydown',function(event){
+   if(event.key == 'Escape'){
+      let possiblePopUp = document.querySelector('.popupShown');
+
+      if(possiblePopUp){
+         //Click on exit icon to escape pop up form or notification
+         possiblePopUp.querySelector('.popupExitContainer i').click();
+      }
+   }
+});
+
 export {transitionToPage,displayMessage,removeMessage,openPopUp,exitPopUp,openNotification,sendRequest};
