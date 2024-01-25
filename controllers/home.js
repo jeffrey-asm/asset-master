@@ -78,7 +78,7 @@ async function fetchStocks(request,dateAndHour){
 
          if(!response.data['Meta Data'] ){
             //Invalid format meaning API limit reached :(
-            throw error;
+            throw new Error('');
          }
 
          stocks[symbol] = await response.data;

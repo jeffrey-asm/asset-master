@@ -122,13 +122,15 @@ editAccountForm.onsubmit = async function(event){
 
                setTimeout(()=>{
                   accountContainer.remove();
-               },1600);
 
-               //In case a remove leads to no accounts
-               let accountsContainer = document.getElementById('accounts');
-               if(document.querySelectorAll('.accountContainer').length == 0) {
-                  accountsContainer.innerHTML = '<h2>No accounts available</h2>';
-               }
+                  //In case a remove leads to no accounts
+                  let accountsContainer = document.getElementById('accounts');
+
+                  if(document.querySelectorAll('.accountContainer').length == 0) {
+                     accountsContainer.innerHTML = '<h2>No accounts available</h2>';
+                  }
+
+               },1600);
 
                let possibleTransactions = document.querySelectorAll(`.transactionRow[data-account="${data.render.ID}"]`);
 

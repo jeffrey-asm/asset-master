@@ -172,12 +172,11 @@ export function constructTransaction(accountID,title,type,categoryID,date,amount
          },5000);
       }
    }
+
+   return transactionContainer;
 }
 
-export async function getUserData(){
-   let mainTag = document.querySelector('main');
-   mainTag.style.opacity = 0;
-
+export async function getUserData(){;
    try {
       const response = await fetch('../users/getUserAccounts', {
         method: "GET",
@@ -185,8 +184,6 @@ export async function getUserData(){
 
       let data = await response.json();
       //Render object holds all variables essential to constructing front end data
-      mainTag.style.opacity = '1';
-
       let accountKeys = Object.keys(data.render.accounts);
 
       if(accountKeys.length == 0) {
@@ -253,10 +250,10 @@ export async function getUserData(){
          document.querySelector('tbody').innerHTML = '<tr class = "no-transaction"><td>No transactions available</td></tr>';
       }
 
-
+      document.body.style.opacity = '1';
     } catch (error) {
       console.log(error);
-      mainTag.style.opacity = '1';
+      document.body.style.opacity = '1';
       openNotification("fa-solid fa-triangle-exclamation", '<p>Could not successfully process request</p>', 'errorType');
    }
 

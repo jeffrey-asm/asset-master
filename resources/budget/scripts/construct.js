@@ -110,8 +110,7 @@ export function constructCategory(mainOrSub,type,ID,name,current,total){
 
 export async function getBudget(){
    //Hide main tag till fetching user data
-   let mainTag = document.querySelector('main');
-   mainTag.style.opacity = 0;
+   document.body.style.opacity = '0';
 
    //Reset current HTML and reload data
    document.getElementById('Income').innerHTML = `
@@ -161,8 +160,6 @@ export async function getBudget(){
       let dateText = document.getElementById('dateText');
       dateText.innerHTML = `Budget for ${formattedDate[1]}/${formattedDate[0]}`;
 
-
-      mainTag.style.opacity = '1';
       //Construct data for income and expenses
       constructCategory('main', 'Income','mainIncome', 'Income', data.render.Income.current, data.render.Income.total);
       constructCategory('main', 'Expenses','mainExpenses', 'Expenses', data.render.Expenses.current, data.render.Expenses.total);
@@ -196,15 +193,16 @@ export async function getBudget(){
          leftOverSpan.innerHTML = `$` + data.render.leftOver.toLocaleString("en-US",{ minimumFractionDigits: 2, maximumFractionDigits: 2 });
       }
 
+      document.body.style.opacity = '1';
+
       if(data.render.notify){
          openNotification("fa-solid fa-chart-pie", '<p>Updated budget for the month</p>', 'informational');
       }
-
     } catch (error) {
       console.log(error);
       constructCategory('main', 'Income','mainIncome', 'Income', 0.00, 0.00);
       constructCategory('main', 'Expenses','mainExpenses', 'Expenses', 0.00, 0.00);
-      mainTag.style.opacity = '1';
+      document.body.style.opacity = '1';
       openNotification("fa-solid fa-triangle-exclamation", '<p>Could not successfully process request</p>', 'errorType');
     }
 }

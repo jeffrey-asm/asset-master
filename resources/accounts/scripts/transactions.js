@@ -46,7 +46,8 @@ addTransactionForm.onsubmit = async function(event){
    let successFunction = (data,messageContainer) => {
       setTimeout(()=>{
          document.getElementById('exitAddTransactionIcon').click();
-         constructTransaction(data.render.account,data.render.title,data.render.type,data.render.category,data.render.date,data.render.amount,data.render.ID);
+         let transactionContainer = constructTransaction(data.render.account,data.render.title,data.render.type,data.render.category,data.render.date,data.render.amount,data.render.ID);
+         transactionContainer.scrollIntoView({behavior:'smooth'});
          disableEditButtons();
       },1100);
    }

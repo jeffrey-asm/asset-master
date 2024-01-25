@@ -10,10 +10,8 @@ if(mode && document.querySelector('footer')){
       }
       document.body.classList.add('dark-mode');
    }
-   document.body.style.opacity = '1';
 } else{
    localStorage.mode = 'light';
-   document.body.style.opacity = '1';
 }
 
 let sideBarIcon = document.getElementById('sidebarIcon');
@@ -212,7 +210,7 @@ async function sendRequest(url,structuredFormData,formButton,formButtonText,succ
       const data = await response.json();
 
       if(data.error){
-         throw error;
+         throw new Error('');
       }
 
       if (data.status !== 'pass') {
@@ -262,15 +260,8 @@ passwordIcons.forEach((icon) => {
    }
 });
 
-let logoIcon = document.getElementById('logoIcon');
-
-if(logoIcon){
-   logoIcon.onclick = function(event){
-      window.location.assign('./home');
-   }
-}
-
 let footerYear = document.getElementById('footerYear');
+
 if(footerYear){
    footerYear.innerText = (new Date().getUTCFullYear()).toString();
 }

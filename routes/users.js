@@ -6,6 +6,7 @@ const homeController = require("../controllers/home.js");
 const updateController = require("../controllers/update.js");
 const budgetController = require("../controllers/budget.js");
 const accountsController = require("../controllers/accounts.js");
+const transactionsController = require("../controllers/transactions.js");
 
 /* GET users listing. */
 router.get('/', usersController.redirect);
@@ -33,9 +34,9 @@ router.post('/addAccount', accountsController.addAccount);
 
 router.post('/editAccount', accountsController.editAccount);
 
-router.post('/addTransaction', accountsController.addTransaction);
+router.post('/addTransaction', transactionsController.addTransaction);
 
-router.post('/editTransaction', accountsController.editTransaction);
+router.post('/editTransaction', transactionsController.editTransaction);
 
 // Handle settings page routing
 router.get('/settings', usersController.settings);

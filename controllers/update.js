@@ -81,7 +81,7 @@ exports.updatePassword = asyncHandler(async(request,result,next)=>{
 
       let savedPasswordHash = await query.runQuery('SELECT PasswordHash FROM Users WHERE UserID = ?',[request.session.UserID]);
 
-      if(savedPasswordHash.hasOwnProperty('error')) throw error;
+      if(savedPasswordHash.hasOwnProperty('error')) throw new Error('');
 
       if(savedPasswordHash[0].PasswordHash != oldPasswordHash){
          result.status(400);

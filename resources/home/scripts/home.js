@@ -360,10 +360,10 @@ async function fetchData(){
       constructFinanceGraph(data.userData.transactions,data.userData.budget);
       updateChartColors();
 
-      document.querySelector('main').style.opacity = '1';
+      document.body.style.opacity = '1';
     } catch (error) {
       console.log(error);
-      document.querySelector('main').style.opacity = '1';
+      document.body.style.opacity = '1';
       // Handle errors if the request fails
       openNotification("fa-solid fa-triangle-exclamation", '<p>Could not successfully process request</p>', 'errorType');
     }

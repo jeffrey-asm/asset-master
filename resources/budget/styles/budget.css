@@ -1,7 +1,6 @@
 main{
    display: grid;
    grid-template-columns: 4fr 2fr;
-   opacity: 0;
 }
 
 #budgetSection{

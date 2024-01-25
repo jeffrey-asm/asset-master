@@ -294,7 +294,7 @@ exports.resetBudget = asyncHandler(async(request,result,next)=>{
       let currentMonth = query.getCurrentMonth();
 
       if(!validRequest){
-         throw error;
+         throw new Error('');
       }
 
       let resetQuery = `UPDATE Budgets B
