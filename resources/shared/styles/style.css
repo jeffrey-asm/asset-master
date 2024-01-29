@@ -16,7 +16,7 @@ html, body {
 body.dark-mode {
    --background-color: #151515;
    --text-color: white;
-   --shadow-color: 0 0 0.5rem 0.2rem rgba(255, 255, 255, 0.3);
+   --shadow-color: 0 0 0.5rem 0.2rem rgba(255, 255, 255, 0.6);
 }
 
 body{
@@ -49,7 +49,6 @@ header{
    align-items: center;
    gap:1rem;
    min-height: 6.5rem;
-   overflow-x: none;
    clear:both;
 }
 
@@ -195,7 +194,7 @@ button{
    color:white;
    margin-top: 10px;
    height:3.5rem;
-   transition:0.5s ease-in-out;
+   transition:0.5s all ease-in-out;
 }
 
 .sectionTitle{
@@ -252,10 +251,11 @@ button{
 
 .error,.informational{
    color:red;
-   font-size: 1.1rem;
+   font-size: 1rem;
    font-weight: bolder;
    width:100%;
    margin:10px auto 10px auto;
+   text-align: center;
 
    transition-property: opacity, transform;
    transition-duration: 0.5s;
@@ -265,10 +265,6 @@ button{
 
 .informational{
    color:#08B0FF;
-}
-
-.errorInput{
-   border:2px solid red;
 }
 
 .negativeNetWorth{
@@ -299,7 +295,8 @@ button{
    transform: scale(1);
    transition-property: transform, height, width, border;
    transition-duration: 0.9s;
-   transition-timing-function: ease-in-out forwards;
+   transition-timing-function: ease-in-out;
+   animation-fill-mode: forwards;
    z-index: 2000;
 }
 
@@ -313,9 +310,10 @@ form button.buttonFade{
    transform: scale(250);
 }
 
-button:hover {
-   box-shadow: var(--shadow-color) 0px 10px 20px,  var(--shadow-color) 0px 6px 6px;
+main button:not([type="submit"]):hover {
+   transform: translateY(-4px);
 }
+
 
 
 footer {

@@ -47,7 +47,6 @@ function checkDimensions(component,link) {
 
 }
 
-
 let dimensionInterval;
 
 function transitionToPage(component,link){
@@ -103,6 +102,7 @@ function displayMessage(inputComponent, message, classType){
    },300);
 }
 
+let header = document.querySelector('header');
 let mainTag = document.querySelector('main');
 let footerTag = document.querySelector('footer');
 
@@ -112,7 +112,7 @@ function openPopUp(component){
       component.classList.remove('popupHidden');
       component.querySelector('button').disabled = false;
       //Apply blur to all other elements
-      mainTag.style.filter = footerTag.style.filter = 'blur(3px)';
+      header.style.filter = mainTag.style.filter = footerTag.style.filter = 'blur(5px)';
 
       //Add transition to button for smooth animation on hover
       component.getElementsByTagName('button')[0].style.transition = '0.5s';
@@ -133,7 +133,7 @@ function exitPopUp(component,form,icon,button){
       component.getElementsByTagName('button')[0].style.transition = 'initial';
 
       //Remove all blur applications
-      mainTag.style.filter = footerTag.style.filter = 'initial';
+      header.style.filter = mainTag.style.filter = footerTag.style.filter = 'initial';
 
       component.classList.remove('popupShown');
       component.classList.add('popupHidden');
@@ -145,7 +145,7 @@ function exitPopUp(component,form,icon,button){
          if(button){
             button.disabled = false;
          }
-         //reset form and remove any message containers
+         //reset form, including any switches, and remove any message containers
          form.reset();
 
          let possibleSwitch = document.querySelector('#remove');
@@ -164,7 +164,7 @@ function openNotification(iconClass, notificationHTML, notificationType){
    notification.className = `popupNotification`
 
    notification.innerHTML = `
-      <div class = 'popupIconContainer ${notificationType} '>
+      <div class = 'popupIconContainer ${notificationType}'>
          <i class='${iconClass}'></i>
       </div>
       <div class = 'popupExitContainer'>
@@ -218,8 +218,8 @@ async function sendRequest(url,structuredFormData,formButton,formButtonText,succ
         editingContainer = document.getElementById(data.componentID);
         editingContainer.classList.add('errorInput');
         formButton.innerHTML = formButtonText;
-        failFunction();
         formButton.disabled = false;
+        failFunction();
       } else {
         displayMessage(formButton, data.message, 'informational');
         formButton.innerHTML = formButtonText;
@@ -239,6 +239,7 @@ async function sendRequest(url,structuredFormData,formButton,formButtonText,succ
 for(let input of inputs){
    input.onfocus = function(){
       removeMessage();
+      this.classList.remove('errorInput');
    }
 }
 

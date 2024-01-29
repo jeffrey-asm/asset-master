@@ -16,7 +16,6 @@ export async function updateProfileInfo(){
       username.value = `${data.Username}`;
       email.value = `${data.Email}`;
       document.body.style.opacity = '1';
-
     } catch (error) {
       document.body.style.opacity = '1';
       username.value = `N/A`;

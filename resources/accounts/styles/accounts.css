@@ -193,7 +193,6 @@ table {
    position: relative;
    font-weight: bolder;
    table-layout: fixed;
-   overflow:none;
 }
 
 table * {

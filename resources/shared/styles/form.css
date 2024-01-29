@@ -37,8 +37,6 @@ form input, form select{
 
    border:0;
    outline: none;
-
-   background-color: none;
    border: 1px solid black;
    border-radius: 3px;
    color:black;
@@ -60,6 +58,10 @@ form button{
    height: 3.2rem;
 }
 
+.errorInput{
+   border:2px solid red !important;
+}
+
 .passwordContainer{
    position: relative;
    text-align: left;
@@ -78,8 +80,8 @@ form button{
 
 .fa-eye{
    position: absolute;
-   top:56px;
-   right:20px;
+   top:56px !important;
+   right:20px !important;
    cursor: pointer;
    color:black;
    width:20px;
@@ -103,7 +105,7 @@ form a{
    border:none;
    background:transparent;
    color:#08B0FF;
-   font-size:16px;
+   font-size:1rem;
    font-weight: bolder;
    text-align: right;
    margin:0;
@@ -286,9 +288,9 @@ form hr{
 }
 
 .popupNotification p{
-   margin-top:10px !important;
-   font-size:1rem;
-   max-width: 80%;
+   margin-top:15px !important;
+   font-size:0.9rem;
+   width: 100%;
    font-weight: bolder;
    margin:0;
 }
@@ -296,8 +298,8 @@ form hr{
 .popupNotification .popupIconContainer{
    width:50px;
    height:50px;
-   top:-35px;
-   font-size:1.3rem;
+   top:-25px;
+   font-size:1.2rem;
 }
 
 .popupNotification .popupExitContainer{
@@ -359,7 +361,6 @@ form hr{
  }
  .lds-facebook div:nth-child(3) {
    left: 56px;
-   animation-delay: 0;
  }
  @keyframes lds-facebook {
    0% {
@@ -458,16 +459,20 @@ form hr{
 
 @media only screen and (max-width:650px){
    .popupForm h2{
-      font-size:2.2rem;
+      font-size:1.8rem;
    }
 
    .popupForm label,.popupForm input{
-      font-size: 1rem;
+      font-size: 1.1rem;
+   }
+
+   .popup .fa-eye{
+      top:50px !important;
    }
 
    .popupExitContainer{
-      top:15px;
-      right:15px;
+      top:25px;
+      right:25px;
    }
 
    .popupNotification{

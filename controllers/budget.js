@@ -88,7 +88,6 @@ exports.getUserBudget = asyncHandler(async(request,result,next)=>{
       sharedReturn.sendSuccess(result,'Data for displaying user budget',returnData);
    } catch(error){
       console.log(error);
-
       result.status(500);
       sharedReturn.sendError(result,'N/A',`Could not successfully process request <i class='fa-solid fa-database'></i>`);
    }
@@ -102,7 +101,6 @@ exports.addCategory = asyncHandler(async(request,result,next)=>{
 
    //Use precise decimal arithmetic via decimal.js
    let validationCheck = validation.validateBudgetForm(result,trimmedInputs.name,'name',trimmedInputs.type,'type',false);
-
    if(validationCheck.status != 'pass') return;
 
    try{

@@ -25,7 +25,6 @@ logoutIcon.onclick = function(event){
    window.location.href = './logOut';
 }
 
-
 //Handling removing disabled inputs individually
 function enableInput(input){
    input.disabled = false;

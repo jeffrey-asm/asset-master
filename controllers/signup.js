@@ -18,9 +18,9 @@ exports.signup = asyncHandler(async(request,result,next)=>{
 
   try{
     let passwordHash = query.hash(trimmedInputs.password);
-
     let usernameCheck = await query.runQuery(`SELECT * FROM Users WHERE Username = ?;`,[trimmedInputs.username])
 
+    // Following tests are for conflicts in current database ==> 409 Status Code
     if(usernameCheck.length >= 1){
       result.status(409);
       sharedReturn.sendError(result,'username',`Username already taken! <i class='fa-solid fa-database'></i>`);
@@ -38,7 +38,6 @@ exports.signup = asyncHandler(async(request,result,next)=>{
     let randomID = await query.retrieveRandomID(`SELECT * FROM Users WHERE UserID = ?;`);
 
     const verifiedChar = 'F';
-
     const insertQuery = `INSERT INTO Users (UserID,Username,PasswordHash,Email,Verified) VALUES (?,?,?,?,?);`;
 
     //Must add to users account, then add instances for the budget

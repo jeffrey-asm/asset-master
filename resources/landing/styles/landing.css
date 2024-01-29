@@ -39,7 +39,7 @@ body{
 }
 
 .mainPage p.errorParagraph{
-   max-width: 60%;
+   max-width: 40%;
 }
 
 .mainText p > a{
@@ -80,6 +80,10 @@ body{
    font-weight: bolder;
 }
 
+#logInSignUpContainer button:hover{
+   box-shadow: rgba(255, 255, 255, 0.1) 0px 1px 1px 0px inset, rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
+}
+
 #loginButton{
    background-color: #07EA3A;
 }
@@ -88,10 +92,13 @@ body{
    background-color: #08B0FF;
 }
 
-
-@media only screen and (max-width:900px) {
+@media only screen and (max-width:1000px) {
    .mainImage{
       width:100%;
+   }
+
+   .mainPage p.errorParagraph{
+      max-width: 75%;
    }
 }
 
@@ -101,22 +108,21 @@ body{
    }
 
    #logInSignUpContainer button{
-      width:7.6rem;
-      height:3.4rem;
-      font-size:1.2rem;
+      width:7.5rem;
+      height:3.1rem;
+      font-size:1.1rem;
    }
 
    .mainPage h1{
       font-size: 3rem;
    }
 
-   .mainPage p{
-      font-size: 1.1rem;
-      max-width:70%;
-   }
+}
 
-   .mainPage p.errorParagraph{
-      max-width: 90%;
+@media only screen and (max-width:550px) {
+   .mainPage p{
+      font-size: 1rem;
+      max-width:80%;
    }
 }
 
