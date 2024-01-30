@@ -31,6 +31,35 @@ server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
 
+// Graceful shutdown handling
+let shuttingDown = false;
+
+const gracefulShutdown = () => {
+  if (shuttingDown) {
+    console.log('Already shutting down. Ignoring signal.');
+    return;
+  }
+
+  shuttingDown = true;
+  console.log('Received kill signal, shutting down gracefully.');
+
+  // Close server and perform cleanup
+  server.close(() => {
+    console.log('Closed out remaining connections.');
+    process.exit(0);
+  });
+
+  // Force close after a certain timeout
+  setTimeout(() => {
+    console.error('Could not close connections in time, forcefully shutting down.');
+    process.exit(1);
+  }, 10000); // 10 seconds
+};
+
+// Handle SIGTERM and SIGINT signals for graceful shutdown
+process.on('SIGTERM', gracefulShutdown);
+process.on('SIGINT', gracefulShutdown);
+
 /**
  * Normalize a port into a number, string, or false.
  */

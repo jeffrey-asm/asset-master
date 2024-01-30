@@ -26,6 +26,34 @@ export const positiveGradient = [
 
 export const negativeGradient = [...positiveGradient].reverse();
 
+Chart.defaults.font.size = 16;
+Chart.defaults.font.weight = 'bold';
+Chart.defaults.responsive = true;
+Chart.defaults.maintainAspectRatio = false;
+
+export function constructChart(income,expenses){
+   let ctx = document.getElementById('incomeExpenseChart').getContext('2d');
+   let existingChart = Chart.getChart(ctx);
+
+   if (existingChart) {
+      existingChart.destroy();
+   }
+
+   let data = {
+      labels: ['Income', 'Expenses'],
+      datasets: [{
+        data: [income, expenses],
+        backgroundColor: ['#07EA3A', 'red'],
+      }]
+   };
+
+
+   let incomeExpenseChart = new Chart(ctx, {
+      type: 'pie',
+      data: data,
+   });
+}
+
 export function constructCategory(mainOrSub,type,ID,name,current,total){
    let formattedCurrent = current.toLocaleString("en-US",{ minimumFractionDigits: 2, maximumFractionDigits: 2 });
    let formattedTotal = total.toLocaleString("en-US",{ minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -193,6 +221,7 @@ export async function getBudget(){
          leftOverSpan.innerHTML = `$` + data.render.leftOver.toLocaleString("en-US",{ minimumFractionDigits: 2, maximumFractionDigits: 2 });
       }
 
+      constructChart(data.render.Income.current, data.render.Expenses.current);
       document.body.style.opacity = '1';
 
       if(data.render.notify){

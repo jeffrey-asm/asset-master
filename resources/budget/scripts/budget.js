@@ -1,5 +1,5 @@
 import {exitPopUp,sendRequest}  from "../../shared/scripts/shared.js";
-import { constructCategory,getBudget } from "./construct.js";
+import { constructCategory,getBudget,constructChart } from "./construct.js";
 
 let addCategoryForm = document.getElementById('addCategoryForm');
 let addCategorySubmitButton = document.getElementById('addCategorySubmitButton');
@@ -56,6 +56,7 @@ editCategoryForm.onsubmit = async function(event){
    let successFunction = (data,messageContainer) => {
       setTimeout(()=>{
          document.getElementById('exitEditCategoryIcon').click();
+
          if(data.render.changes){
             if(data.render.mainOrSub == 'reload'){
                getBudget();

@@ -234,8 +234,8 @@ exports.updateCategory = asyncHandler(async(request,result,next) => {
                newExpensesCurrent = newExpensesCurrent.plus(previousCurrent);
             }
 
-            request.session.budget.Income.current  = parseFloat(newIncomeCurrent.toString());
-            request.session.budget.Expenses.current  = parseFloat(newExpensesCurrent.toString());
+            request.session.budget.Income.current = trimmedInputs.Income = parseFloat(newIncomeCurrent.toString());
+            request.session.budget.Expenses.current = trimmedInputs.Expenses = parseFloat(newExpensesCurrent.toString());
 
             await query.runQuery('UPDATE Budgets SET IncomeCurrent = ?, ExpensesCurrent = ? WHERE UserID = ?;',
             [newIncomeCurrent.toString(),newExpensesCurrent.toString(),request.session.UserID]);
