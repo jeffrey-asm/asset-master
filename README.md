@@ -34,4 +34,5 @@ This website application allows users to accurately track their finances, includ
 - Database hosting services provided by [PlanetScale](https://planetscale.com/)
 - Website and Redis services provided by [Render](https://render.com/)
 
-> [!NOTE] Loading the website may be slow on first arrival. This is due to the fact that the server provided by Vercel must reload after some time has passed with no activity. Please revisit site after some time to let it properly load up.
+> [!NOTE]
+> Loading the website may be slow on first arrival. This is due to the fact that the server provided by Vercel must reload after some time has passed with no activity. Please revisit the site after some time to let it properly load up.
