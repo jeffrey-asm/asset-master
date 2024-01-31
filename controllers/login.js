@@ -22,7 +22,6 @@ exports.login = asyncHandler(async(request,result,next)=>{
          result.cookie('sessionID', sessionID, { httpOnly: true });
 
          await request.session.save();
-
          result.status(200);
          sharedReturn.sendSuccess(result,`Welcome <i class="fa-solid fa-lock-open"></i>`);
          return;

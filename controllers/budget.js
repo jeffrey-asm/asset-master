@@ -124,7 +124,6 @@ exports.addCategory = asyncHandler(async(request,result,next)=>{
       }
 
       await request.session.save();
-
       result.status(200);
       sharedReturn.sendSuccess(result,'Successfully added category <i class="fa-solid fa-chart-pie" ></i>',trimmedInputs);
    } catch(error){

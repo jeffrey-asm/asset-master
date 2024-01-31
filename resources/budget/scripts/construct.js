@@ -179,7 +179,6 @@ export async function getBudget(){
       });
 
       let data = await response.json();
-      console.log(data);
       //Render object holds all variables essential to constructing front end data
 
       let formattedDate = data.render.Month.split('-');

@@ -7,7 +7,7 @@ async function renderOrRedirect(request,result,file){
   //Share function for various get requests to send signed out in users to landing page or direct to requested page
   const sessionID = request.cookies['sessionID'];
 
-  console.log(request.session);
+  (request.session);
 
   if(sessionID === undefined){
     return result.render('../');

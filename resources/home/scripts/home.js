@@ -18,8 +18,6 @@ function constructStories(stories){
          possibleImageURL = possibleURL.url;
          possibleImageType = possibleURL.type;
       } else{
-         console.log(possibleURL);
-         console.log(story);
          possibleImageURL = '../resources/home/images/backup.jpg';
          possibleImageType = 'text/jpeg';
       }
