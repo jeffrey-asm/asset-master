@@ -1,4 +1,4 @@
-# finance-tracker
+# asset-master
 Full-stack web application intended to allows users to accurately track their finances with ease.
 
 ## Summary
@@ -19,20 +19,19 @@ This website application allows users to accurately track their finances, includ
    ```.env
    SERVER='SQL sever URL goes here'
    REDIS_URL='Redis URL goes here'
-   SESSION_SECRET='session secret goes here for express-session'
+   SESSION_SECRET='Session secret key goes here for express-session'
 
    XRapidAPIKey='XRapidAPIKey goes here for Stock API'
    XRapidAPIHost='XRapidAPIHost goes here for Stock API'
 
    NODE_ENV='production OR anything else'
-   PORT='port goes here (80 for HTTPS)'
+   PORT='Port goes here (80 for HTTPS)'
    ```
 5. Use `npm run dev` for incrementing changes during production, and `npm start` to mimic production environment
 6. Some example images of what a user layout would look like have been provided in the `samples` folder within the root of this project directory.
 
-## Credits
+## Providers
 - Database hosting services provided by [PlanetScale](https://planetscale.com/)
-- Website hosting and Redis services provided by [Render]([url](https://render.com/))
+- Website and Redis services provided by [Render](https://render.com/)
 
-> [!NOTE]
-> The name of the mock website is `Asset Master`, but this is not a commercial site and only intended for educational purposes.
+> [!NOTE] Loading the website may be slow on first arrival. This is due to the fact that the server provided by Vercel must reload after some time has passed with no activity. Please revisit site after some time to let it properly load up.

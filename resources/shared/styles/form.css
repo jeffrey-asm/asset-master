@@ -319,7 +319,7 @@ form hr{
 .popupForm h2{
    margin:10px auto;
    width: 100%;
-   font-size: clamp(1.9rem, 5vw, 2.5rem);
+   font-size: clamp(1.8rem, 5vw, 2.3rem);
 }
 
 .popupFormContainer{
