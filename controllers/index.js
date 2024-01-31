@@ -6,10 +6,9 @@ function renderOrRedirect(request,result,file){
   const sessionID = request.cookies['sessionID'];
 
   if(sessionID !== undefined){
-    result.redirect('/users/home');
+    return result.redirect('/users/home');
   } else{
-    result.status(200);
-    result.sendFile(path.join(__dirname,'../views',`${file}`));
+    return result.sendFile(path.join(__dirname,'../views',`${file}`));
   }
 }
 

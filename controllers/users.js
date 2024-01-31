@@ -5,10 +5,9 @@ const path = require('path');
 function renderOrRedirect(request,result,file){
   //Share function for various get requests to send signed out in users to landing page or direct to requested page
   if(request.session.UserID === undefined){
-    result.redirect('../');
+    return result.render('../');
   } else{
-    result.status(200);
-    result.sendFile(path.join(__dirname,'../views',`${file}`));
+    return result.sendFile(path.join(__dirname,'../views',`${file}`));
   }
 }
 
