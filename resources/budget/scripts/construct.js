@@ -44,13 +44,13 @@ export function constructChart(income,expenses){
       datasets: [{
         data: [income, expenses],
         backgroundColor: ['#07EA3A', 'red'],
+        borderWidth: 1
       }]
    };
 
-
    let incomeExpenseChart = new Chart(ctx, {
       type: 'pie',
-      data: data,
+      data: data
    });
 }
 
@@ -96,7 +96,6 @@ export function constructCategory(mainOrSub,type,ID,name,current,total){
       document.getElementById('editAmount').value = total;
       //Store ID in form dataset to make adjustments on backend
       document.getElementById('editCategoryForm').dataset.identification = ID;
-
       openPopUp(document.getElementById('editCategoryContainer'));
    }
 

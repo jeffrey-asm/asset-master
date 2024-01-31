@@ -2,8 +2,6 @@ form{
    width:40%;
    max-width: 90%;
    margin: 20px auto 20px auto;
-
-
    display: flex;
    flex-direction: column;
    align-items: flex-start;
@@ -25,6 +23,7 @@ label{
    font-weight: bold;
    font-size: 1.3rem;
    width:100%;
+   white-space: nowrap;
 }
 
 form p{
@@ -66,7 +65,6 @@ form button{
    position: relative;
    text-align: left;
    width:100%;
-
    display: flex;
    flex-direction: column;
    align-items: flex-start;
@@ -85,7 +83,7 @@ form button{
    cursor: pointer;
    color:black;
    width:20px;
- }
+}
 
 form input:focus{
    border: 2px solid #08B0FF;
@@ -98,7 +96,6 @@ form a{
    text-decoration: none;
    text-align: center;
 }
-
 
 .editCategory{
    outline:none;
@@ -137,23 +134,20 @@ form hr{
 }
 
 .popup,.popupNotification{
-   position:absolute;
+   position:fixed;
    top:50%;
    left:50%;
    transform: translate(-50%,-50%) scale(0.1);
-
    display: flex;
    flex-direction: column;
    align-items: center;
    justify-content: center;
    background-color: var(--background-color);
    color: var(--text-color);
-
    border:2px solid black;
    border-radius:5px;
    box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px;
    padding:25px;
-
    width:700px;
    max-width:70%;
    max-height:72%;
@@ -198,11 +192,9 @@ form hr{
    top:-50px;
    left: 50%;
    transform: translateX(-50%);
-
    display: flex;
    justify-content: center;
    align-items: center;
-
    border:2px solid black;
    border-radius:50%;
    box-shadow: var(--shadow-color) 0px 10px 20px, var(--shadow-color) 0px 6px 6px;
@@ -210,7 +202,6 @@ form hr{
    height:90px;
    background:#08B0FF;
    color:white;
-
    text-align: center;
    font-size:2rem;
 }
@@ -218,7 +209,6 @@ form hr{
 .popupIconContainer.errorType{
    background-color: red;
 }
-
 
 .popupExitContainer{
    position: absolute;
@@ -315,19 +305,17 @@ form hr{
    max-height:200px;
 }
 
-
- .popupForm, .popupNotification form{
+.popupForm, .popupNotification form{
    box-sizing: border-box;
    width:100%;
    padding:10px;
 }
 
 .popupForm h2{
-   margin:20px auto;
+   margin:10px auto;
    width: 100%;
    font-size: clamp(1.9rem, 5vw, 2.5rem);
 }
-
 
 .popupFormContainer{
    min-width:100%;
@@ -377,7 +365,6 @@ form hr{
 .sliderContainer{
    width:100%;
    margin:auto;
-
    display: flex;
    flex-direction: column;
    justify-content: center;

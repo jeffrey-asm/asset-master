@@ -15,17 +15,15 @@ let usersRouter = require('./routes/users');
 let app = express();
 app.use(cookieParser());
 
-//Change cookie to secure on HTTPS
 app.use(session({
   store: new MemoryStore({ checkPeriod: 1000 * 60 * 60 }),
   secret:process.env.SESSION_SECRET,
   resave:false,
   saveUninitialized:false,
-  cookie: { secure: false, httpOnly: false, maxAge: 1000 * 60 * 60 }
+  cookie: { secure: process.env.NODE_ENV === 'production', httpOnly: false, maxAge: 1000 * 60 * 60 }
 }));
 
 app.use(cors());
-//Allow any image source from feed
 app.use(
   helmet.contentSecurityPolicy({
     directives: {

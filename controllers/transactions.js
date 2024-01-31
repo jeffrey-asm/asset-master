@@ -222,7 +222,7 @@ exports.editTransaction = asyncHandler(async(request,result,next) => {
          return;
       }
 
-      //Check if any changes will have affect on budget always
+      //Check if any changes will have affect on budget
       if(previousTransaction.type != trimmedInputs.type){
          //Income -> Expenses and vice versa
          if(fromMainCategory && !toMainCategory && currentDateAffectsBudget){

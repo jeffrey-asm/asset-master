@@ -26,14 +26,14 @@ body{
 }
 
 .mainPage h1{
-   font-size: 4.3rem;
+   font-size: clamp(3.5rem,5vw,4.3rem);
    margin: auto;
    width: 100%;
    white-space: nowrap;
 }
 
 .mainPage p{
-   font-size: 1.2rem;
+   font-size: clamp(0.9rem, 5vw, 1.1rem);
    margin:auto;
    max-width:50%;
 }
@@ -112,16 +112,11 @@ body{
       height:3.1rem;
       font-size:1.1rem;
    }
-
-   .mainPage h1{
-      font-size: 3rem;
-   }
-
 }
 
 @media only screen and (max-width:550px) {
    .mainPage p{
-      font-size: 1rem;
+      min-width: 80%;
       max-width:80%;
    }
 }
@@ -133,11 +128,11 @@ body{
       font-size:1rem;
    }
 
-   .mainPage p{
-      font-size: 1rem;
+   .mainPage h1{
+      font-size: clamp(2.5rem,5vw,2.9rem);
    }
 
-   .mainPage h1{
-      font-size: 2.5rem;
+   .mainPage p{
+      font-size: clamp(0.8rem,5vw,0.9rem);
    }
 }

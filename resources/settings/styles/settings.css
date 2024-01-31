@@ -4,8 +4,18 @@ form{
    padding:1rem;
 }
 form h2{
-   font-size:2.2rem;
+   font-size:clamp(1.6rem,5vw,1.8rem);
    margin-bottom:0;
+   margin-left:10px;
+}
+
+main h1{
+   font-size:clamp(3.3rem,5vw,4rem);
+}
+
+#detailsForm{
+   padding-bottom:0;
+   margin-bottom: 0;
 }
 
 .editingContainer{
@@ -15,9 +25,10 @@ form h2{
    display: grid;
    align-items: center;
    row-gap: 0.5rem;
-
    box-sizing: border-box;
    padding:0.5rem;
+   padding-top: 0;
+   padding-bottom: 0;
 }
 
 .editingContainer label{
@@ -158,12 +169,6 @@ form label{
    form{
       width:90%;
    }
-   main h1{
-      font-size:3.2rem;
-   }
-   form h2{
-      font-size:1.8rem;
-   }
 
    #securityForm{
       margin-top:40px;
@@ -184,8 +189,12 @@ form label{
       text-align: center;
    }
 
-   .securityTextContainer,.securityButtonContainer,.securityText,form h2{
-      width:100%;
+   .securityTextContainer,.securityButtonContainer,form h2{
+      margin:auto;
+   }
+
+   .securityText{
+      width:80%;
       margin:auto;
    }
 

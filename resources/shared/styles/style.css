@@ -10,8 +10,8 @@ html, body {
    height: 100%;
    margin: 0;
    padding: 0;
-   overflow-x: hidden !important;
- }
+   overflow-x: visible;
+}
 
 body.dark-mode {
    --background-color: #151515;
@@ -24,22 +24,21 @@ body{
    background-color: var(--background-color);
    color: var(--text-color);
    opacity: 0;
-
    transition-property: color, background-color;
    transition-duration: 0.5s;
    transition-timing-function: ease-in-out;
-   overflow-x: hidden;
 }
 
 main{
    width:90%;
-   margin: 5rem auto;
-   padding-top:4rem;
+   margin: 2rem auto 8rem auto;
    transition: opacity 1s ease-in-out;
 }
 
 header{
    position:relative;
+   top:0;
+   background: var(--background-color);
    color:var(--text-color);
    width: 100%;
    margin:0;
@@ -48,7 +47,7 @@ header{
    flex-direction: column;
    align-items: center;
    gap:1rem;
-   min-height: 6.5rem;
+   min-height: 8rem;
    clear:both;
 }
 
@@ -72,20 +71,27 @@ header{
    max-height:1rem;
    width:18rem;
    max-width: 80%;
-
-   position:relative;
-   top:0;
+   position:fixed;
+   top:50px;
    left:0;
-   transform:translateY(-63px);
-   z-index:1000;
+   z-index: 1000;
 }
 
 #sidebarIcon{
    display: block;
    margin:0;
-   width:32px;
+   width:45px;
+   height:45px;
    font-size: 2rem;
-   margin-left:25px;
+   margin-left:10px;
+}
+
+#sidebarIcon::before{
+   box-sizing: border-box;
+   background: var(--background-color);
+   color:var(--text-color);
+   border-radius: 10px;
+   padding:5px;
 }
 
 #sidebarIcon:hover{
@@ -120,15 +126,13 @@ nav{
    align-items: center;
    justify-content: space-between;
    width:200px;
-   margin: 4rem 29px;
+   margin: 2rem 29px;
    color:var(--text-color);
    background-color: var(--background-color);
-   box-shadow: 0 0 10px var(--text-color);
+   box-shadow: 0 0 8px var(--text-color);
    border-radius: 15px;
-
    border-top-left-radius: 0px;
    border-bottom-left-radius: 0px;
-
    position: relative;
    top: 0;
    left: -350px;
@@ -145,7 +149,6 @@ nav a{
    font-weight: bolder;
    font-size: 1.1rem;
    color:var(--text-color);
-
    width:100%;
    text-align: center;
 }
@@ -156,6 +159,7 @@ nav a:first-child:hover{
 
 nav a:not(:first-child):hover{
    background-color: #969A96;
+   color:black;
 }
 
 .navShown{
@@ -170,18 +174,18 @@ nav a:not(:first-child):hover{
       left:-350px;
    }
    to {
-      left: -28.6px;
+      left: -29px;
    }
  }
 
  @keyframes hideNav {
    from {
-      left: -28.6px;
+      left: -29px;
    }
    to {
       left:-350px;
    }
- }
+}
 
 button{
    cursor: pointer;
@@ -236,7 +240,7 @@ button{
       opacity: 1;
       transform: scale(1);
    }
- }
+}
 
  @keyframes fadeOut {
    from {
@@ -247,7 +251,7 @@ button{
       opacity: 0;
       transform:scale(0.1);
    }
- }
+}
 
 .error,.informational{
    color:red;
@@ -322,7 +326,6 @@ footer {
    font-size: 1.3rem;
    width:100%;
    margin:5rem auto 0 auto;
-
    min-height: 290px;
    border-top: 5px solid;
    border-color: #08B0FF;
@@ -330,8 +333,6 @@ footer {
    border-image-slice: 30;
    background-color: #24252A;
    color: white;
-
-
    background-repeat: no-repeat;
    background-size: cover;
    display: flex;
@@ -351,16 +352,13 @@ footer {
 .footerLinkContainers {
    height:12rem;
    padding:5px;
-
    color: #08B0FF;
 }
 
 .footerLinkContainers ul {
    padding: 0;
    list-style-type: none;
-
    font-size: 1rem;
-
    display: flex;
    flex-direction: column;
    align-content: center;
@@ -398,7 +396,6 @@ footer img:hover,footer i:hover,footer li:hover{
 .footerMediaLinks i {
    padding: 10px;
    font-size:1.8rem;
-
    color: #08B0FF;
    text-decoration: none;
    cursor: pointer;
@@ -440,6 +437,12 @@ footer a:hover {
    .footerLinkContainers{
       height:auto;
    }
+   .footerLinkContainers h3{
+      font-size: 1.1rem;
+   }
+   .footerMediaLinks i {
+      font-size:1.5rem;
+   }
 }
 
 @media only screen and (max-width:600px){
@@ -461,15 +464,8 @@ footer a:hover {
    }
 
    #titleContainer h1{
-      margin:15px 0 0 0;
-   }
-
-   .navBarContainer{
-      transform:translateY(-110px);
-   }
-
-   nav{
-      margin-top:6rem;
+      font-size:2.2rem;
+      margin:0;
    }
 }
 

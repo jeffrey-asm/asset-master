@@ -35,7 +35,7 @@ main button{
    justify-content: flex-start;
    background-size: cover;
    background-position: center;
-   box-shadow: 0 0px 3px var(--text-color);
+   box-shadow: 0 0px 2px var(--text-color);
    border:0;
    overflow: hidden;
    text-decoration: none;
@@ -48,12 +48,12 @@ main button{
 
 .accountContainer:hover{
    transform: scale(1.1);
-   box-shadow: 0 0 2rem 0.5rem #15CF74;
+   box-shadow: 0px 0px 20px #15CF74;
    cursor: pointer;
 }
 
 .highlighted {
-   box-shadow: 0 0 2rem 0.5rem #15CF74;
+   box-shadow: 0px 0px 20px #15CF74;
    transform: scale(1.1);
    z-index:100;
 }
@@ -139,16 +139,12 @@ main button{
  .no-transaction{
    font-size: 1.3em;
    font-weight: bolder;
-
-   background: #24252A;
-   color: white;
    height:150px;
-
+   color:black;
    display: flex;
    justify-content: center;
    align-items: center;
    text-align: center;
-
    transition: transform 1.5s ease-in-out;
    animation:emptySlideDown 1.5s ease-in-out forwards;
 }
@@ -209,7 +205,6 @@ table thead{
    position:relative;
    width:100%;
    z-index:100;
-
    display: table;
    width: 100%;
    table-layout: auto;
@@ -386,6 +381,11 @@ tbody tr {
        content: "Edit:"
    }
 
+   table tbody tr.no-transaction td:nth-child(1):before{
+      display:none;
+      content:"";
+   }
+
    .column6 button{
       margin:0;
       text-align: left;
@@ -410,6 +410,16 @@ tbody tr {
    tbody tr {
        font-size: 14px
    }
+   .no-transaction{
+      padding:0;
+   }
+   .no-transaction td{
+      padding-left:0 !important;
+   }
+
+   .wrap-table100{
+      width:90%;
+   }
 }
 
 
@@ -422,7 +432,6 @@ tbody tr {
       width:100%;
       max-width: 100%;
       padding: 0;
-
       justify-content: center;
    }
 

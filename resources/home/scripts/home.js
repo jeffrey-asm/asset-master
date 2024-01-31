@@ -18,6 +18,8 @@ function constructStories(stories){
          possibleImageURL = possibleURL.url;
          possibleImageType = possibleURL.type;
       } else{
+         console.log(possibleURL);
+         console.log(story);
          possibleImageURL = '../resources/home/images/backup.jpg';
          possibleImageType = 'text/jpeg';
       }
@@ -74,6 +76,7 @@ function constructGraph(graphType,graphData,graphOptions,text,container){
 
 function constructStocks(stocks){
    let allStocks = Object.values(stocks);
+   // Limited amount of stocks due to limitations on free API, but ETF's are generally good indications of current trends
    const stockNames = {
       "VT":"Vanguard Total World Stock Index Fund ETF",
       "VTI":"Vanguard Total Stock Market Index Fund ETF",
@@ -113,7 +116,7 @@ function constructStocks(stocks){
             pointHoverBorderColor: stockColor,
             pointHitRadius: 10,
             pointBorderWidth: 2,
-            tension: 0.4
+            tension: 0.2
          }],
       };
 
@@ -170,8 +173,8 @@ function constructAccountsGraph(accounts,netWorth){
       },
       elements: {
          bar: {
-             borderWidth: 3,
-             borderRadius: 3,
+             borderWidth: 1,
+             borderRadius: 1,
              barThickness: function(context) {
                  var minBarThickness = 50;
                  return Math.max(minBarThickness, context.parsed.y) / 2;
@@ -311,8 +314,8 @@ function constructFinanceGraph(transactions,budget){
       },
       elements: {
          bar: {
-             borderWidth: 3,
-             borderRadius: 3
+             borderWidth: 1,
+             borderRadius: 1
          }
      }
    };
@@ -333,8 +336,8 @@ function constructFinanceGraph(transactions,budget){
       },
       elements: {
          bar: {
-             borderWidth: 3,
-             borderRadius: 3,
+             borderWidth: 1,
+             borderRadius: 1,
          }
      }
    };
@@ -345,7 +348,6 @@ function constructFinanceGraph(transactions,budget){
    };
 
    constructGraph('bar', incomeExpensesData, options, `<h2><a href = "./accounts">Monthly Trends</a></h2>`, document.getElementById('finances'));
-
    constructGraph('bar', categoryData, stackedOptions, `<h2><a href = "./budget">Category Trends</a></h2>`, document.getElementById('finances'));
 }
 
@@ -370,13 +372,12 @@ async function fetchData(){
 }
 
 function updateChartColors(){
-   //Manually set color to current mode on Chart JS graph
+   //Manually set color to current mode for Chart JS graph
    charts.forEach((chart)=>{
       chart.options.scales.x.ticks.color = getComputedStyle(document.body).getPropertyValue('--text-color');
       chart.options.scales.y.ticks.color = getComputedStyle(document.body).getPropertyValue('--text-color');
       chart.update();
    });
 }
-
 
 fetchData();
