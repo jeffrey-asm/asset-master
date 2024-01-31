@@ -13,6 +13,7 @@ let indexRouter = require('./routes/index');
 let usersRouter = require('./routes/users');
 
 let app = express();
+app.set('trust proxy', 1);
 app.use(cookieParser());
 
 const Redis = require('ioredis');
@@ -24,7 +25,7 @@ app.use(session({
   }),
   secret:process.env.SESSION_SECRET,
   resave:false,
-  saveUninitialized:false,
+  saveUninitialized:true,
   cookie: { secure: process.env.NODE_ENV === 'production', httpOnly: true, maxAge: 1000 * 60 * 60 }
 }));
 
