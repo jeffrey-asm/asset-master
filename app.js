@@ -6,7 +6,7 @@ const logger = require('morgan');
 const cors = require('cors');
 const helmet = require('helmet');
 const session = require("express-session");
-const MemoryStore = require('memorystore')(session);
+const RedisStore = require('connect-redis').default;
 require("dotenv").config();
 
 let indexRouter = require('./routes/index');
@@ -15,8 +15,13 @@ let usersRouter = require('./routes/users');
 let app = express();
 app.use(cookieParser());
 
+const Redis = require('ioredis');
+const redisClient = new Redis(process.env.REDIS_URL);
+
 app.use(session({
-  store: new MemoryStore({ checkPeriod: 1000 * 60 * 60 }),
+  store: new RedisStore({
+    client:redisClient
+  }),
   secret:process.env.SESSION_SECRET,
   resave:false,
   saveUninitialized:false,
@@ -57,6 +62,7 @@ app.use(function(error, request, result, next) {
   result.locals.error = request.app.get('env') === 'development' ? error : {};
 
   // render the error page
+  console.log(error);
   result.status(error.status || 500);
   result.sendFile(path.join(__dirname,'views','error.html'));
 });
