@@ -33,7 +33,9 @@ exports.settings = asyncHandler(async(request,result,next)=>{
 });
 
 exports.userInformation = asyncHandler(async(request,result,next)=>{
-   if(request.session.UserID === undefined){
+  const sessionID = request.cookies['sessionID'];
+
+   if(sessionID === undefined){
       result.redirect('../');
     } else{
       result.send({
@@ -45,6 +47,8 @@ exports.userInformation = asyncHandler(async(request,result,next)=>{
 });
 
 exports.logout = asyncHandler(async(request,result,next)=>{
+   result.clearCookie('sessionID');
+
    request.session.destroy((error)=>{
       if(error){
          result.status(500);

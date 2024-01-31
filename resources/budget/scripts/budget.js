@@ -1,5 +1,5 @@
-import {exitPopUp,sendRequest}  from "../../shared/scripts/shared.js";
-import { constructCategory,getBudget,constructChart } from "./construct.js";
+import {exitPopUp,sendRequest,openNotification}  from "../../shared/scripts/shared.js";
+import { constructCategory,getBudget } from "./construct.js";
 
 let addCategoryForm = document.getElementById('addCategoryForm');
 let addCategorySubmitButton = document.getElementById('addCategorySubmitButton');

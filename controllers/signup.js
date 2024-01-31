@@ -54,6 +54,10 @@ exports.signup = asyncHandler(async(request,result,next)=>{
     request.session.Username = trimmedInputs.username;
     request.session.Email = trimmedInputs.email;
     request.session.Verified = verifiedChar;
+
+    const sessionID = query.randomIdentification();
+    result.cookie('sessionID', sessionID, { httpOnly: true });
+
     await request.session.save();
 
     result.status(200);

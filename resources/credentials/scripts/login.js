@@ -1,7 +1,9 @@
-import {sendRequest, transitionToPage}  from "../../shared/scripts/shared.js";
+import {sendRequest, transitionToPage, openNotification}  from "../../shared/scripts/shared.js";
 
 let loginForm = document.getElementById("loginForm");
 let submitButton = document.getElementById("submitButton");
+
+openNotification("fa-solid fa-cookie-bite", '<p>Please allow all cookies to stay signed in!</p>', 'informational');
 
 loginForm.onsubmit = async function(event){
    event.preventDefault();

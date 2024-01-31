@@ -3,7 +3,9 @@ const path = require('path');
 
 function renderOrRedirect(request,result,file){
   //Share function for various get requests to send logged in users to users space or direct to requested page
-  if(request.session.UserID !== undefined){
+  const sessionID = request.cookies['sessionID'];
+
+  if(sessionID !== undefined){
     result.redirect('/users/home');
   } else{
     result.status(200);
