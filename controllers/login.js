@@ -18,7 +18,7 @@ exports.login = asyncHandler(async(request,result,next)=>{
          request.session.Email = credentialsCheck[0].Email;
          request.session.Verified = credentialsCheck[0].Verified;
 
-         const sessionID = query.randomIdentification();
+         const sessionID = credentialsCheck[0].UserID;
          result.cookie('sessionID', sessionID, { httpOnly: true });
 
          await request.session.save();

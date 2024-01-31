@@ -1,14 +1,28 @@
 
 const asyncHandler = require("express-async-handler");
 const path = require('path');
+const query = require('../database/query.js');
 
-function renderOrRedirect(request,result,file){
+async function renderOrRedirect(request,result,file){
   //Share function for various get requests to send signed out in users to landing page or direct to requested page
   const sessionID = request.cookies['sessionID'];
+
+  console.log(request.session);
 
   if(sessionID === undefined){
     return result.render('../');
   } else{
+    // In case that ID no longer cached, retrieve from database
+    if(!request.session.UserID){
+      const userData = await query.runQuery('SELECT * FROM Users WHERE UserID = ?',[sessionID]);
+
+      request.session.UserID = userData[0].UserID;
+      request.session.Username = userData[0].Username;
+      request.session.Email = userData[0].Email;
+      request.session.Verified = userData[0].Verified;
+      await request.session.save();
+    }
+
     return result.sendFile(path.join(__dirname,'../views',`${file}`));
   }
 }
@@ -18,26 +32,26 @@ exports.redirect = asyncHandler(async(request,result,next)=>{
 });
 
 exports.home = asyncHandler(async(request,result,next)=>{
-  renderOrRedirect(request,result,'home.html');
+  await renderOrRedirect(request,result,'home.html');
 });
 
 exports.budget = asyncHandler(async(request,result,next)=>{
-  renderOrRedirect(request,result,'budget.html');
+  await renderOrRedirect(request,result,'budget.html');
 });
 
 exports.accounts = asyncHandler(async(request,result,next)=>{
-  renderOrRedirect(request,result,'accounts.html');
+  await renderOrRedirect(request,result,'accounts.html');
 });
 
 exports.settings = asyncHandler(async(request,result,next)=>{
-  renderOrRedirect(request,result,'settings.html');
+  await renderOrRedirect(request,result,'settings.html');
 });
 
 exports.userInformation = asyncHandler(async(request,result,next)=>{
   const sessionID = request.cookies['sessionID'];
 
    if(sessionID === undefined){
-      result.redirect('../');
+      return result.redirect('../');
     } else{
       result.send({
         Username:request.session.Username,
@@ -56,5 +70,5 @@ exports.logout = asyncHandler(async(request,result,next)=>{
          result.json({error:true});
        }
      });
-     result.redirect('../');
+    return result.redirect('../');
 });
