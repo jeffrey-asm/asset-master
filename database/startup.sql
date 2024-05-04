@@ -1,7 +1,3 @@
-CREATE DATABASE `assetmaster`;
-
-USE assetmaster;
-
 CREATE TABLE Users (
    UserID  VARCHAR(30) PRIMARY KEY NOT NULL,
    Username VARCHAR(30) NOT NULL UNIQUE,

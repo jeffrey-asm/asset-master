@@ -1,0 +1,78 @@
+version: '3.8'
+
+services:
+  app:
+    image: node:alpine
+    working_dir: /app
+    volumes:
+      - .:/app
+      - ./.env:/app/.env
+    networks:
+      - asset_master_network
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mysql
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3000 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: always
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    command: sh -c "npm run dev"
+    container_name: asset_master_app
+
+  mysql: 
+    image: mysql
+    environment:
+      MYSQL_USER: mysql
+      MYSQL_PASSWORD: mysql
+      MYSQL_DATABASE: assetmaster
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - asset_master_mysql_data:/asset_master/mysql_data
+      - ./database/startup.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - asset_master_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: always
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    container_name: asset_master_mysql
+
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
+    networks:
+      - asset_master_network
+    volumes:
+      - asset_master_redis_data:/asset_master/redis_data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    restart: always
+    container_name: asset_master_redis
+
+networks:
+  asset_master_network:
+    driver: bridge
+
+volumes:
+  asset_master_mysql_data:
+  asset_master_redis_data:

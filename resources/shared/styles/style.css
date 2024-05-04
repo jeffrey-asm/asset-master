@@ -2,7 +2,7 @@
 
 :root {
    --background-color: white;
-   --text-color: #151515;
+   --text-color: black;
    --shadow-color: 0 0 0.5rem 0.2rem rgba(0, 0, 0, 0.3);
 }
 html, body {
@@ -14,7 +14,7 @@ html, body {
 }
 
 body.dark-mode {
-   --background-color: #151515;
+   --background-color: #25242a;
    --text-color: white;
    --shadow-color: 0 0 0.5rem 0.2rem rgba(255, 255, 255, 0.6);
 }
@@ -83,7 +83,7 @@ header{
    width:45px;
    height:45px;
    font-size: 2rem;
-   margin-left:10px;
+   margin-left:20px;
 }
 
 #sidebarIcon::before{
@@ -113,10 +113,13 @@ header{
 }
 
 #logoContainer img{
-   max-height:100px;
+   max-height:80px;
 }
 
 #logoContainer h1{
+   font-size: 1.5rem;
+   text-decoration: underline;
+   text-underline-offset: 5px;
    margin:0.8rem 0;
 }
 
@@ -328,14 +331,9 @@ footer {
    margin:5rem auto 0 auto;
    min-height: 290px;
    border-top: 5px solid;
-   border-color: #08B0FF;
-   border-image: linear-gradient(160deg, #08B0FF 0%, #80D0C7 100%);
-   border-image-slice: 30;
-   background-color: #24252A;
    color: white;
-   background-repeat: no-repeat;
-   background-size: cover;
    display: flex;
+   border:0;
    flex-direction: row;
    justify-content: space-evenly;
    align-items: center;
@@ -347,6 +345,8 @@ footer {
    margin-top:0;
    color: white;
    font-size: 1.3rem;
+   text-decoration: underline;
+   text-underline-offset: 5px;
 }
 
 .footerLinkContainers {

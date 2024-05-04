@@ -3,8 +3,6 @@ import {sendRequest,transitionToPage,openNotification}  from "../../shared/scrip
 let signUpForm = document.getElementById("signUpForm");
 let submitButton = document.getElementById('submitButton');
 
-openNotification("fa-solid fa-cookie-bite", '<p>Please allow all cookies to stay signed in!</p>', 'informational');
-
 signUpForm.onsubmit = async function(event){
       event.preventDefault();
 

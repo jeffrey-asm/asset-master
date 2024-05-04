@@ -21,4 +21,4 @@ This website application allows users to accurately track their finances, includ
 4. Use `npm run dev` for incrementing changes during development, and `npm start` to mimic the production environment
 5. Some example images of what a user layout would look like have been provided in the `samples` folder within the root of this project directory.
 
-> Due to changes made by database provider, PlantScale, this application is currently no longer deployed or being maintained. This will be addressed in the near future.
+> The above will be updated to be in local development using Docker.
