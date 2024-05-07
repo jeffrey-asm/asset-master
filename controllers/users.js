@@ -3,15 +3,24 @@ const asyncHandler = require("express-async-handler");
 const path = require("path");
 const query = require("../database/query.js");
 
-async function renderOrRedirect (request, result, file){
+async function renderOrRedirect (request, result, file) {
    // Share function for various get requests to send signed out in users to landing page or direct to requested page
-   const sessionID = request.cookies["sessionID"];
-   if(sessionID === undefined){
-      return result.render("../");
-   } else{
+   const userID = request.cookies["userID"];
+
+   if (userID === undefined) {
+      result.redirect("../");
+      return;
+   } else {
       // In case that ID no longer cached, retrieve from database
-      if(!request.session.UserID){
-         const userData = await query.runQuery("SELECT * FROM Users WHERE UserID = ?", [sessionID]);
+      if (!request.session.UserID) {
+         const userData = await query.runQuery("SELECT * FROM Users WHERE UserID = ?", [userID]);
+
+         if (userData.length === 0) {
+            delete request.session.UserID;
+            result.clearCookie("userID");
+            result.redirect("../");
+            return;
+         }
 
          request.session.UserID = userData[0].UserID;
          request.session.Username = userData[0].Username;
@@ -45,11 +54,11 @@ exports.settings = asyncHandler(async (request, result, next) => {
 });
 
 exports.userInformation = asyncHandler(async (request, result, next) => {
-   const sessionID = request.cookies["sessionID"];
+   const userID = request.cookies["userID"];
 
-   if(sessionID === undefined){
+   if (userID === undefined) {
       return result.redirect("../");
-   } else{
+   } else {
       result.send({
          Username:request.session.Username,
          Email:request.session.Email,
@@ -59,13 +68,13 @@ exports.userInformation = asyncHandler(async (request, result, next) => {
 });
 
 exports.logout = asyncHandler(async (request, result, next) => {
-   result.clearCookie("sessionID");
+   result.clearCookie("userID");
 
    request.session.destroy((error) => {
-      if(error){
+      if (error) {
          result.status(500);
          result.json({ error:true });
       }
    });
-   return result.redirect("../");
+   return result.redirect("/");
 });

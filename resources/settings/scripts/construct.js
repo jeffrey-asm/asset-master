@@ -1,9 +1,9 @@
 
 import { openNotification }  from "../../shared/scripts/shared.js";
 
-export async function updateProfileInfo (){
-   let username = document.getElementById("username");
-   let email = document.getElementById("email");
+export async function updateProfileInfo () {
+   const username = document.getElementById("username");
+   const email = document.getElementById("email");
 
    try {
       const response = await fetch("../users/getUserInfo", {
@@ -12,11 +12,11 @@ export async function updateProfileInfo (){
 
       const data = await response.json();
 
-
       username.value = `${data.Username}`;
       email.value = `${data.Email}`;
       document.body.style.opacity = "1";
    } catch (error) {
+      console.log(error);
       document.body.style.opacity = "1";
       username.value = "N/A";
       email.value = "N/A";

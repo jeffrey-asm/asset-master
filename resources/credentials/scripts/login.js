@@ -1,12 +1,12 @@
-import { sendRequest, transitionToPage, openNotification }  from "../../shared/scripts/shared.js";
+import { sendRequest, transitionToPage }  from "../../shared/scripts/shared.js";
 
-let loginForm = document.getElementById("loginForm");
-let submitButton = document.getElementById("submitButton");
+const loginForm = document.getElementById("loginForm");
+const submitButton = document.getElementById("submitButton");
 
-loginForm.onsubmit = async function (event){
+loginForm.onsubmit = async function (event) {
    event.preventDefault();
 
-   let successFunction = (data, messageContainer) => {
+   const successFunction = () => {
       submitButton.innerHTML = "";
       document.getElementById("username").classList.remove("errorInput");
       document.getElementById("password").classList.remove("errorInput");
@@ -16,13 +16,13 @@ loginForm.onsubmit = async function (event){
       }, 800);
    };
 
-   let failFunction =  () => {
+   const failFunction =  () => {
       document.getElementById("username").classList.add("errorInput");
       document.getElementById("password").classList.add("errorInput");
    };
 
-   let formData = new FormData(this);
-   let structuredFormData = new URLSearchParams(formData).toString();
+   const formData = new FormData(this);
+   const structuredFormData = new URLSearchParams(formData).toString();
 
    await sendRequest("./loginUser", structuredFormData, submitButton, "Submit", successFunction, failFunction);
 };

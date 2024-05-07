@@ -1,12 +1,12 @@
 import { sendRequest, transitionToPage }  from "../../shared/scripts/shared.js";
 
-let signUpForm = document.getElementById("signUpForm");
-let submitButton = document.getElementById("submitButton");
+const signUpForm = document.getElementById("signUpForm");
+const submitButton = document.getElementById("submitButton");
 
-signUpForm.onsubmit = async function (event){
+signUpForm.onsubmit = async function (event) {
    event.preventDefault();
 
-   let successFunction = (data, messageContainer) => {
+   const successFunction = () => {
       submitButton.innerHTML = "";
       submitButton.disabled = false;
 
@@ -15,10 +15,10 @@ signUpForm.onsubmit = async function (event){
       }, 800);
    };
 
-   let failFunction =  () => {return;};
+   const failFunction =  () => {return;};
 
-   let formData = new FormData(this);
-   let structuredFormData = new URLSearchParams(formData).toString();
+   const formData = new FormData(this);
+   const structuredFormData = new URLSearchParams(formData).toString();
 
    await sendRequest("./registerUser", structuredFormData, submitButton, "Submit", successFunction, failFunction);
 };

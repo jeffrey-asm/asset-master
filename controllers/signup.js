@@ -4,68 +4,58 @@ const query = require("../database/query.js");
 const sharedReturn = require("./message.js");
 
 exports.signup = asyncHandler(async (request, result, next) => {
-   let trimmedInputs = validation.trimInputs(result, request.body);
+   const trimmedInputs = validation.trimInputs(result, request.body);
 
-   // First validate all form input on backend for safety of structured information on current database
-   let usernameValidation = validation.validateUsername(result, trimmedInputs.username);
+   // First validate each form input
+   const usernameValidation = validation.validateUsername(result, trimmedInputs.username);
    if (usernameValidation.status !== "pass") return;
 
-   let passwordValidation = validation.validatePasswords(result, trimmedInputs.password, trimmedInputs.additionalPassword);
+   const passwordValidation = validation.validatePasswords(result, trimmedInputs.password, trimmedInputs.additionalPassword);
    if (passwordValidation.status !== "pass") return;
 
-   let emailValidation = validation.validateEmail(result, trimmedInputs.email);
+   const emailValidation = validation.validateEmail(result, trimmedInputs.email);
    if (emailValidation.status !== "pass") return;
 
-   try{
-      let passwordHash = query.hash(trimmedInputs.password);
-      let usernameCheck = await query.runQuery("SELECT * FROM Users WHERE Username = ?;", [trimmedInputs.username]);
+   try {
+      const passwordHash = query.hash(trimmedInputs.password);
+      const usernameCheck = await query.runQuery("SELECT * FROM Users WHERE Username = ?;", [trimmedInputs.username]);
 
-      // Following tests are for conflicts in current database ==> 409 Status Code
-      if(usernameCheck.length >= 1){
-         result.status(409);
-         sharedReturn.sendError(result, "username", "Username already taken! <i class='fa-solid fa-database'></i>");
+      // Following tests are for conflicts in current database
+      if (usernameCheck.length >= 1) {
+         sharedReturn.sendError(result, 409, "username", "Username already taken! <i class='fa-solid fa-database'></i>");
          return;
       }
 
-      let emailCheck =  await query.runQuery("SELECT * FROM Users WHERE Email = ?;", [trimmedInputs.email]);
+      const emailCheck =  await query.runQuery("SELECT * FROM Users WHERE Email = ?;", [trimmedInputs.email]);
 
-      if(emailCheck.length >= 1){
-         result.status(409);
-         sharedReturn.sendError(result, "email", "Email already taken! <i class='fa-solid fa-database'></i>");
+      if (emailCheck.length >= 1) {
+         sharedReturn.sendError(result, 409, "email", "Email already taken! <i class='fa-solid fa-database'></i>");
          return;
       }
 
-      let randomID = await query.retrieveRandomID("SELECT * FROM Users WHERE UserID = ?;");
-
+      const randomID = await query.retrieveRandomID("SELECT * FROM Users WHERE UserID = ?;");
       const verified = false;
       const insertQuery = "INSERT INTO Users (UserID,Username,Password,Email,Verified) VALUES (?,?,?,?,?);";
-
-      // Must add to users account, then add instances for the budget
       await query.runQuery(insertQuery, [randomID, trimmedInputs.username, passwordHash, trimmedInputs.email, verified]);
 
-      let currentMonth = query.getCurrentMonth();
-
-      // Create a income and expenses budget for user
+      // After adding a user, a budget instance must be created
+      const currentMonth = query.getCurrentMonth();
       await query.runQuery("INSERT INTO Budgets (UserID,IncomeCurrent,IncomeTotal,ExpensesCurrent,ExpensesTotal,Month) VALUES (?,?,?,?,?,?);", [randomID, 0.00, 1600.00, 0.00, 500.00, currentMonth]);
 
-      // Store UserID in current express session to have a reference for loading user specific data on front end
-      // Store Username and Email to display in user settings to not always run a Query to database
+      // Cache user data in session for further requests
       request.session.UserID = randomID;
       request.session.Username = trimmedInputs.username;
       request.session.Email = trimmedInputs.email;
       request.session.Verified = verified;
 
-      const sessionID = randomID;
-      result.cookie("sessionID", sessionID, { httpOnly: true });
+      const userID = randomID;
+      result.cookie("userID", userID, { httpOnly: true });
 
       await request.session.save();
-
-      result.status(200);
       sharedReturn.sendSuccess(result, "Welcome <i class=\"fa-solid fa-door-open\"></i>");
-   } catch (error){
+   } catch (error) {
       console.log(error);
-      result.status(500);
-      sharedReturn.sendError(result, "email", "Could not successfully process request <i class='fa-solid fa-database'></i>");
+      sharedReturn.sendError(result, 500, "email", "Could not successfully process request <i class='fa-solid fa-database'></i>");
       return;
    }
 });

@@ -1,13 +1,13 @@
 const asyncHandler = require("express-async-handler");
 const path = require("path");
 
-async function renderOrRedirect (request, result, file){
+async function renderOrRedirect (request, result, file) {
    // Share function for various get requests to send logged in users to users space or direct to requested page
-   const sessionID = request.cookies["sessionID"];
+   const userID = request.cookies["userID"];
 
-   if(sessionID !== undefined){
+   if (userID !== undefined) {
       return result.redirect("/users/home");
-   } else{
+   } else {
       return result.sendFile(path.join(__dirname, "../views", `${file}`));
    }
 }

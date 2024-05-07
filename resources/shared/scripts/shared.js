@@ -1,9 +1,9 @@
-let mode = localStorage.getItem("mode");
+const mode = localStorage.getItem("mode");
 
 // Landing and authentication pages do not have light/dark mode preferences
 if (mode && document.querySelector("footer")) {
    if (mode == "dark") {
-      let possibleToggleSwitch = document.querySelector("#mode");
+      const possibleToggleSwitch = document.querySelector("#mode");
 
       if (possibleToggleSwitch) {
          possibleToggleSwitch.click();
@@ -14,10 +14,10 @@ if (mode && document.querySelector("footer")) {
    localStorage.mode = "light";
 }
 
-let sideBarIcon = document.getElementById("sidebarIcon");
+const sideBarIcon = document.getElementById("sidebarIcon");
 
 if (sideBarIcon) {
-   let nav = document.querySelector("nav");
+   const nav = document.querySelector("nav");
 
    sideBarIcon.onclick = function () {
       if (nav.classList.contains("navShown")) {
@@ -33,12 +33,13 @@ if (sideBarIcon) {
 }
 
 function checkDimensions (component, link) {
-   let viewportWidth = window.innerWidth || document.documentElement.clientWidth;
-   let viewportHeight =
+   const viewportWidth =
+    window.innerWidth || document.documentElement.clientWidth;
+   const viewportHeight =
     window.innerHeight || document.documentElement.clientHeight;
-   let componentDimensions = component.getBoundingClientRect();
-   let elementWidth = componentDimensions.width;
-   let elementHeight = componentDimensions.height;
+   const componentDimensions = component.getBoundingClientRect();
+   const elementWidth = componentDimensions.width;
+   const elementHeight = componentDimensions.height;
 
    if (elementWidth >= viewportWidth || elementHeight >= viewportHeight) {
       setTimeout(() => {
@@ -50,6 +51,7 @@ function checkDimensions (component, link) {
 let dimensionInterval;
 
 function transitionToPage (component, link) {
+   // Complicated transitions needed for login/signup transitions to dashboard
    setTimeout(() => {
       component.innerHTML = "";
       component.classList.add("buttonFade");
@@ -64,7 +66,6 @@ function transitionToPage (component, link) {
    }, 100);
 
    window.addEventListener("beforeunload", function () {
-      // Always clear intervals
       clearInterval(dimensionInterval);
    });
 
@@ -74,7 +75,7 @@ function transitionToPage (component, link) {
    }, 5000);
 }
 
-let inputs = document.getElementsByTagName("input");
+const inputs = document.getElementsByTagName("input");
 let messageContainer;
 let editingContainer;
 
@@ -87,7 +88,7 @@ function removeMessage () {
       messageContainer.style.animation = "fadeOut 0.5s ease-in-out forwards";
       setTimeout(() => {
          messageContainer.remove();
-      }, 450); 
+      }, 450);
    }
 }
 
@@ -106,12 +107,14 @@ function displayMessage (inputComponent, message, classType) {
    }, 450);
 }
 
-let header = document.querySelector("header");
-let mainTag = document.querySelector("main");
-let footerTag = document.querySelector("footer");
+const header = document.querySelector("header");
+const mainTag = document.querySelector("main");
+const footerTag = document.querySelector("footer");
 
 function openPopUp (component) {
-   if (!component.classList.contains("popupShown")) {
+   component.dataset.visible = true;
+
+   if (!(component.classList.contains("popupShown"))) {
       component.style.visibility = "visible";
       component.classList.remove("popupHidden");
       component.querySelector("button").disabled = false;
@@ -124,19 +127,20 @@ function openPopUp (component) {
 
       // Add transition to button for smooth animation on hover
       component.getElementsByTagName("button")[0].style.transition = "0.5s";
-
-      // Must hide elements behind
       component.classList.add("popupShown");
    }
 }
 
 function exitPopUp (component, form, icon, button) {
+   component.dataset.visible = false;
+
    if (component.classList.contains("popupShown")) {
       icon.classList.add("clicked");
 
       if (button) {
          button.disabled = true;
       }
+
       // Spin animation and make sure button fades out with the container by setting transition to initial
       component.getElementsByTagName("button")[0].style.transition = "initial";
 
@@ -150,28 +154,32 @@ function exitPopUp (component, form, icon, button) {
       component.classList.add("popupHidden");
 
       setTimeout(() => {
-         component.style.visibility = "hidden";
+         if (!(component.dataset.visible)) {
+            component.style.visibility = "hidden";
+         }
+         
          icon.classList.remove("clicked");
-         // Ensure form fully fades out
+
+         // Ensure form is reset for further usage
          if (button) {
             button.disabled = false;
          }
-         // reset form, including any switches, and remove any message containers
+
          form.reset();
 
-         let possibleSwitch = document.querySelector("#remove");
+         const possibleSwitch = document.querySelector("input[type='checkbox']");
 
          if (possibleSwitch) {
             possibleSwitch.checked = false;
          }
 
          removeMessage();
-      }, 1100);
+      }, 1000);
    }
 }
 
 function openNotification (iconClass, notificationHTML, notificationType) {
-   let notification = document.createElement("div");
+   const notification = document.createElement("div");
    notification.className = "popupNotification";
 
    notification.innerHTML = `
@@ -181,16 +189,13 @@ function openNotification (iconClass, notificationHTML, notificationType) {
       <div class = 'popupExitContainer'>
          <i class="fa-solid fa-xmark exitNotificationIcon" ></i>
       </div>
-
       ${notificationHTML}
    `;
 
    document.body.append(notification);
    notification.classList.add("notificationShown");
 
-   notification.querySelector(".exitNotificationIcon").onclick = function (
-
-   ) {
+   notification.querySelector(".exitNotificationIcon").onclick = function () {
       this.classList.add("clicked");
    };
 
@@ -215,7 +220,8 @@ async function sendRequest (
 ) {
    // Interesting loading animation inside button
    formButton.disabled = true;
-   formButton.innerHTML = "<div class=\"lds-facebook\"><div></div><div></div><div></div></div>";
+   formButton.innerHTML =
+    "<div class=\"lds-facebook\"><div></div><div></div><div></div></div>";
    removeMessage();
 
    try {
@@ -229,7 +235,7 @@ async function sendRequest (
 
       const data = await response.json();
 
-      if (data.error) {
+      if (data.error === true) {
          throw new Error("");
       }
 
@@ -256,13 +262,14 @@ async function sendRequest (
          "<p>Could not successfully process request</p>",
          "errorType"
       );
+      formButton.disabled = false;
       formButton.innerHTML = formButtonText;
       failFunction();
    }
 }
 
 // Shared onfocus for all form inputs
-for (let input of inputs) {
+for (const input of inputs) {
    input.onfocus = function () {
       removeMessage();
       this.classList.remove("errorInput");
@@ -270,12 +277,12 @@ for (let input of inputs) {
 }
 
 // Shared function for password inputs
-let passwordIcons = document.querySelectorAll(".fa-regular.fa-eye");
+const passwordIcons = document.querySelectorAll(".fa-regular.fa-eye");
 
 passwordIcons.forEach((icon) => {
    icon.onclick = function () {
       // Target container in dataset to toggle visible or hidden password
-      let passwordContainer = document.getElementById(this.dataset.container);
+      const passwordContainer = document.getElementById(this.dataset.container);
 
       if (passwordContainer.type == "password") {
          passwordContainer.type = "text";
@@ -287,7 +294,7 @@ passwordIcons.forEach((icon) => {
    };
 });
 
-let footerYear = document.getElementById("footerYear");
+const footerYear = document.getElementById("footerYear");
 
 if (footerYear) {
    footerYear.innerText = new Date().getUTCFullYear().toString();
@@ -295,10 +302,10 @@ if (footerYear) {
 
 document.addEventListener("keydown", function (event) {
    if (event.key == "Escape") {
-      let possiblePopUp = document.querySelector(".popupShown");
+      const possiblePopUp = document.querySelector(".popupShown");
 
       if (possiblePopUp) {
-      // Click on exit icon to escape pop up form or notification
+         // Click on exit icon to escape pop up form or notification
          possiblePopUp.querySelector(".popupExitContainer i").click();
       }
    }

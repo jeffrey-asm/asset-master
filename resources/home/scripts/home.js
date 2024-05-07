@@ -1,38 +1,56 @@
 import { openNotification }  from "../../shared/scripts/shared.js";
 
-function constructStories (stories){
-   let storiesContainer = document.getElementById("stories");
-   let storiesItems = stories.rss.channel[0].item;
+const charts = [];
+
+Chart.defaults.font.size = 16;
+Chart.defaults.font.weight = "bold";
+Chart.defaults.responsive = true;
+Chart.defaults.maintainAspectRatio = false;
+Chart.defaults.plugins.legend.display = false;
+Chart.defaults.datasets.bar.maxBarThickness = 50;
+
+
+function updateChartColors () {
+   // Manually set color based on current mode for Chart JS graphs
+   charts.forEach((chart) => {
+      chart.options.scales.x.ticks.color = getComputedStyle(document.body).getPropertyValue("--text-color");
+      chart.options.scales.y.ticks.color = getComputedStyle(document.body).getPropertyValue("--text-color");
+      chart.update();
+   });
+}
+
+function constructStories (stories) {
+   const storiesContainer = document.getElementById("stories");
+   const storiesItems = stories.rss.channel[0].item;
 
    storiesItems.forEach((story) => {
-      let container = document.createElement("div");
+      const container = document.createElement("div");
       container.className = "story";
 
       let possibleImageURL;
       let possibleImageType;
-      let possibleURL = story["media:content"]?.[0]?.["$"] || story["image"] || "";
+      const possibleURL = story["media:content"]?.[0]?.["$"] || story["image"] || "";
 
-
-      if(possibleURL != "" && possibleURL.url && possibleURL.url.includes("https://images.mktw.net")){
-         // https://images.mktw.net is only allowed domain for images
+      if (possibleURL != "" && possibleURL.url && possibleURL.url.includes("https://images.mktw.net")) {
+         // https://images.mktw.net is only allowed domain for imported page images
          possibleImageURL = possibleURL.url;
          possibleImageType = possibleURL.type;
-      } else{
+      } else {
          possibleImageURL = "../resources/home/images/backup.jpg";
          possibleImageType = "text/jpeg";
       }
 
-      function getStoryItem (array, index) {
+      const getStoryItem = (array, index) => {
          // Some RSS feeds will not include specific tags, so ensure they exist
          return array?.[index] || "";
-      }
+      };
 
       container.innerHTML = `
          <div class='imageContainer'>
            <img src="${possibleImageURL}" alt="story-image" type="${getStoryItem(possibleImageType, 0)}">
          </div>
          <div class='storyText'>
-           <h2><a href='${getStoryItem(story.link)}'>${getStoryItem(story.title, 0)}</a></h2>
+           <h2><a href='${getStoryItem(story.link, 0)}' target = '_blank'>${getStoryItem(story.title, 0)}</a></h2>
            <p>${getStoryItem(story.description, 0)}</p>
            <h3><i class="fa-solid fa-at"></i> ${getStoryItem(story.author, 0)}</h3>
            <h3><i class="fa-solid fa-calendar-days"></i> ${getStoryItem(story.pubDate, 0)}</h3>
@@ -42,16 +60,8 @@ function constructStories (stories){
    });
 }
 
-let charts = [];
-Chart.defaults.font.size = 16;
-Chart.defaults.font.weight = "bold";
-Chart.defaults.responsive = true;
-Chart.defaults.maintainAspectRatio = false;
-Chart.defaults.plugins.legend.display = false;
-Chart.defaults.datasets.bar.maxBarThickness = 50;
-
-function constructGraph (graphType, graphData, graphOptions, text, container){
-   let graphContainer = document.createElement("div");
+function constructGraph (graphType, graphData, graphOptions, text, container) {
+   const graphContainer = document.createElement("div");
    graphContainer.className = "graphContainer";
    graphContainer.innerHTML = `
       <div>
@@ -63,7 +73,7 @@ function constructGraph (graphType, graphData, graphOptions, text, container){
 
    container.append(graphContainer);
 
-   let chart = graphContainer.querySelector("canvas").getContext("2d");
+   const chart = graphContainer.querySelector("canvas").getContext("2d");
 
    charts.push(new Chart(chart, {
       type: graphType,
@@ -72,9 +82,10 @@ function constructGraph (graphType, graphData, graphOptions, text, container){
    }));
 }
 
-function constructStocks (stocks){
-   let allStocks = Object.values(stocks);
-   // Limited amount of stocks due to limitations on free API, but ETF's are generally good indications of current trends
+function constructStocks (stocks) {
+   const allStocks = Object.values(stocks);
+
+   // Show a limited amount of index funds
    const stockNames = {
       "VT":"Vanguard Total World Stock Index Fund ETF",
       "VTI":"Vanguard Total Stock Market Index Fund ETF",
@@ -84,23 +95,23 @@ function constructStocks (stocks){
    };
 
    allStocks.forEach((stock) => {
-      let symbol = stock["Meta Data"]["2. Symbol"];
+      const symbol = stock["Meta Data"]["2. Symbol"];
 
-      let stockData = stock["Time Series (Daily)"];
-      let times = Object.keys(stockData);
+      const stockData = stock["Time Series (Daily)"];
+      const times = Object.keys(stockData);
 
-      let graphDates = [];
-      let graphPrices = [];
+      const graphDates = [];
+      const graphPrices = [];
 
       // Get previous month worth of stock data
-      for(let i = times.length - 30; i < times.length; i++){
+      for (let i = times.length - 30; i < times.length; i++) {
          graphDates.push(times[i].split(" ")[0]);
          graphPrices.push(parseFloat(stockData[times[i]]["1. open"]));
       }
 
-      let stockColor = graphPrices[times.length - 1] < graphPrices[times.length - 31] ? "red" : "#07EA3A";
+      const stockColor = graphPrices[times.length - 1] < graphPrices[times.length - 31] ? "red" : "#07EA3A";
 
-      let data = {
+      const data = {
          labels: graphDates,
          datasets: [{
             borderColor: stockColor,
@@ -118,40 +129,39 @@ function constructStocks (stocks){
          }],
       };
 
-      let options = {};
-
-      constructGraph("line", data, options, `<h2><a href = 'https://www.google.com/search?q=${symbol}'>${stockNames[symbol]}</a></h2>`, document.getElementById("markets"));
+      const options = {};
+      constructGraph("line", data, options, `<h2><a href = 'https://www.google.com/search?q=${symbol}' target = '_blank'>${stockNames[symbol]}</a></h2>`, document.getElementById("markets"));
    });
 }
 
-function constructAccountsGraph (accounts, netWorth){
-   let accountData = Object.values(accounts);
-   let accountNames = [];
-   let accountValues = [];
+function constructAccountsGraph (accounts) {
+   const accountData = Object.values(accounts);
+   const accountNames = [];
+   const accountValues = [];
 
 
-   let backgroundColors = [
+   const backgroundColors = [
       "#59FD59", "#36A2EB", "#FFCE56",
       "#4BC0C0", "#9966FF", "#FF9F40",
       "#FF35FF", "#6699FF", "#FFD966",
       "#45B6FE", "#FF6384", "#4BC0C0",
    ];
 
-   let accountColors = [];
+   const accountColors = [];
 
    accountData.forEach((account) => {
       accountNames.push(account.name);
       accountValues.push(account.balance);
 
-      if(account.type == "Loan" || account.type == "Credit Card"){
+      if (account.type == "Loan" || account.type == "Credit Card") {
          // Differentiate between negative and positive accounts
          accountColors.push("red");
-      } else{
+      } else {
          accountColors.push(backgroundColors[Math.floor(Math.random() * backgroundColors.length)]);
       }
    });
 
-   let data = {
+   const data = {
       labels: accountNames,
       datasets: [{
          label: "Balance",
@@ -162,7 +172,7 @@ function constructAccountsGraph (accounts, netWorth){
       }]
    };
 
-   let options = {
+   const options = {
       scales: {
          y: {
             beginAtZero: true,
@@ -174,46 +184,45 @@ function constructAccountsGraph (accounts, netWorth){
             borderWidth: 1,
             borderRadius: 1,
             barThickness: function (context) {
-               let minBarThickness = 50;
+               const minBarThickness = 50;
                return Math.max(minBarThickness, context.parsed.y) / 2;
             },
          }
       }
    };
 
-   let innerText = "<h2><a href = './accounts#accounts'>Accounts</h2></a>";
-
+   const innerText = "<h2><a href = './accounts#accounts'>Accounts</h2></a>";
    constructGraph("bar", data, options, innerText, document.getElementById("accounts"));
 }
 
-function constructFinanceGraph (transactions, budget){
+function constructFinanceGraph (transactions, budget) {
    // Graph showing Income vs Expenses for current year
-   let currentYear = new Date().getFullYear();
+   const currentYear = new Date().getFullYear();
    const months = ["Jan", "Feb", "Mar", "Apr.", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-   let transactionData = Object.values(transactions);
+   const transactionData = Object.values(transactions);
 
-   let incomeData = {
+   const incomeData = {
       label:"Income",
       data: Array.from({ length: 12 }, () => 0),
       backgroundColor:"rgba(144, 238, 144, 0.7)",
       borderWidth: 1
    };
 
-   let expensesData = {
+   const expensesData = {
       label:"Expenses",
       data:Array.from({ length: 12 }, () => 0),
       backgroundColor:"rgba(255, 99, 71, 0.7)",
       borderWidth: 1
    };
 
-   let categoryIndexes = {};
+   const categoryIndexes = {};
 
-   let incomeCategoriesData = {
+   const incomeCategoriesData = {
       datasets:[]
    };
 
-   let expensesCategoriesData = {
+   const expensesCategoriesData = {
       datasets:[]
    };
 
@@ -221,7 +230,7 @@ function constructFinanceGraph (transactions, budget){
    let expensesCategoryIndex = 1;
 
    // General types to be the base of the bar chart
-   let incomeGraphClone = {
+   const incomeGraphClone = {
       label:"General Income",
       data: Array.from({ length: 12 }, () => 0),
       stack:"Income",
@@ -230,7 +239,7 @@ function constructFinanceGraph (transactions, budget){
 
    incomeCategoriesData.datasets.push(incomeGraphClone);
 
-   let expensesGraphClone ={
+   const expensesGraphClone ={
       label:"General Expenses",
       data: Array.from({ length: 12 }, () => 0),
       stack:"Expenses",
@@ -239,54 +248,52 @@ function constructFinanceGraph (transactions, budget){
 
    expensesCategoriesData.datasets.push(expensesGraphClone);
 
-   let categories = Object.entries(budget.categories);
-
-   // Store specific index
+   const categories = Object.entries(budget.categories);
    categories.forEach((category) => {
-      let categoryID = category[0];
-      let categoryData = category[1];
+      const categoryID = category[0];
+      const categoryData = category[1];
 
-      let graphData = {
+      const graphData = {
          label:categoryData.name,
          data: Array.from({ length: 12 }, () => 0),
          stack:categoryData.type
       };
 
-      if(categoryData.type == "Income"){
-         if(!categoryIndexes[categoryID]){
+      if (categoryData.type == "Income") {
+         if (!categoryIndexes[categoryID]) {
             incomeCategoriesData.datasets.push(graphData);
             categoryIndexes[categoryID] = incomeCategoryIndex++;
          }
-      } else if(!categoryIndexes[categoryID]){
+      } else if (!categoryIndexes[categoryID]) {
          expensesCategoriesData.datasets.push(graphData);
          categoryIndexes[categoryID] = expensesCategoryIndex++;
       }
    });
 
    transactionData.forEach((transaction) => {
-      let date = transaction.date.split("-");
-      let year = date[0];
+      const date = transaction.date.split("-");
+      const year = date[0];
 
-      if(year == currentYear){
+      if (year == currentYear) {
          // Only construct data for current year
-         let monthIndex = date[1] - 1;
-         let amount = transaction.amount;
-         let categoryIndex = categoryIndexes[transaction.categoryID];
+         const monthIndex = date[1] - 1;
+         const amount = transaction.amount;
+         const categoryIndex = categoryIndexes[transaction.categoryID];
 
-         if(transaction.type == "Income"){
-            if(transaction.categoryID != "Income"){
+         if (transaction.type == "Income") {
+            if (transaction.categoryID != "Income") {
                // Categories Object stores index in array of data
                incomeCategoriesData.datasets[categoryIndex].data[monthIndex] += amount;
-            } else{
+            } else {
                // First index represents general income/expenses category
                incomeCategoriesData.datasets[0].data[monthIndex] += amount;
             }
 
             incomeData.data[monthIndex] += amount;
-         } else{
-            if(transaction.categoryID != "Expenses"){
+         } else {
+            if (transaction.categoryID != "Expenses") {
                expensesCategoriesData.datasets[categoryIndex].data[monthIndex] += amount;
-            } else{
+            } else {
                expensesCategoriesData.datasets[0].data[monthIndex] += amount;
             }
 
@@ -295,12 +302,12 @@ function constructFinanceGraph (transactions, budget){
       }
    });
 
-   let incomeExpensesData = {
+   const incomeExpensesData = {
       labels: months,
       datasets: [incomeData, expensesData],
    };
 
-   let options = {
+   const options = {
       scales: {
          y: {
             minBarLength: 2,
@@ -318,7 +325,7 @@ function constructFinanceGraph (transactions, budget){
       }
    };
 
-   let stackedOptions = {
+   const stackedOptions = {
       scales: {
          x:{
             stacked:true,
@@ -340,23 +347,24 @@ function constructFinanceGraph (transactions, budget){
       }
    };
 
-   let categoryData = {
+   const categoryData = {
       labels: months,
       datasets: [...incomeCategoriesData.datasets, ...expensesCategoriesData.datasets],
    };
 
+   // Construct Income and Category Graphs for current year
    constructGraph("bar", incomeExpensesData, options, "<h2><a href = \"./accounts\">Monthly Trends</a></h2>", document.getElementById("finances"));
    constructGraph("bar", categoryData, stackedOptions, "<h2><a href = \"./budget\">Category Trends</a></h2>", document.getElementById("finances"));
 }
 
-async function fetchData (){
+async function fetchData () {
    try {
       const response = await fetch("./fetchHomeData");
-      const data = await response.json();
+      const data = (await response.json()).render;
 
-      constructStories(data.stories);
       constructStocks(data.stocks);
-      constructAccountsGraph(data.userData.accounts, data.userData.netWorth);
+      constructStories(data.stories);
+      constructAccountsGraph(data.userData.accounts);
       constructFinanceGraph(data.userData.transactions, data.userData.budget);
       updateChartColors();
 
@@ -364,18 +372,8 @@ async function fetchData (){
    } catch (error) {
       console.log(error);
       document.body.style.opacity = "1";
-      // Handle errors if the request fails
       openNotification("fa-solid fa-triangle-exclamation", "<p>Could not successfully process request</p>", "errorType");
    }
-}
-
-function updateChartColors (){
-   // Manually set color to current mode for Chart JS graph
-   charts.forEach((chart) => {
-      chart.options.scales.x.ticks.color = getComputedStyle(document.body).getPropertyValue("--text-color");
-      chart.options.scales.y.ticks.color = getComputedStyle(document.body).getPropertyValue("--text-color");
-      chart.update();
-   });
 }
 
 fetchData();

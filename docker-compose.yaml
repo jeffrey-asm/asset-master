@@ -24,7 +24,7 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
-    command: sh -c "npm run dev"
+    command: sh -c "npm install && npm run dev"
     container_name: asset_master_app
 
   mysql: 

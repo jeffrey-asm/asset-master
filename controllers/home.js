@@ -6,6 +6,7 @@ const query = require("../database/query.js");
 const axios = require("axios");
 const { parseString } = require("xml2js");
 const accountController = require("./accounts.js");
+const { grabUserData } = require("./accounts.js");
 
 async function fetchStories () {
    try {
@@ -34,30 +35,29 @@ function parseXML (xmlData) {
 }
 
 
-async function fetchStocks (request, dateAndHour){
-   // Store API Date by the hour due to call limitations
-   let possibleData = await query.runQuery("SELECT * FROM Stocks", []);
+async function fetchStocks (request, dateAndHour) {
+   const possibleData = await query.runQuery("SELECT * FROM Stocks", []);
    let initializeData = false;
 
    let stocks = {};
-   let symbols = ["VT", "VTI", "SPY", "QQQ", "BITW"];
+   const symbols = ["VT", "VTI", "SPY", "QQQ", "BITW"];
 
-   if(possibleData.length == 0){
+   if (possibleData.length == 0) {
       initializeData = true;
-   } else if(possibleData[0].DateAndHour != dateAndHour){
+   } else if (possibleData[0].DateAndHour != dateAndHour) {
       initializeData = true;
-   } else{
+   } else {
       // In case user session drops out, set up cache stock data
       request.session.dateAndHour = possibleData[0].DateAndHour;
       stocks = JSON.parse(JSON.stringify(possibleData[0].Stocks));
-
       request.session.stocks = stocks;
+
       await request.session.save();
       return stocks;
    }
 
 
-   let options = {
+   const options = {
       method: "GET",
       url: "https://alpha-vantage.p.rapidapi.com/query",
       params: {
@@ -72,18 +72,18 @@ async function fetchStocks (request, dateAndHour){
       }
    };
 
-   for(let symbol of symbols) {
-      try{
+   for (const symbol of symbols) {
+      try {
          options.symbol = symbol;
+
          const response = await axios.request(options);
 
-         if(!response.data["Meta Data"] ){
-            // Invalid format
-            throw new Error("");
+         if (!response.data["Meta Data"] ) {
+            throw new Error("Invalid API format");
          }
 
          stocks[symbol] = await response.data;
-      }  catch(error){
+      }  catch (error) {
          console.log(error);
          const jsonBackup = await fs.readFile("resources/home/backup.json", "utf8");
          const data = await JSON.parse(jsonBackup);
@@ -91,48 +91,49 @@ async function fetchStocks (request, dateAndHour){
       }
    };
 
-   if(initializeData){
+   if (initializeData) {
       await query.runQuery("DELETE FROM Stocks");
       await query.runQuery("INSERT INTO Stocks (DateAndHour,Stocks) VALUES(?,?)", [dateAndHour, JSON.stringify(stocks)]);
    }
 
    request.session.stocks = stocks;
    await request.session.save();
+
    return stocks;
 }
 
 exports.fetchHomeData = asyncHandler(async (request, result, next) => {
-   try{
-      let data = {};
+   try {
+      const data = {};
 
       data.stories = await fetchStories();
 
       // Assume for YY-MM-DD-HR
-      let currentDate = new Date();
-      let dateAndHour = `${currentDate.getUTCFullYear()}-${(currentDate.getUTCMonth() + 1)}-${currentDate.getUTCDate()}-${currentDate.getUTCHours()}`;
+      const currentDate = new Date();
+      const dateAndHour = `${currentDate.getUTCFullYear()}-${(currentDate.getUTCMonth() + 1)}-${currentDate.getUTCDate()}-${currentDate.getUTCHours()}`;
 
-      if(request.session.dateAndHour && request.session.dateAndHour == dateAndHour){
+      if (request.session.dateAndHour && request.session.dateAndHour == dateAndHour) {
          data.stocks = request.session.stocks;
-      } else{
+      } else {
          data.stocks = await fetchStocks(request, dateAndHour);
       }
 
-      if(!request.session.accounts){
+      if (!request.session.accounts) {
          data.userData = await accountController.setUpAccountsCache(request);
-      } else{
+      } else {
+         const userData = request.session.accounts && request.session.transactions && request.session.budget ? request.session : grabUserData(request);
+
          data.userData = {
-            accounts : request.session.accounts,
-            transactions : request.session.transactions,
-            budget : request.session.budget
+            accounts : userData.accounts,
+            transactions : userData.transactions,
+            budget : userData.budget
          };
       }
 
-      result.status(200);
-      result.json(data);
-   } catch(error){
+      sharedReturn.sendSuccess(result, "Successfully fetched home data <i class='fa-solid fa-database'></i>", data);
+   } catch (error) {
       console.log(error);
-      result.status(500);
-      sharedReturn.sendError(result, "email", "Could not successfully process request <i class='fa-solid fa-database'></i>");
+      sharedReturn.sendError(result, 500, "email", "Could not successfully process request <i class='fa-solid fa-database'></i>");
    }
 });
 

@@ -31,15 +31,15 @@ Chart.defaults.font.weight = "bold";
 Chart.defaults.responsive = true;
 Chart.defaults.maintainAspectRatio = false;
 
-export function constructChart (income, expenses){
-   let ctx = document.getElementById("incomeExpenseChart").getContext("2d");
-   let existingChart = Chart.getChart(ctx);
+export function constructChart (income, expenses) {
+   const ctx = document.getElementById("incomeExpenseChart").getContext("2d");
+   const existingChart = Chart.getChart(ctx);
 
    if (existingChart) {
       existingChart.destroy();
    }
 
-   let data = {
+   const data = {
       labels: ["Income", "Expenses"],
       datasets: [{
          data: [income, expenses],
@@ -54,12 +54,12 @@ export function constructChart (income, expenses){
    });
 }
 
-export function constructCategory (mainOrSub, type, ID, name, current, total){
-   let formattedCurrent = current.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-   let formattedTotal = total.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-   let mainContainer = document.getElementById(`${type}`);
+export function constructCategory (mainOrSub, type, ID, name, current, total) {
+   const formattedCurrent = current.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+   const formattedTotal = total.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+   const mainContainer = document.getElementById(`${type}`);
 
-   let container = document.createElement("div");
+   const container = document.createElement("div");
    container.id = ID;
    container.className = `${mainOrSub}Category`;
    container.innerHTML = `
@@ -74,54 +74,56 @@ export function constructCategory (mainOrSub, type, ID, name, current, total){
          </span>
       </button>
    `;
+
    // Store ID in edit category button for form popup setup
-   let editContainer = container.querySelector(".editCategory");
+   const editContainer = container.querySelector(".editCategory");
 
    // Store relevant information for specific category in dataset for efficient input into edit form
-   editContainer.onclick = function (){
+   editContainer.onclick = function () {
       // Update form accordingly given the input
-      let editName = document.getElementById("editName");
-      let editType = document.getElementById("editType");
-      let remove = document.getElementById("remove");
+      const editName = document.getElementById("editName");
+      const editType = document.getElementById("editType");
+      const remove = document.getElementById("remove");
 
-      if(name == "Income" || name == "Expenses"){
+      if (name == "Income" || name == "Expenses") {
          // Main types have unique identifier of their type and name
          editName.disabled = editType.disabled = remove.disabled  = true;
-      } else{
+      } else {
          editName.disabled = editType.disabled = remove.disabled  = false;
       }
+
       editName.value = name;
       editType.value = type;
-
       document.getElementById("editAmount").value = total;
-      // Store ID in form dataset to make adjustments on backend
+
+      // Store ID via dataset for backend processing
       document.getElementById("editCategoryForm").dataset.identification = ID;
       openPopUp(document.getElementById("editCategoryContainer"));
    };
 
    let color;
    let colorIndex = 0;
-   let fraction = current / total;
+   const fraction = current / total;
 
-   if(positiveGradient.length * fraction >= positiveGradient.length){
+   if (positiveGradient.length * fraction >= positiveGradient.length) {
       colorIndex = positiveGradient.length - 1;
-   } else{
+   } else {
       colorIndex = Math.floor(positiveGradient.length * fraction);
    }
 
-   if(type == "Income"){
+   if (type == "Income") {
       color = positiveGradient[colorIndex];
-   } else{
+   } else {
       color = negativeGradient[colorIndex];
    }
 
-   let containerProgressBar = container.getElementsByClassName("currentProgress")[0];
+   const containerProgressBar = container.getElementsByClassName("currentProgress")[0];
 
-   let possibleSwap = document.querySelector(`#${ID}`);
+   const possibleSwap = document.querySelector(`#${ID}`);
 
-   if(!possibleSwap){
+   if (!possibleSwap) {
       mainContainer.append(container);
-   } else{
+   } else {
       // Replace HTML Node for a edit to maintain placement
       mainContainer.replaceChild(container, possibleSwap);
    }
@@ -135,7 +137,7 @@ export function constructCategory (mainOrSub, type, ID, name, current, total){
 }
 
 
-export async function getBudget (){
+export async function getBudget () {
    // Hide main tag till fetching user data
    document.body.style.opacity = "0";
 
@@ -151,9 +153,9 @@ export async function getBudget (){
       </div>`;
 
 
-   let categoryType = document.getElementById("type");
-   let addCategoryContainer = document.getElementById("addCategoryContainer");
-   let addCategoryButtons = document.querySelectorAll(".addCategoryButton");
+   const categoryType = document.getElementById("type");
+   const addCategoryContainer = document.getElementById("addCategoryContainer");
+   const addCategoryButtons = document.querySelectorAll(".addCategoryButton");
 
    addCategoryButtons.forEach((button) => {
       button.onclick = function () {
@@ -162,8 +164,8 @@ export async function getBudget (){
       };
    });
 
-   let addCategoryForm = document.getElementById("addCategoryForm");
-   let exitAddCategoryIcon = document.getElementById("exitAddCategoryIcon");
+   const addCategoryForm = document.getElementById("addCategoryForm");
+   const exitAddCategoryIcon = document.getElementById("exitAddCategoryIcon");
 
    exitAddCategoryIcon.onclick = function () {
       exitPopUp(addCategoryContainer, addCategoryForm, exitAddCategoryIcon);
@@ -178,20 +180,20 @@ export async function getBudget (){
          method: "GET",
       });
 
-      let data = await response.json();
-      // Render object holds all variables essential to constructing front end data
+      const data = await response.json();
 
-      let formattedDate = data.render.Month.split("-");
+      // Render object holds all variables essential to constructing front end data
+      const formattedDate = data.render.Month.split("-");
       // Assume form YY-MM-DD
-      let dateText = document.getElementById("dateText");
+      const dateText = document.getElementById("dateText");
       dateText.innerHTML = `Budget for ${formattedDate[1]}/${formattedDate[0]}`;
 
       // Construct data for income and expenses
       constructCategory("main", "Income", "mainIncome", "Income", data.render.Income.current, data.render.Income.total);
       constructCategory("main", "Expenses", "mainExpenses", "Expenses", data.render.Expenses.current, data.render.Expenses.total);
 
-      let categories = data.render.categories;
-      let categoriesKeys = Object.keys(categories);
+      const categories = data.render.categories;
+      const categoriesKeys = Object.keys(categories);
 
       categoriesKeys.sort(function (a, b) {
          return (categories[a].name).localeCompare(categories[b].name);
@@ -203,26 +205,29 @@ export async function getBudget (){
       });
 
 
-      let leftOverSpan = document.getElementById("leftOverSpan");
+      const leftOverSpan = document.getElementById("leftOverSpan");
 
       // Update summary section
       document.getElementById("incomeSpan").innerHTML = "$" + data.render.Income.current.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
       document.getElementById("expensesSpan").innerHTML = "$" + data.render.Expenses.current.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
       // Differentiate between positive and negative left over amounts
-      if(data.render.leftOver < 0){
+      if (data.render.leftOver < 0) {
          leftOverSpan.style.color = "red";
          leftOverSpan.innerHTML = "-$" + (data.render.leftOver * -1).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-      } else{
+      } else {
          leftOverSpan.style.color = "#178eef";
          leftOverSpan.innerHTML = "$" + data.render.leftOver.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
       }
 
-      constructChart(data.render.Income.current, data.render.Expenses.current);
+      if (data.render.Income.current > 0 || data.render.Expenses.current > 0) {
+         constructChart(data.render.Income.current, data.render.Expenses.current);
+      }
+
       document.body.style.opacity = "1";
 
-      if(data.render.notify){
+      if (data.render.notify) {
          openNotification("fa-solid fa-chart-pie", "<p>Updated budget for the month</p>", "informational");
       }
    } catch (error) {

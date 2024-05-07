@@ -1,4 +1,4 @@
-let createError = require("http-errors");
+const createError = require("http-errors");
 const express = require("express");
 const path = require("path");
 const cookieParser = require("cookie-parser");
@@ -9,10 +9,10 @@ const session = require("express-session");
 const RedisStore = require("connect-redis").default;
 require("dotenv").config();
 
-let indexRouter = require("./routes/index");
-let usersRouter = require("./routes/users");
+const indexRouter = require("./routes/index");
+const usersRouter = require("./routes/users");
 
-let app = express();
+const app = express();
 app.set("trust proxy", 1);
 app.use(cookieParser());
 
@@ -65,7 +65,7 @@ app.use(function (error, request, result, next) {
    // render the error page
    console.log(error);
    result.status(error.status || 500);
-   result.sendFile(path.join(__dirname, "views", "error.html"));
+   return result.redirect("/");
 });
 
 module.exports = app;

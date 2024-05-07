@@ -5,19 +5,20 @@ const sharedReturn = require("./message.js");
 const Decimal = require("decimal.js");
 const budgetController = require("./budget.js");
 
-async function grabUserData (request){
-   try{
-      let returnData = {
+exports.grabUserData =  async function (request) {
+   try {
+      const returnData = {
          accounts : {},
          transactions : {},
          budget : {},
          netWorth : 0.00
       };
-      let netWorth = new Decimal("0.00");
-      let accounts = await query.runQuery("SELECT * FROM Accounts WHERE UserID = ?;", [request.session.UserID]);
-      let transactions = await query.runQuery("SELECT * FROM Transactions WHERE UserID = ?;", [request.session.UserID]);
 
-      for(let account of accounts) {
+      let netWorth = new Decimal("0.00");
+      const accounts = await query.runQuery("SELECT * FROM Accounts WHERE UserID = ?;", [request.session.UserID]);
+      const transactions = await query.runQuery("SELECT * FROM Transactions WHERE UserID = ?;", [request.session.UserID]);
+
+      for (const account of accounts) {
          let preciseBalance = new Decimal(account.Balance);
 
          returnData.accounts[account.AccountID] = {
@@ -26,14 +27,14 @@ async function grabUserData (request){
             balance : parseFloat(preciseBalance.toString()),
          };
 
-         if(account.Type == "Loan" || account.Type == "Credit Card") preciseBalance = preciseBalance.neg();
+         if (account.Type == "Loan" || account.Type == "Credit Card") preciseBalance = preciseBalance.neg();
 
          netWorth = netWorth.plus(preciseBalance);
       };
 
       returnData.netWorth = parseFloat(netWorth.toString());
 
-      for(let transaction of transactions) {
+      for (const transaction of transactions) {
          returnData.transactions[transaction.TransactionID] = {
             title : transaction.Title,
             type : transaction.Type,
@@ -44,22 +45,22 @@ async function grabUserData (request){
          };
       };
 
-      if(!request.session.budget){
+      if (!request.session.budget) {
          // Need budget for specific categories in transaction form
          returnData.budget = request.session.budget = await budgetController.grabBudgetInformation(request);
-      } else{
+      } else {
          returnData.budget = request.session.budget;
       }
       return returnData;
-   } catch(error){
+   } catch (error) {
       console.log(error);
       throw error;
    }
-}
+};
 
-exports.setUpAccountsCache = async function (request){
+exports.setUpAccountsCache = async function (request) {
    // Update cached user data
-   let updatedAccounts = await grabUserData(request);
+   const updatedAccounts = await exports.grabUserData(request);
    request.session.accounts = updatedAccounts.accounts;
    request.session.transactions = updatedAccounts.transactions;
    request.session.netWorth = updatedAccounts.netWorth;
@@ -69,12 +70,12 @@ exports.setUpAccountsCache = async function (request){
 };
 
 exports.getUserAccounts = asyncHandler(async (request, result, next) => {
-   try{
+   try {
       let returnData;
 
-      if(!request.session.accounts){
+      if (!request.session.accounts) {
          returnData = await exports.setUpAccountsCache(request);
-      } else{
+      } else {
          returnData = {
             accounts: request.session.accounts,
             transactions: request.session.transactions,
@@ -83,26 +84,23 @@ exports.getUserAccounts = asyncHandler(async (request, result, next) => {
          };
       }
 
-      result.status(200);
       sharedReturn.sendSuccess(result, "N/A", returnData);
-   } catch (error){
+   } catch (error) {
       console.log(error);
-      result.status(500);
-      sharedReturn.sendError(result, "N/A", "Could not successfully process request <i class='fa-solid fa-database'></i>");
-      return;
+      sharedReturn.sendError(result, 500, "N/A", "Could not successfully process request <i class='fa-solid fa-database'></i>");
    }
 });
 
 
 exports.addAccount = asyncHandler(async (request, result, next) => {
-   try{
-      let trimmedInputs = validation.trimInputs(result, request.body, "balance");
-      if(trimmedInputs.status != undefined) return;
+   try {
+      const trimmedInputs = validation.trimInputs(result, request.body, "balance");
+      if (trimmedInputs.status != undefined) return;
 
-      let formValidation = validation.validateAccountForm(result, trimmedInputs.name, "name", trimmedInputs.type, "type");
-      if(formValidation.status != "pass") return;
+      const formValidation = validation.validateAccountForm(result, trimmedInputs.name, "name", trimmedInputs.type, "type");
+      if (formValidation.status != "pass") return;
 
-      let randomID = await query.retrieveRandomID("SELECT * FROM Accounts WHERE AccountID = ?;");
+      const randomID = await query.retrieveRandomID("SELECT * FROM Accounts WHERE AccountID = ?;");
 
       await query.runQuery("INSERT INTO Accounts (AccountID,Name,Type,Balance,UserID) VALUES (?,?,?,?,?)",
          [randomID, trimmedInputs.name, trimmedInputs.type, trimmedInputs.balance.toString(), request.session.UserID]);
@@ -112,17 +110,17 @@ exports.addAccount = asyncHandler(async (request, result, next) => {
       // Update net-worth and accounts cache
       let adjustingNetWorthAmount;
 
-      if(trimmedInputs.type == "Loan" || trimmedInputs.type == "Credit Card") {
+      if (trimmedInputs.type == "Loan" || trimmedInputs.type == "Credit Card") {
          adjustingNetWorthAmount = trimmedInputs.balance.neg();
-      } else{
+      } else {
          adjustingNetWorthAmount = new Decimal(trimmedInputs.balance);
       }
       trimmedInputs.balance = parseFloat(trimmedInputs.balance.toString());
 
-      if(request.session.netWorth){
-         let currentNetWorth = new Decimal(request.session.netWorth);
+      if (request.session.netWorth) {
+         const currentNetWorth = new Decimal(request.session.netWorth);
          request.session.netWorth  =  trimmedInputs.netWorth = parseFloat((currentNetWorth.plus(adjustingNetWorthAmount)).toString());
-      } else{
+      } else {
          request.session.netWorth  = trimmedInputs.netWorth  = trimmedInputs.balance;
       }
 
@@ -133,53 +131,48 @@ exports.addAccount = asyncHandler(async (request, result, next) => {
       };
 
       await request.session.save();
-
-      result.status(200);
       sharedReturn.sendSuccess(result, "Successfully added account <i class=\"fa-solid fa-building-columns\"></i>", trimmedInputs);
-
-   } catch (error){
+   } catch (error) {
       console.log(error);
-      result.status(500);
-      sharedReturn.sendError(result, "username", "Could not successfully process request <i class='fa-solid fa-database'></i>");
-      return;
+      sharedReturn.sendError(result, 500, "username", "Could not successfully process request <i class='fa-solid fa-database'></i>");
    }
 });
 
 
 exports.editAccount = asyncHandler(async (request, result, next) => {
-   try{
-      let trimmedInputs = validation.trimInputs(result, request.body, "editBalance");
-      if(trimmedInputs.status != undefined) return;
+   try {
+      const trimmedInputs = validation.trimInputs(result, request.body, "editBalance");
+      if (trimmedInputs.status != undefined) return;
 
-      let formValidation = validation.validateAccountForm(result, trimmedInputs.name, "editName", trimmedInputs.type, "editType");
-      if(formValidation.status != "pass") return;
+      const formValidation = validation.validateAccountForm(result, trimmedInputs.name, "editName", trimmedInputs.type, "editType");
+      if (formValidation.status != "pass") return;
 
-      let previousAccount = request.session.accounts[trimmedInputs.ID];
+      const previousAccount = request.session.accounts[trimmedInputs.ID];
       let previousBalance = new Decimal(previousAccount.balance);
-      let previousType = previousAccount.type;
+      const previousType = previousAccount.type;
 
-      let debtTypes ={
+      const debtTypes = {
          "Loan" : 1,
          "Credit Card": 1
       };
 
-      if(debtTypes[previousType]) previousBalance = previousBalance.neg();
+      if (debtTypes[previousType]) previousBalance = previousBalance.neg();
 
       let currentNetWorth = new Decimal(request.session.netWorth);
       currentNetWorth = currentNetWorth.minus(previousBalance);
 
-      if(trimmedInputs.remove == "true"){
+      if (trimmedInputs.remove == "true") {
          // Handle remove (income/expenses is not changed at all because all transactions are moved to main types)
          await query.runQuery("DELETE FROM Accounts WHERE AccountID = ?;", [trimmedInputs.ID]);
 
          await query.runQuery("UPDATE Transactions SET AccountID = ? WHERE AccountID = ?;", ["", trimmedInputs.ID]);
          // Must add onto Net worth when removing any type of debt
 
-         let possibleTransactionIDs = Object.keys(request.session.transactions);
+         const possibleTransactionIDs = Object.keys(request.session.transactions);
 
          possibleTransactionIDs.forEach((transactionID) => {
             // Update all connected account transactions within the cache
-            if(request.session.transactions[transactionID].accountID == trimmedInputs.ID){
+            if (request.session.transactions[transactionID].accountID == trimmedInputs.ID) {
                request.session.transactions[transactionID].accountID = null;
             }
          });
@@ -191,14 +184,13 @@ exports.editAccount = asyncHandler(async (request, result, next) => {
          delete request.session.accounts[trimmedInputs.ID];
          await request.session.save();
 
-         result.status(200);
          sharedReturn.sendSuccess(result, "Successfully removed account <i class=\"fa-solid fa-building-columns\"></i>", trimmedInputs);
          return;
       }
 
       trimmedInputs.remove = false;
 
-      if(query.changesMade(trimmedInputs, previousAccount)){
+      if (query.changesMade(trimmedInputs, previousAccount)) {
          // Update columns on any change
          await query.runQuery("UPDATE Accounts SET Name = ?, Type = ?, Balance = ? WHERE AccountID = ?;",
             [trimmedInputs.name, trimmedInputs.type, trimmedInputs.balance.toString(), trimmedInputs.ID]);
@@ -208,10 +200,10 @@ exports.editAccount = asyncHandler(async (request, result, next) => {
 
          let adjustingNetWorthAmount;
 
-         if(debtTypes[trimmedInputs.type]){
+         if (debtTypes[trimmedInputs.type]) {
             // Ensure new type reflects a debt value to adjust net worth
             adjustingNetWorthAmount = trimmedInputs.balance.neg();
-         } else{
+         } else {
             adjustingNetWorthAmount = new Decimal(trimmedInputs.balance);
          }
 
@@ -226,19 +218,14 @@ exports.editAccount = asyncHandler(async (request, result, next) => {
          };
 
          await request.session.save();
-
-         result.status(200);
          sharedReturn.sendSuccess(result, "Successfully edited account <i class=\"fa-solid fa-building-columns\"></i>", trimmedInputs);
-      } else{
+      } else {
          trimmedInputs.changes = false;
-         result.status(200);
          sharedReturn.sendSuccess(result, "No changes <i class=\"fa-solid fa-circle-info\"></i>", trimmedInputs);
       }
-
-   } catch (error){
+   } catch (error) {
       console.log(error);
-      result.status(500);
-      sharedReturn.sendError(result, "username", "Could not successfully process request <i class='fa-solid fa-database'></i>");
+      sharedReturn.sendError(result, 500, "username", "Could not successfully process request <i class='fa-solid fa-database'></i>");
       return;
    }
 });

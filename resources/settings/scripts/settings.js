@@ -1,154 +1,151 @@
 import { sendRequest, openPopUp, exitPopUp, removeMessage }  from "../../shared/scripts/shared.js";
 import { updateProfileInfo } from "./construct.js";
 
-let username = document.getElementById("username");
-let email = document.getElementById("email");
+const username = document.getElementById("username");
+const email = document.getElementById("email");
 
-let editUsername = document.getElementById("editUsername");
-let editEmail = document.getElementById("editEmail");
-let changesButton = document.getElementById("changesButton");
-let detailsForm = document.getElementById("detailsForm");
+const editUsername = document.getElementById("editUsername");
+const editEmail = document.getElementById("editEmail");
+const changesButton = document.getElementById("changesButton");
+const detailsForm = document.getElementById("detailsForm");
 
-let passwordFormContainer = document.getElementById("popupPasswordContainer");
-let passwordForm = document.getElementById("passwordForm");
-let editPasswordPopUp = document.getElementById("changePasswordPopUp");
-let editPasswordButton = document.getElementById("passwordSubmitButton");
-let exitPasswordIcon = document.getElementById("exitPasswordIcon");
+const passwordFormContainer = document.getElementById("popupPasswordContainer");
+const passwordForm = document.getElementById("passwordForm");
+const editPasswordPopUp = document.getElementById("changePasswordPopUp");
+const editPasswordButton = document.getElementById("passwordSubmitButton");
+const exitPasswordIcon = document.getElementById("exitPasswordIcon");
 
 updateProfileInfo();
 
 // Send request to log out method in built controllers
-let logoutIcon = document.querySelector("#logOutIcon");
+const logoutIcon = document.querySelector("#logOutIcon");
 
 // Some pages may have two log out icons (settings)
-logoutIcon.onclick = function (event){
+logoutIcon.onclick = function () {
    window.location.href = "./logOut";
 };
 
 // Handling removing disabled inputs individually
-function enableInput (input){
+function enableInput (input) {
    input.disabled = false;
    changesButton.disabled = false;
 }
 
-editUsername.onclick = function (event){
+editUsername.onclick = function () {
    enableInput(username);
 };
 
-editEmail.onclick = function (event){
+editEmail.onclick = function () {
    enableInput(email);
 };
 
-editPasswordPopUp.onclick = function (event){
+editPasswordPopUp.onclick = function () {
    passwordForm.reset();
    openPopUp(passwordFormContainer);
 };
 
-exitPasswordIcon.onclick = function (event){
+exitPasswordIcon.onclick = function () {
    exitPopUp(passwordFormContainer, passwordForm, exitPasswordIcon, editPasswordPopUp);
 };
 
-let toggle = document.querySelector("#mode");
+const toggle = document.querySelector("#mode");
 
 toggle.onchange = () => {
-   if(document.body.classList.contains("dark-mode")){
+   if (document.body.classList.contains("dark-mode")) {
       localStorage.mode = "light";
       document.body.classList.remove("dark-mode");
-   } else{
+   } else {
       localStorage.mode =  "dark";
       document.body.classList.add("dark-mode");
    }
 };
 
-let deletePopUpButton = document.getElementById("deletePopUpButton");
-let deleteFormContainer = document.getElementById("popupDeleteContainer");
-let deleteMessage = document.getElementById("deleteMessage");
+const deletePopUpButton = document.getElementById("deletePopUpButton");
+const deleteFormContainer = document.getElementById("popupDeleteContainer");
+const deleteMessage = document.getElementById("deleteMessage");
 
-let deleteForm = document.getElementById("deleteForm");
-let exitDeleteIcon = document.getElementById("exitDeleteIcon");
-let deleteSubmitButton = document.getElementById("deleteSubmitButton");
+const deleteForm = document.getElementById("deleteForm");
+const exitDeleteIcon = document.getElementById("exitDeleteIcon");
+const deleteSubmitButton = document.getElementById("deleteSubmitButton");
 
-deletePopUpButton.onclick = function (event){
-   let username = document.getElementById("username").value;
+deletePopUpButton.onclick = function () {
+   const username = document.getElementById("username").value;
    deleteMessage.innerHTML = `<strong>sudo deluser ${username}</strong>`;
    openPopUp(deleteFormContainer);
 };
 
-exitDeleteIcon.onclick = function (event){
+exitDeleteIcon.onclick = function () {
    exitPopUp(deleteFormContainer, deleteForm, exitDeleteIcon, deletePopUpButton);
 };
 
 // Send post request to handle validation and updating values
-detailsForm.onsubmit = async function (event){
+detailsForm.onsubmit = async function (event) {
    event.preventDefault();
 
-   let successFunction = (data, messageContainer) => {
-      let username = document.getElementById("username");
-      let email = document.getElementById("email");
-      let editUsername = document.getElementById("editUsername");
-      let editEmail = document.getElementById("editEmail");
-      let changesButton = document.getElementById("changesButton");
+   const successFunction = (data, messageContainer) => {
+      const username = document.getElementById("username");
+      const email = document.getElementById("email");
+      const editUsername = document.getElementById("editUsername");
+      const editEmail = document.getElementById("editEmail");
+      const changesButton = document.getElementById("changesButton");
 
       // Reset all form inputs
       updateProfileInfo();
       editUsername.disabled = editEmail.disabled = username.disabled = email.disabled = changesButton.disabled = true;
 
       setTimeout(() => {
+         console.log(data);
          removeMessage(messageContainer);
          setTimeout(() => {
             document.getElementById("editUsername").disabled = document.getElementById("editEmail").disabled = false;
          }, 250);
-
       }, 2500);
    };
 
-   let failFunction =  () => {return;};
+   const failFunction =  () => {return;};
 
-   let formData = new FormData(this);
+   const formData = new FormData(this);
    // Manually set request body parameters for form validation
    formData.set("username", username.value);
    formData.set("email", email.value);
-   let structuredFormData = new URLSearchParams(formData).toString();
+   const structuredFormData = new URLSearchParams(formData).toString();
 
    await sendRequest("./updateUser", structuredFormData, changesButton, "Save Changes", successFunction, failFunction);
 };
 
-passwordForm.onsubmit = async function (event){
+passwordForm.onsubmit = async function (event) {
    event.preventDefault();
 
-   let successFunction = (data, messageContainer) => {
+   const successFunction = () => {
       setTimeout(() => {
          document.getElementById("exitPasswordIcon").click();
       }, 2000);
    };
 
-   let failFunction =  () => {return;};
-
-   let formData = new FormData(this);
-   let structuredFormData = new URLSearchParams(formData).toString();
+   const failFunction =  () => {return;};
+   const formData = new FormData(this);
+   const structuredFormData = new URLSearchParams(formData).toString();
 
    await sendRequest("./updatePassword", structuredFormData, editPasswordButton, "Submit", successFunction, failFunction);
 };
 
-document.getElementById("message").onpaste = function (event){
+document.getElementById("message").onpaste = function (event) {
    // Don't allow simple copy paste for security reasons
    event.preventDefault();
 };
 
-deleteForm.onsubmit = async function (event){
+deleteForm.onsubmit = async function (event) {
    event.preventDefault();
 
-   let successFunction = (data, messageContainer) => {
+   const successFunction = () => {
       setTimeout(() => {
          window.location.href = "./logOut";
       }, 2000);
-
    };
 
-   let failFunction =  () => {return;};
-
-   let formData = new FormData(this);
-   let structuredFormData = new URLSearchParams(formData).toString();
+   const failFunction =  () => {return;};
+   const formData = new FormData(this);
+   const structuredFormData = new URLSearchParams(formData).toString();
 
    await sendRequest("./deleteAccount", structuredFormData, deleteSubmitButton, "Submit", successFunction, failFunction);
 };

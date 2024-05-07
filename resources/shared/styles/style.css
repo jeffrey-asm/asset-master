@@ -31,7 +31,7 @@ body{
 
 main{
    width:90%;
-   margin: 2rem auto 8rem auto;
+   margin: 2rem auto;
    transition: opacity 1s ease-in-out;
 }
 
@@ -56,15 +56,14 @@ header{
    justify-content: center;
    align-items: center;
    text-align: center;
-   font-size: 1.2rem;
+   font-size: 1rem;
    gap:10px;
    width: 100%;
    margin-top:1rem;
 }
 
 #titleContainer img{
-   margin-top:10px;
-   max-height:80px;
+   max-height:55px;
 }
 
 .navBarContainer{
@@ -82,13 +81,12 @@ header{
    margin:0;
    width:45px;
    height:45px;
-   font-size: 2rem;
+   font-size: 1.7rem;
    margin-left:20px;
 }
 
 #sidebarIcon::before{
    box-sizing: border-box;
-   background: var(--background-color);
    color:var(--text-color);
    border-radius: 10px;
    padding:5px;
@@ -99,7 +97,7 @@ header{
 }
 
 #logoContainer{
-   font-size: 1.1rem;
+   font-size: 1rem;
    text-align: center;
    white-space: nowrap;
    font-weight: bolder;
@@ -117,7 +115,7 @@ header{
 }
 
 #logoContainer h1{
-   font-size: 1.5rem;
+   font-size: 1.3rem;
    text-decoration: underline;
    text-underline-offset: 5px;
    margin:0.8rem 0;
@@ -132,7 +130,7 @@ nav{
    margin: 2rem 29px;
    color:var(--text-color);
    background-color: var(--background-color);
-   box-shadow: 0 0 8px var(--text-color);
+   box-shadow: 0 0 4px var(--text-color);
    border-radius: 15px;
    border-top-left-radius: 0px;
    border-bottom-left-radius: 0px;
@@ -150,7 +148,7 @@ nav a{
    padding:1.5rem;
    text-decoration: none;
    font-weight: bolder;
-   font-size: 1.1rem;
+   font-size: 1rem;
    color:var(--text-color);
    width:100%;
    text-align: center;
@@ -229,7 +227,7 @@ button{
    margin-right: auto;
 }
 .mainImage img{
-   max-height: 400px;
+   max-height: 350px;
    width:auto;
    max-width:100%;
 }
@@ -328,7 +326,7 @@ footer {
    text-align: left;
    font-size: 1.3rem;
    width:100%;
-   margin:5rem auto 0 auto;
+   margin:1rem auto 0 auto;
    min-height: 290px;
    border-top: 5px solid;
    color: white;
@@ -345,8 +343,6 @@ footer {
    margin-top:0;
    color: var(--text-color);
    font-size: 1.3rem;
-   text-decoration: underline;
-   text-underline-offset: 5px;
 }
 
 .footerLinkContainers {
@@ -459,13 +455,14 @@ footer a:hover {
 }
 @media only screen and (max-width:500px){
    #titleContainer{
+      margin-top:30px;
       flex-direction: column;
       gap:0;
    }
 
    #titleContainer h1{
-      font-size:2.2rem;
-      margin:0;
+      font-size:1.8rem;
+      margin-top:10px;
    }
 }
 
