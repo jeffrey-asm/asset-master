@@ -2,7 +2,7 @@
 
 :root {
    --background-color: white;
-   --text-color: black;
+   --text-color: #25242a;
    --shadow-color: 0 0 0.5rem 0.2rem rgba(0, 0, 0, 0.3);
 }
 html, body {
@@ -196,12 +196,12 @@ button{
    background-color: #08B0FF;
    border:0;
    border-radius: 7px;
-   font-size: 1.1rem;
+   font-size: 1rem;
    font-weight: bold;
    color:white;
    margin-top: 10px;
    height:3.5rem;
-   transition:0.5s all ease-in-out;
+   transition:0.5s all ease;
 }
 
 .sectionTitle{
@@ -343,7 +343,7 @@ footer {
 
 .footerLinkContainers h3 {
    margin-top:0;
-   color: white;
+   color: var(--text-color);
    font-size: 1.3rem;
    text-decoration: underline;
    text-underline-offset: 5px;
@@ -402,7 +402,7 @@ footer img:hover,footer i:hover,footer li:hover{
 }
 
 .footerMediaLinks i:hover{
-   color:white;
+   color: var(--text-color);
 }
 
 #socialLinks{
@@ -414,14 +414,14 @@ footer h5{
    width:100%;
    text-align: center;
    margin:25px 0 0 0;
-   color:white;
+   color: var(--text-color);
    font-size: 0.9rem;
 }
 
 footer a:hover {
    cursor:pointer;
    font-weight: bolder;
-   color: white;
+   color: var(--text-color);
 }
 
 

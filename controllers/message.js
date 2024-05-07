@@ -1,22 +1,22 @@
-//Shared method for all form controllers
-exports.sendError = function(result,component,text){
+// Shared method for all form controllers
+exports.sendError = function (result, component, text){
    if(result.statusCode == 500){
       result.json({
          error:true
       });
    } else{
       result.json({
-         status:'fail',
+         status:"fail",
          componentID: `${component}`,
          message: `${text}`
       });
    }
-}
+};
 
-exports.sendSuccess = function(result,text,returnInfo={}){
-   result.json({
-      status:'pass',
+exports.sendSuccess = function (result, text, returnInfo={}){
+   result.status(200).json({
+      status:"pass",
       message: `${text}`,
       render:returnInfo
    });
-}
+};

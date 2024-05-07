@@ -236,7 +236,6 @@ form hr{
 
 .popupExitContainer i.clicked{
    color:red;
-   transform: rotate(360deg);
 }
 
 @keyframes notificationShow {
@@ -430,13 +429,13 @@ form hr{
  }
 
  .switch.mode input:checked + .slider {
-   box-shadow: 0 0 20px yellow;
-   border: 2px solid yellow;
+   box-shadow: 0 0 20px#08B0FF;
+   border: 2px solid#08B0FF;
  }
 
  .switch.mode input:checked + .slider:before {
    transform: translateX(1.5em);
-   background-color:yellow;
+   background-color: #08B0FF;
  }
 
 

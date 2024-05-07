@@ -5,10 +5,10 @@ let signUpButton = document.getElementById("registerButton");
 
 
 loginButton.onclick = function (event) {
-   transitionToPage(this, '/login');
-}
+   transitionToPage(this, "/login");
+};
 
 signUpButton.onclick = function (event) {
-   transitionToPage(this, '/signup');
-}
+   transitionToPage(this, "/signup");
+};
 

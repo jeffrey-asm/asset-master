@@ -32,7 +32,7 @@ services:
     environment:
       MYSQL_USER: mysql
       MYSQL_PASSWORD: mysql
-      MYSQL_DATABASE: assetmaster
+      MYSQL_DATABASE: asset-master
       MYSQL_ROOT_PASSWORD: root
     volumes:
       - asset_master_mysql_data:/asset_master/mysql_data
