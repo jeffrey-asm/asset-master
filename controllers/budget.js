@@ -74,7 +74,7 @@ exports.grabBudgetInformation = async function(request, result, next) {
 
       return returnData;
    } catch (error) {
-      console.log(error);
+      console.error(error);
       throw error;
    }
 };
@@ -101,7 +101,7 @@ exports.getUserBudget = asyncHandler(async(request, result, next) => {
          returnData
       );
    } catch (error) {
-      console.log(error);
+      console.error(error);
       sharedReturn.sendError(
          result,
          500,
@@ -112,19 +112,19 @@ exports.getUserBudget = asyncHandler(async(request, result, next) => {
 });
 
 exports.addCategory = asyncHandler(async(request, result) => {
-   const trimmedInputs = validation.trimInputs(result, request.body, "amount");
+   const normalizedInputs = validation.normalizeInputs(result, request.body, "amount");
 
-   if (trimmedInputs.status != undefined) return;
+   if (normalizedInputs.status != undefined) return;
 
    const validationCheck = validation.validateBudgetForm(
       result,
-      trimmedInputs.name,
+      normalizedInputs.name,
       "name",
-      trimmedInputs.type,
+      normalizedInputs.type,
       "type",
       false
    );
-   if (validationCheck.status != "pass") return;
+   if (validationCheck.status != "Success") return;
 
    try {
       const formattedDate = query.getCurrentMonth();
@@ -132,10 +132,10 @@ exports.addCategory = asyncHandler(async(request, result) => {
       const category = await query.runQuery(
          "INSERT INTO categories (name, type, current, total, month, user_id) VALUES (?, ?, ?, ?, ?, ?);",
          [
-            trimmedInputs.name,
-            trimmedInputs.type,
+            normalizedInputs.name,
+            normalizedInputs.type,
             0.0,
-            trimmedInputs.amount.toString(),
+            normalizedInputs.amount.toString(),
             formattedDate,
             request.session.user_id
          ]
@@ -143,15 +143,15 @@ exports.addCategory = asyncHandler(async(request, result) => {
 
       // Return database values for front end rendering
       const insertId = category.insertId;
-      trimmedInputs.ID = insertId;
-      trimmedInputs.amount = parseFloat(trimmedInputs.amount.toString());
+      normalizedInputs.ID = insertId;
+      normalizedInputs.amount = parseFloat(normalizedInputs.amount.toString());
 
       // Update cache
       request.session.budget.categories[insertId] = {
-         name: trimmedInputs.name,
-         type: trimmedInputs.type,
+         name: normalizedInputs.name,
+         type: normalizedInputs.type,
          current: 0.0,
-         total: trimmedInputs.amount,
+         total: normalizedInputs.amount,
          month: formattedDate
       };
 
@@ -159,10 +159,10 @@ exports.addCategory = asyncHandler(async(request, result) => {
       sharedReturn.sendSuccess(
          result,
          "Successfully added category <i class=\"fa-solid fa-chart-pie\" ></i>",
-         trimmedInputs
+         normalizedInputs
       );
    } catch (error) {
-      console.log(error);
+      console.error(error);
       sharedReturn.sendError(
          result,
          500,
@@ -174,31 +174,31 @@ exports.addCategory = asyncHandler(async(request, result) => {
 
 exports.updateCategory = asyncHandler(async(request, result) => {
    try {
-      const trimmedInputs = validation.trimInputs(
+      const normalizedInputs = validation.normalizeInputs(
          result,
          request.body,
          "editAmount"
       );
-      if (trimmedInputs.status != undefined) return;
+      if (normalizedInputs.status != undefined) return;
 
       const editingMainCategory =
-      trimmedInputs.ID == "mainIncome" || trimmedInputs.ID == "mainExpenses";
+      normalizedInputs.ID == "mainIncome" || normalizedInputs.ID == "mainExpenses";
       const validationCheck = validation.validateBudgetForm(
          result,
-         trimmedInputs.name,
+         normalizedInputs.name,
          "editName",
-         trimmedInputs.type,
+         normalizedInputs.type,
          "editType",
          editingMainCategory
       );
-      if (validationCheck.status != "pass") return;
+      if (validationCheck.status != "Success") return;
 
       let previousCategory, previousCurrent, previousTotal;
 
-      if (trimmedInputs.remove == "true" && !editingMainCategory) {
+      if (normalizedInputs.remove == "true" && !editingMainCategory) {
          // Handle remove (Main Income/Expenses are not changed at all because all transactions are moved to main types)
          await query.runQuery("DELETE FROM categories WHERE category_id = ?;", [
-            trimmedInputs.ID
+            normalizedInputs.ID
          ]);
 
          if (!request.session.transactions) {
@@ -206,89 +206,89 @@ exports.updateCategory = asyncHandler(async(request, result) => {
          }
 
          const possibleTransactionIDs = Object.keys(request.session.transactions);
-         const previousType = request.session.budget.categories[trimmedInputs.ID].type;
+         const previousType = request.session.budget.categories[normalizedInputs.ID].type;
          await query.runQuery(
             "UPDATE transactions SET type = ? WHERE category_id = ?;",
-            [previousType, trimmedInputs.ID]
+            [previousType, normalizedInputs.ID]
          );
 
          possibleTransactionIDs.forEach((transactionID) => {
             // Update all connected account transactions within the cache and roll back to main type
             if (
                request.session.transactions[transactionID].categoryID ==
-          trimmedInputs.ID
+          normalizedInputs.ID
             ) {
                request.session.transactions[transactionID].categoryID = previousType;
             }
          });
 
-         trimmedInputs.changes = true;
-         trimmedInputs.mainOrSub = "remove";
+         normalizedInputs.changes = true;
+         normalizedInputs.mainOrSub = "remove";
 
          // Update cache via deleting category
-         delete request.session.budget.categories[trimmedInputs.ID];
+         delete request.session.budget.categories[normalizedInputs.ID];
          await request.session.save();
          sharedReturn.sendSuccess(
             result,
             "Successfully removed category <i class=\"fa-solid fa-trash\"></i>",
-            trimmedInputs
+            normalizedInputs
          );
          return;
       }
 
       if (editingMainCategory) {
-         previousCategory = request.session.budget[trimmedInputs.name];
+         previousCategory = request.session.budget[normalizedInputs.name];
          previousTotal = new Decimal(`${previousCategory.total}`);
          previousCurrent = new Decimal(`${previousCategory.current}`);
 
          // May only update total if there is a change using cached data
-         if (!previousTotal.equals(trimmedInputs.amount)) {
+         if (!previousTotal.equals(normalizedInputs.amount)) {
             await query.runQuery("UPDATE budgets SET ?? = ? WHERE user_id = ?;", [
-               `${trimmedInputs.type}total`,
-               trimmedInputs.amount.toString(),
+               `${normalizedInputs.type}total`,
+               normalizedInputs.amount.toString(),
                request.session.user_id
             ]);
 
             // Update cache and format rendering data
-            trimmedInputs.mainOrSub = "main";
-            trimmedInputs.total = parseFloat(trimmedInputs.amount.toString());
-            trimmedInputs.current = parseFloat(previousCurrent.toString());
-            trimmedInputs.changes = true;
+            normalizedInputs.mainOrSub = "main";
+            normalizedInputs.total = parseFloat(normalizedInputs.amount.toString());
+            normalizedInputs.current = parseFloat(previousCurrent.toString());
+            normalizedInputs.changes = true;
 
-            request.session.budget[trimmedInputs.type].total = trimmedInputs.total;
+            request.session.budget[normalizedInputs.type].total = normalizedInputs.total;
             await request.session.save();
             sharedReturn.sendSuccess(
                result,
                "Successfully updated category <i class=\"fa-solid fa-chart-pie\"></i>",
-               trimmedInputs
+               normalizedInputs
             );
          } else {
             sharedReturn.sendSuccess(
                result,
                "No changes <i class=\"fa-solid fa-circle-info\"></i>",
-               trimmedInputs
+               normalizedInputs
             );
          }
       } else {
          const previousType =
-        request.session.budget.categories[trimmedInputs.ID].type;
-         previousCategory = request.session.budget.categories[trimmedInputs.ID];
+        request.session.budget.categories[normalizedInputs.ID].type;
+         previousCategory = request.session.budget.categories[normalizedInputs.ID];
          previousTotal = new Decimal(previousCategory.total);
          previousCurrent = new Decimal(previousCategory.current);
 
-         trimmedInputs.current = parseFloat(previousCurrent.toString());
+         normalizedInputs.current = parseFloat(previousCurrent.toString());
 
          let changesMade = false;
-         trimmedInputs.mainOrSub = "sub";
+         normalizedInputs.mainOrSub = "sub";
 
          if (
-            !previousTotal.equals(trimmedInputs.amount) ||
-        trimmedInputs.name != previousCategory.name
+            !previousTotal.equals(normalizedInputs.amount) ||
+        normalizedInputs.name != previousCategory.name
          ) {
             changesMade = true;
          }
 
-         if (previousType != trimmedInputs.type) {
+         if (previousType != normalizedInputs.type) {
             // Swapping between Income and Expenses, must update both current trackers
             let newIncomeCurrent = new Decimal(
                request.session.budget.Income.current
@@ -298,7 +298,7 @@ exports.updateCategory = asyncHandler(async(request, result) => {
             );
 
             // Transfer of values in terms of income/expenses totals given swapping category current
-            if (trimmedInputs.type == "Income") {
+            if (normalizedInputs.type == "Income") {
                newIncomeCurrent = newIncomeCurrent.plus(previousCurrent);
                newExpensesCurrent = newExpensesCurrent.minus(previousCurrent);
             } else {
@@ -306,9 +306,9 @@ exports.updateCategory = asyncHandler(async(request, result) => {
                newExpensesCurrent = newExpensesCurrent.plus(previousCurrent);
             }
 
-            request.session.budget.Income.current = trimmedInputs.Income =
+            request.session.budget.Income.current = normalizedInputs.Income =
           parseFloat(newIncomeCurrent.toString());
-            request.session.budget.Expenses.current = trimmedInputs.Expenses =
+            request.session.budget.Expenses.current = normalizedInputs.Expenses =
           parseFloat(newExpensesCurrent.toString());
 
             await query.runQuery(
@@ -321,7 +321,7 @@ exports.updateCategory = asyncHandler(async(request, result) => {
             );
             await query.runQuery(
                "UPDATE transactions SET type = ? WHERE category_id = ?;",
-               [trimmedInputs.type, trimmedInputs.ID]
+               [normalizedInputs.type, normalizedInputs.ID]
             );
 
             if (!request.session.transactions) {
@@ -336,50 +336,50 @@ exports.updateCategory = asyncHandler(async(request, result) => {
                // Update all connected account transactions within the cache
                if (
                   request.session.transactions[transactionID].categoryID ==
-            trimmedInputs.ID
+            normalizedInputs.ID
                ) {
                   request.session.transactions[transactionID].type =
-              trimmedInputs.type;
+              normalizedInputs.type;
                }
             });
 
             // Will need to re-construct containers for changes in several categories
             changesMade = true;
-            trimmedInputs.mainOrSub = "reload";
+            normalizedInputs.mainOrSub = "reload";
          }
 
          if (changesMade) {
             await query.runQuery(
                "UPDATE categories SET name = ?, type = ?, current = ?, total = ? WHERE category_id = ?;",
                [
-                  trimmedInputs.name,
-                  trimmedInputs.type,
-                  trimmedInputs.current.toString(),
-                  trimmedInputs.amount.toString(),
-                  trimmedInputs.ID
+                  normalizedInputs.name,
+                  normalizedInputs.type,
+                  normalizedInputs.current.toString(),
+                  normalizedInputs.amount.toString(),
+                  normalizedInputs.ID
                ]
             );
 
             // Update cache and format rendering data
-            trimmedInputs.changes = true;
-            trimmedInputs.total = parseFloat(trimmedInputs.amount.toString());
+            normalizedInputs.changes = true;
+            normalizedInputs.total = parseFloat(normalizedInputs.amount.toString());
 
-            request.session.budget.categories[trimmedInputs.ID].name =
-          trimmedInputs.name;
-            request.session.budget.categories[trimmedInputs.ID].type =
-          trimmedInputs.type;
-            request.session.budget.categories[trimmedInputs.ID].current =
-          trimmedInputs.current;
-            request.session.budget.categories[trimmedInputs.ID].total =
-          trimmedInputs.total;
+            request.session.budget.categories[normalizedInputs.ID].name =
+          normalizedInputs.name;
+            request.session.budget.categories[normalizedInputs.ID].type =
+          normalizedInputs.type;
+            request.session.budget.categories[normalizedInputs.ID].current =
+          normalizedInputs.current;
+            request.session.budget.categories[normalizedInputs.ID].total =
+          normalizedInputs.total;
 
             sharedReturn.sendSuccess(
                result,
                "Changes saved <i class=\"fa-solid fa-check\"></i>",
-               trimmedInputs
+               normalizedInputs
             );
          } else {
-            trimmedInputs.changes = false;
+            normalizedInputs.changes = false;
             sharedReturn.sendSuccess(
                result,
                "No changes <i class=\"fa-solid fa-circle-info\"></i>"
@@ -387,7 +387,7 @@ exports.updateCategory = asyncHandler(async(request, result) => {
          }
       }
    } catch (error) {
-      console.log(error);
+      console.error(error);
       sharedReturn.sendError(
          result,
          500,
@@ -438,6 +438,6 @@ exports.resetBudget = asyncHandler(async(request) => {
 
       return request.session.budget;
    } catch (error) {
-      console.log(error);
+      console.error(error);
    }
 });

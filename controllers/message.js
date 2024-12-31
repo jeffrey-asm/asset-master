@@ -1,16 +1,16 @@
-// Shared method for all form controllers
+// Shared response functions for sending error and success messages
 exports.sendError = function(result, code, component, text) {
    result.status(code).json({
-      status:"fail",
+      status:"Failure",
       error:code === 500,
-      componentID:component,
+      componentID: component,
       message:text
    });
 };
 
 exports.sendSuccess = function(result, text, returnInfo = {}) {
    result.status(200).json({
-      status:"pass",
+      status:"Success",
       message:text,
       render:returnInfo
    });

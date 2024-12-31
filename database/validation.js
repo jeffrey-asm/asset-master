@@ -1,13 +1,14 @@
 const Decimal = require("decimal.js");
-const sharedReturn = require("../controllers/message");
+const sharedReturn = require("@/controllers/message");
 
 exports.validateUsername = function(result, username) {
    if (username.length == 0 || username.length > 30) {
       sharedReturn.sendError(result, 400, "username", "Username must be between 1 and 30 characters <i class='fa-solid fa-signature'></i>");
-      return { status: "fail" };
+
+      return { status: "Failure" };
    }
 
-   return { status: "pass" };
+   return { status: "Success" };
 };
 
 exports.validateEmail = function(result, email) {
@@ -16,10 +17,10 @@ exports.validateEmail = function(result, email) {
    if (emailTest.test(email) == 0) {
       // Ensure valid email for security of account
       sharedReturn.sendError(result, 400, "email", "Invalid email address <i class='fa-regular fa-envelope'></i>");
-      return { status: "fail" };
+      return { status: "Failure" };
    }
 
-   return { status: "pass" };
+   return { status: "Success" };
 };
 
 exports.validatePasswords = function(result, password, secondPassword) {
@@ -27,43 +28,43 @@ exports.validatePasswords = function(result, password, secondPassword) {
    if (passwordTest.test(password) == 0) {
       // Passwords must have at least one special character, one digit, 1 uppercase, 1 lowercase, and at least 8 total characters
       sharedReturn.sendError(result, 400, "password", "Passwords must have at least one special character, one digit, 1 uppercase, 1 lowercase, and at least 8 total characters <i class='fa-solid fa-key'></i>");
-      return { status: "fail" };
+      return { status: "Failure" };
    } else if (password != secondPassword) {
       // Passwords must match in case users enters in undesired input for security
       sharedReturn.sendError(result, 400, "additionalPassword", "Passwords do not match <i class='fa-solid fa-lock'></i>");
-      return { status: "fail" };
+      return { status: "Failure" };
    }
-   return { status: "pass" };
+   return { status: "Success" };
 };
 
-exports.trimInputs = function(result, inputs = {}, decimalComponentID = "amount", dateComponentID = "date") {
+exports.normalizeInputs = function(result, inputs = {}, decimalComponentID = "amount", dateComponentID = "date") {
    const keys = Object.keys(inputs);
-   const trimmedInputs = {};
+   const normalizedInputs = {};
 
    for (const key of keys) {
       // Only trim inputs of type string
       if (key == "amount" || key == "balance") {
          // Amount inputs all have names of amount in request.body
          try {
-            trimmedInputs[key] = new Decimal(parseFloat(inputs[key]).toFixed(2));
+            normalizedInputs[key] = new Decimal(parseFloat(inputs[key]).toFixed(2));
 
-            if (isNaN(trimmedInputs[key])) {
+            if (isNaN(normalizedInputs[key])) {
                throw new Error("Amount must be greater than $0.00, but less than $99,999,999,999.99 <i class='fa-brands fa-stack-overflow;'></i>");
             };
 
             const highLimit = new Decimal("99999999999.99");
             const lowLimit = new Decimal("0.00");
 
-            if (trimmedInputs[key].gt(highLimit) ||  trimmedInputs[key].lessThanOrEqualTo(lowLimit)) {
+            if (normalizedInputs[key].gt(highLimit) ||  normalizedInputs[key].lessThanOrEqualTo(lowLimit)) {
                throw new Error("Amount must be greater than $0.00, but less than $99,999,999,999.99 <i class='fa-brands fa-stack-overflow;'></i>");
             }
          } catch (error) {
             sharedReturn.sendError(result, 400, decimalComponentID, error.message);
-            return { status: "fail" };
+            return { status: "Failure" };
          }
       } else if (key == "date") {
          try {
-            trimmedInputs[key] = inputs[key].trim();
+            normalizedInputs[key] = inputs[key].trim();
             const parts = inputs[key].split("-");
 
             if (parts.length !== 3) {
@@ -88,32 +89,32 @@ exports.trimInputs = function(result, inputs = {}, decimalComponentID = "amount"
             }
          } catch (error) {
             sharedReturn.sendError(result, 400, dateComponentID, error.message);
-            return { status: "fail" };
+            return { status: "Failure" };
          }
 
       } else if (typeof inputs[key] == "string") {
-         trimmedInputs[key] = inputs[key].trim();
+         normalizedInputs[key] = inputs[key].trim();
       }
    };
 
-   return trimmedInputs;
+   return normalizedInputs;
 };
 
 exports.validateBudgetForm = function(result, name, nameComponentID, type, typeComponentID, editingMainCategory = false) {
    if (name.length == 0 || name.length > 30) {
       sharedReturn.sendError(result, 400, nameComponentID, "Category names must be between 1 and 30 characters <i class='fa-solid fa-signature'></i>");
-      return { status: "fail" };
+      return { status: "Failure" };
    } else if (!editingMainCategory && (name == "Income" || name == "Expenses")) {
       sharedReturn.sendError(result, 400, typeComponentID, "Category cannot be 'Income' or 'Expenses' <i class='fa-solid fa-signature'></i>");
-      return { status: "fail" };
+      return { status: "Failure" };
    } else if (type != "Income" && type != "Expenses") {
       // Rare case that user edits frontend form to return a type not supported by database
       sharedReturn.sendError(result, 400, typeComponentID, "Category type must be Income or Expenses<i class='fa-solid fa-coins'></i>");
-      return { status: "fail" };
+      return { status: "Failure" };
    }
 
-   // Amount is validated via trimInputs function
-   return { status: "pass" };
+   // Amount is validated via normalizeInputs function
+   return { status: "Success" };
 };
 
 exports.validateAccountForm = function(result, name, nameComponentID, type, typeComponentID) {
@@ -130,13 +131,13 @@ exports.validateAccountForm = function(result, name, nameComponentID, type, type
 
    if (name.length == 0 || name.length > 30) {
       sharedReturn.sendError(result, 400, nameComponentID, "Account names must be between 1 and 30 characters <i class='fa-solid fa-signature'></i>");
-      return { status: "fail" };
+      return { status: "Failure" };
    } else if (!options[type]) {
       sharedReturn.sendError(result, 400, typeComponentID, "Invalid account type <i class='fa-solid fa-building-columns'></i>");
-      return { status: "fail" };
+      return { status: "Failure" };
    }
 
-   return { status: "pass" };
+   return { status: "Success" };
 };
 
 exports.validateTransactionForm = function(request, result, account, accountComponentID, title, titleComponentID, category, categoryComponentID) {
@@ -144,15 +145,15 @@ exports.validateTransactionForm = function(request, result, account, accountComp
    // Amount and date is validated in the trim inputs function
    if (title.length == 0 || title.length > 50) {
       sharedReturn.sendError(result, 400, titleComponentID, "Transaction title's must be between 1 and 50 characters <i class='fa-solid fa-signature'></i>");
-      return { status: "fail" };
+      return { status: "Failure" };
    } else if (account != null && !request.session.accounts[account]) {
       // Always test for a valid request using current cache for altering of form on frontend
       sharedReturn.sendError(result, 400, accountComponentID, "Invalid account <i class='fa-solid fa-building-columns'></i>");
-      return { status: "fail" };
+      return { status: "Failure" };
    } else if ((category != "Income" && category != "Expenses") && !request.session.budget.categories[category]) {
       sharedReturn.sendError(result, 400, categoryComponentID, "Invalid category <i class='fa-solid fa-building-columns'></i>");
-      return { status: "fail" };
+      return { status: "Failure" };
    }
 
-   return { status: "pass" };
+   return { status: "Success" };
 };

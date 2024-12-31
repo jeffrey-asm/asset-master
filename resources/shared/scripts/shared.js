@@ -239,7 +239,7 @@ async function sendRequest(
          throw new Error("");
       }
 
-      if (data.status !== "pass") {
+      if (data.status !== "Success") {
          displayMessage(formButton, data.message, "error");
          editingContainer = document.getElementById(data.componentID);
          editingContainer.classList.add("errorInput");
@@ -254,7 +254,7 @@ async function sendRequest(
          return data;
       }
    } catch (error) {
-      console.log(error);
+      console.error(error);
 
       // Handle errors if the request fails
       openNotification(

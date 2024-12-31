@@ -368,7 +368,7 @@ async function fetchData() {
 
       document.body.style.opacity = "1";
    } catch (error) {
-      console.log(error);
+      console.error(error);
       document.body.style.opacity = "1";
       openNotification("fa-solid fa-triangle-exclamation", "<p>Could not successfully process request</p>", "errorType");
    }

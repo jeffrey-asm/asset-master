@@ -14,7 +14,7 @@ CREATE TABLE `budgets` (
    expenses_current DECIMAL(13, 2) NOT NULL,
    expenses_total DECIMAL(13, 2) NOT NULL,
    month DATE NOT NULL,
-   FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+   FOREIGN KEY (user_id) REFERENCES `users`(user_id) ON DELETE CASCADE
 );
 
 CREATE TABLE `categories` (
@@ -25,7 +25,7 @@ CREATE TABLE `categories` (
    total DECIMAL(13, 2) NOT NULL,
    month DATE NOT NULL,
    user_id INT NOT NULL,
-   FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+   FOREIGN KEY (user_id) REFERENCES `users`(user_id) ON DELETE CASCADE
 );
 
 CREATE TABLE `accounts` (
@@ -34,7 +34,7 @@ CREATE TABLE `accounts` (
    type VARCHAR(20) NOT NULL,
    balance DECIMAL(13, 2) NOT NULL,
    user_id INT NOT NULL,
-   FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+   FOREIGN KEY (user_id) REFERENCES `users`(user_id) ON DELETE CASCADE
 );
 
 CREATE TABLE `transactions` (
@@ -46,12 +46,12 @@ CREATE TABLE `transactions` (
    user_id INT NOT NULL,
    account_id INT,
    category_id INT NOT NULL,
-   FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
-   FOREIGN KEY (account_id) REFERENCES accounts(account_id) ON DELETE SET NULL,
-   FOREIGN KEY (category_id) REFERENCES categories(category_id) ON DELETE CASCADE
+   FOREIGN KEY (user_id) REFERENCES `users`(user_id) ON DELETE CASCADE,
+   FOREIGN KEY (account_id) REFERENCES `accounts`(account_id) ON DELETE SET NULL,
+   FOREIGN KEY (category_id) REFERENCES `categories`(category_id) ON DELETE CASCADE
 );
 
 CREATE TABLE `stocks` (
    time DATETIME PRIMARY KEY,
-   stocks JSON NOT NULL
+   data JSON NOT NULL
 );

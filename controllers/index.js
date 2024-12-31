@@ -3,7 +3,7 @@ const path = require("path");
 
 async function renderOrRedirect(request, result, file) {
    // Share function for various get requests to send logged in users to users space or direct to requested page
-   const userID = request.cookies["userID"];
+   const userID = request.cookies["user_id"];
 
    if (userID !== undefined) {
       return result.redirect("/users/home");

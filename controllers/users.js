@@ -5,7 +5,7 @@ const query = require("../database/query.js");
 
 async function renderOrRedirect(request, result, file) {
    // Share function for various get requests to send signed out in users to landing page or direct to requested page
-   const userID = request.cookies["userID"];
+   const userID = request.cookies["user_id"];
 
    if (userID === undefined) {
       result.redirect("../");
@@ -17,7 +17,7 @@ async function renderOrRedirect(request, result, file) {
 
          if (userData.length === 0) {
             delete request.session.user_id;
-            result.clearCookie("userID");
+            result.clearCookie("user_id");
             result.redirect("../");
             return;
          }
@@ -54,7 +54,7 @@ exports.settings = asyncHandler(async(request, result) => {
 });
 
 exports.userInformation = asyncHandler(async(request, result) => {
-   const userID = request.cookies["userID"];
+   const userID = request.cookies["user_id"];
 
    if (userID === undefined) {
       return result.redirect("../");
@@ -68,7 +68,7 @@ exports.userInformation = asyncHandler(async(request, result) => {
 });
 
 exports.logout = asyncHandler(async(request, result) => {
-   result.clearCookie("userID");
+   result.clearCookie("user_id");
 
    request.session.destroy((error) => {
       if (error) {

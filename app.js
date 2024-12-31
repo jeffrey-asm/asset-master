@@ -1,3 +1,6 @@
+require("dotenv").config();
+require("module-alias/register");
+
 const createError = require("http-errors");
 const express = require("express");
 const path = require("path");
@@ -7,7 +10,6 @@ const cors = require("cors");
 const helmet = require("helmet");
 const session = require("express-session");
 const RedisStore = require("connect-redis").default;
-require("dotenv").config();
 
 const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
@@ -63,7 +65,7 @@ app.use(function(error, request, result) {
    result.locals.error = request.app.get("env") === "development" ? error : {};
 
    // render the error page
-   console.log(error);
+   console.error(error);
    result.status(error.status || 500);
    return result.redirect("/");
 });

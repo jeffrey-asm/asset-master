@@ -227,7 +227,7 @@ export async function getBudget() {
          openNotification("fa-solid fa-chart-pie", "<p>Updated budget for the month</p>", "informational");
       }
    } catch (error) {
-      console.log(error);
+      console.error(error);
       constructCategory("main", "Income", "mainIncome", "Income", 0.00, 0.00);
       constructCategory("main", "Expenses", "mainExpenses", "Expenses", 0.00, 0.00);
       document.body.style.opacity = "1";

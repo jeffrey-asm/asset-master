@@ -14,7 +14,7 @@ async function fetchStories() {
       const data = await parseXML(response.data);
       return data;
    } catch (error) {
-      console.log(error);
+      console.error(error);
       // Use backup XML Feed
       const xmlBackup = await fs.readFile("resources/home/backup.xml", "utf8");
       const data = await parseXML(xmlBackup);
@@ -82,7 +82,7 @@ async function fetchStocks(request, time) {
 
          stocks[symbol] = await response.data;
       }  catch (error) {
-         console.log(error);
+         console.error(error);
          const jsonBackup = await fs.readFile("resources/home/backup.json", "utf8");
          const data = await JSON.parse(jsonBackup);
          stocks =  data;
@@ -130,7 +130,7 @@ exports.fetchHomeData = asyncHandler(async(request, result) => {
 
       sharedReturn.sendSuccess(result, "Successfully fetched home data <i class='fa-solid fa-database'></i>", data);
    } catch (error) {
-      console.log(error);
+      console.error(error);
       sharedReturn.sendError(result, 500, "email", "Could not successfully process request <i class='fa-solid fa-database'></i>");
    }
 });
