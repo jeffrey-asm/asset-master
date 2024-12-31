@@ -15,19 +15,19 @@ exports.grabUserData =  async function (request) {
       };
 
       let netWorth = new Decimal("0.00");
-      const accounts = await query.runQuery("SELECT * FROM Accounts WHERE UserID = ?;", [request.session.UserID]);
-      const transactions = await query.runQuery("SELECT * FROM Transactions WHERE UserID = ?;", [request.session.UserID]);
+      const accounts = await query.runQuery("SELECT * FROM Accounts WHERE user_id = ?;", [request.session.user_id]);
+      const transactions = await query.runQuery("SELECT * FROM Transactions WHERE user_id = ?;", [request.session.user_id]);
 
       for (const account of accounts) {
-         let preciseBalance = new Decimal(account.Balance);
+         let preciseBalance = new Decimal(account.balance);
 
-         returnData.accounts[account.AccountID] = {
-            name : account.Name,
-            type : account.Type,
+         returnData.accounts[account.account_id] = {
+            name : account.name,
+            type : account.type,
             balance : parseFloat(preciseBalance.toString()),
          };
 
-         if (account.Type == "Loan" || account.Type == "Credit Card") preciseBalance = preciseBalance.neg();
+         if (account.type == "Loan" || account.type == "Credit Card") preciseBalance = preciseBalance.neg();
 
          netWorth = netWorth.plus(preciseBalance);
       };
@@ -35,13 +35,13 @@ exports.grabUserData =  async function (request) {
       returnData.netWorth = parseFloat(netWorth.toString());
 
       for (const transaction of transactions) {
-         returnData.transactions[transaction.TransactionID] = {
-            title : transaction.Title,
-            type : transaction.Type,
-            categoryID : transaction.CategoryID,
-            accountID : transaction.AccountID,
-            date : transaction.Date,
-            amount : parseFloat(transaction.Amount)
+         returnData.transactions[transaction.transaction_id] = {
+            title : transaction.title,
+            type : transaction.type,
+            categoryID : transaction.category_id,
+            accountID : transaction.account_id,
+            date : transaction.date,
+            amount : parseFloat(transaction.amount)
          };
       };
 
@@ -100,10 +100,9 @@ exports.addAccount = asyncHandler(async (request, result, next) => {
       const formValidation = validation.validateAccountForm(result, trimmedInputs.name, "name", trimmedInputs.type, "type");
       if (formValidation.status != "pass") return;
 
-      const randomID = await query.retrieveRandomID("SELECT * FROM Accounts WHERE AccountID = ?;");
 
-      await query.runQuery("INSERT INTO Accounts (AccountID,Name,Type,Balance,UserID) VALUES (?,?,?,?,?)",
-         [randomID, trimmedInputs.name, trimmedInputs.type, trimmedInputs.balance.toString(), request.session.UserID]);
+      const account = await query.runQuery("INSERT INTO Accounts (name,type,balance,user_id) VALUES (?,?,?,?,?)",
+         [trimmedInputs.name, trimmedInputs.type, trimmedInputs.balance.toString(), request.session.user_id]);
 
       trimmedInputs.ID = randomID;
 
@@ -163,9 +162,9 @@ exports.editAccount = asyncHandler(async (request, result, next) => {
 
       if (trimmedInputs.remove == "true") {
          // Handle remove (income/expenses is not changed at all because all transactions are moved to main types)
-         await query.runQuery("DELETE FROM Accounts WHERE AccountID = ?;", [trimmedInputs.ID]);
+         await query.runQuery("DELETE FROM Accounts WHERE account_id = ?;", [trimmedInputs.ID]);
 
-         await query.runQuery("UPDATE Transactions SET AccountID = ? WHERE AccountID = ?;", ["", trimmedInputs.ID]);
+         await query.runQuery("UPDATE Transactions SET account_id = ? WHERE account_id = ?;", ["", trimmedInputs.ID]);
          // Must add onto Net worth when removing any type of debt
 
          const possibleTransactionIDs = Object.keys(request.session.transactions);
@@ -192,7 +191,7 @@ exports.editAccount = asyncHandler(async (request, result, next) => {
 
       if (query.changesMade(trimmedInputs, previousAccount)) {
          // Update columns on any change
-         await query.runQuery("UPDATE Accounts SET Name = ?, Type = ?, Balance = ? WHERE AccountID = ?;",
+         await query.runQuery("UPDATE Accounts SET name = ?, type = ?, balance = ? WHERE account_id = ?;",
             [trimmedInputs.name, trimmedInputs.type, trimmedInputs.balance.toString(), trimmedInputs.ID]);
 
          trimmedInputs.changes = true;

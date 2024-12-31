@@ -35,8 +35,8 @@ function parseXML (xmlData) {
 }
 
 
-async function fetchStocks (request, dateAndHour) {
-   const possibleData = await query.runQuery("SELECT * FROM Stocks", []);
+async function fetchStocks (request, time) {
+   const possibleData = await query.runQuery("SELECT * FROM stocks", []);
    let initializeData = false;
 
    let stocks = {};
@@ -44,12 +44,12 @@ async function fetchStocks (request, dateAndHour) {
 
    if (possibleData.length == 0) {
       initializeData = true;
-   } else if (possibleData[0].DateAndHour != dateAndHour) {
+   } else if (possibleData[0].time != time) {
       initializeData = true;
    } else {
       // In case user session drops out, set up cache stock data
-      request.session.dateAndHour = possibleData[0].DateAndHour;
-      stocks = JSON.parse(JSON.stringify(possibleData[0].Stocks));
+      request.session.time = possibleData[0].time;
+      stocks = JSON.parse(JSON.stringify(possibleData[0].data));
       request.session.stocks = stocks;
 
       await request.session.save();
@@ -92,8 +92,8 @@ async function fetchStocks (request, dateAndHour) {
    };
 
    if (initializeData) {
-      await query.runQuery("DELETE FROM Stocks");
-      await query.runQuery("INSERT INTO Stocks (DateAndHour,Stocks) VALUES(?,?)", [dateAndHour, JSON.stringify(stocks)]);
+      await query.runQuery("DELETE FROM stocks");
+      await query.runQuery("INSERT INTO stocks (time,data) VALUES(?,?)", [time, JSON.stringify(stocks)]);
    }
 
    request.session.stocks = stocks;
@@ -110,12 +110,12 @@ exports.fetchHomeData = asyncHandler(async (request, result, next) => {
 
       // Assume for YY-MM-DD-HR
       const currentDate = new Date();
-      const dateAndHour = `${currentDate.getUTCFullYear()}-${(currentDate.getUTCMonth() + 1)}-${currentDate.getUTCDate()}-${currentDate.getUTCHours()}`;
+      const time = `${currentDate.getUTCFullYear()}-${(currentDate.getUTCMonth() + 1)}-${currentDate.getUTCDate()}-${currentDate.getUTCHours()}`;
 
-      if (request.session.dateAndHour && request.session.dateAndHour == dateAndHour) {
+      if (request.session.time && request.session.time == time) {
          data.stocks = request.session.stocks;
       } else {
-         data.stocks = await fetchStocks(request, dateAndHour);
+         data.stocks = await fetchStocks(request, time);
       }
 
       if (!request.session.accounts) {

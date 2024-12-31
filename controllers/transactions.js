@@ -25,16 +25,16 @@ exports.addTransaction = asyncHandler(async (request, result, next) => {
       if (formValidation.status != "pass") return;
 
 
-      const randomID = await query.retrieveRandomID("SELECT * FROM Transactions WHERE TransactionID = ?");
+      const randomID = await query.retrieveRandomID("SELECT * FROM Transactions WHERE transaction_id = ?");
 
-      await query.runQuery("INSERT INTO Transactions (TransactionID, Title, Date, Type, Amount, UserID, AccountID, CategoryID) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+      await query.runQuery("INSERT INTO Transactions (transaction_id, title, date, type, amount, user_id, account_id, category_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
          [randomID, trimmedInputs.title, trimmedInputs.date, trimmedInputs.type, trimmedInputs.amount.toString(),
-            request.session.UserID, trimmedInputs.account, trimmedInputs.category]);
+            request.session.user_id, trimmedInputs.account, trimmedInputs.category]);
 
       trimmedInputs.ID = randomID;
 
       // Must be in same month and year to affect budget
-      const currentBudgetDate = (request.session.budget.Month).toString().split("-");
+      const currentBudgetDate = (request.session.budget.month).toString().split("-");
       const testingDate = (trimmedInputs.date).split("-");
 
       if (testingDate[0] != currentBudgetDate[0] || testingDate[1] != currentBudgetDate[1]) {
@@ -58,8 +58,8 @@ exports.addTransaction = asyncHandler(async (request, result, next) => {
       let mainCategoryCurrent = new Decimal(request.session.budget[`${trimmedInputs.type}`].current);
       mainCategoryCurrent = mainCategoryCurrent.plus(trimmedInputs.amount);
 
-      await query.runQuery("UPDATE Budgets SET ?? = ? WHERE UserID = ?;",
-         [`${trimmedInputs.type}Current`, mainCategoryCurrent.toString(), request.session.UserID]);
+      await query.runQuery("UPDATE budgets SET ?? = ? WHERE user_id = ?;",
+         [`${trimmedInputs.type}current`, mainCategoryCurrent.toString(), request.session.user_id]);
 
       request.session.budget[`${trimmedInputs.type}`].current = parseFloat(mainCategoryCurrent.toString());
 
@@ -67,7 +67,7 @@ exports.addTransaction = asyncHandler(async (request, result, next) => {
          // Update category
          let categoryCurrent = new Decimal(`${request.session.budget.categories[trimmedInputs.category].current}`);
          categoryCurrent = categoryCurrent.plus(trimmedInputs.amount);
-         await query.runQuery("UPDATE Categories SET Current = ? WHERE CategoryID = ?;",
+         await query.runQuery("UPDATE categories SET current = ? WHERE category_id = ?;",
             [categoryCurrent.toString(), trimmedInputs.category]);
 
          request.session.budget.categories[trimmedInputs.category].current = parseFloat(categoryCurrent.toString());
@@ -138,7 +138,7 @@ exports.editTransaction = asyncHandler(async (request, result, next) => {
       const toMainCategory = mainCategories.hasOwnProperty(trimmedInputs.category);
 
       // Must be in same month and year to affect budget
-      const currentBudgetDate = (request.session.budget.Month).toString().split("-");
+      const currentBudgetDate = (request.session.budget.month).toString().split("-");
 
       const previousDate = (request.session.transactions[trimmedInputs.ID].date).toString().split("-");
       const inputDate = (trimmedInputs.date).split("-");
@@ -148,7 +148,7 @@ exports.editTransaction = asyncHandler(async (request, result, next) => {
       const currentDateAffectsBudget = (inputDate[0] == currentBudgetDate[0] && inputDate[1] == currentBudgetDate[1]);
 
       if (trimmedInputs.remove == "true") {
-         await query.runQuery("DELETE FROM Transactions WHERE TransactionID = ?;", [trimmedInputs.ID]);
+         await query.runQuery("DELETE FROM Transactions WHERE transaction_id = ?;", [trimmedInputs.ID]);
          trimmedInputs.remove = true;
 
          if (!previousDateAffectsBudget) {
@@ -159,13 +159,13 @@ exports.editTransaction = asyncHandler(async (request, result, next) => {
             sharedReturn.sendSuccess(result, "Successfully removed transaction <i class=\"fa-solid fa-trash\"></i>", trimmedInputs);
             return;
          } else {
-            // Update Budgets
+            // Update budgets
             if (!fromMainCategory) {
                // Update category
                previousCategoryCurrent = new Decimal(request.session.budget.categories[previousTransaction.categoryID].current);
                previousCategoryCurrent = previousCategoryCurrent.minus(previousAmount);
 
-               await query.runQuery("UPDATE Categories SET Current = ? WHERE CategoryID = ?;",
+               await query.runQuery("UPDATE categories SET current = ? WHERE category_id = ?;",
                   [previousCategoryCurrent.toString(), previousTransaction.categoryID]);
 
                request.session.budget.categories[previousTransaction.categoryID].current = parseFloat(previousCategoryCurrent.toString());
@@ -177,7 +177,7 @@ exports.editTransaction = asyncHandler(async (request, result, next) => {
                newExpensesCurrent = newExpensesCurrent.minus(previousAmount);
             }
 
-            await query.runQuery("UPDATE Budgets SET IncomeCurrent = ?, ExpensesCurrent = ? WHERE UserID = ?;", [newIncomeCurrent.toString(), newExpensesCurrent.toString(), request.session.UserID]);
+            await query.runQuery("UPDATE budgets SET income_current = ?, expenses_current = ? WHERE user_id = ?;", [newIncomeCurrent.toString(), newExpensesCurrent.toString(), request.session.user_id]);
 
             delete request.session.transactions[trimmedInputs.ID];
             request.session.budget.Income.current  = parseFloat(newIncomeCurrent.toString());
@@ -190,7 +190,7 @@ exports.editTransaction = asyncHandler(async (request, result, next) => {
          }
       } else if (!currentDateAffectsBudget && !previousDateAffectsBudget) {
          // Simple update transaction table, no budget if not within same month
-         await query.runQuery("UPDATE Transactions SET Title = ?, Date = ?, Type = ?, Amount = ?, AccountID = ?, CategoryID = ? WHERE TransactionID = ?",
+         await query.runQuery("UPDATE Transactions SET title = ?, date = ?, type = ?, amount = ?, account_id = ?, category_id = ? WHERE transaction_id = ?",
             [trimmedInputs.title, trimmedInputs.date, trimmedInputs.type, trimmedInputs.amount.toString(), trimmedInputs.account,
                trimmedInputs.category, trimmedInputs.ID]);
 
@@ -214,7 +214,7 @@ exports.editTransaction = asyncHandler(async (request, result, next) => {
       if (previousTransaction.type != trimmedInputs.type) {
          // Income -> Expenses and vice versa
          if (fromMainCategory && !toMainCategory && currentDateAffectsBudget) {
-            // Income -> Expenses Category or Expenses -> Income Categories
+            // Income -> Expenses Category or Expenses -> Income categories
             newCategoryCurrent = new Decimal(request.session.budget.categories[trimmedInputs.category].current);
             newCategoryCurrent = newCategoryCurrent.plus(trimmedInputs.amount);
          } else if (!fromMainCategory && toMainCategory && previousDateAffectsBudget) {
@@ -307,14 +307,14 @@ exports.editTransaction = asyncHandler(async (request, result, next) => {
 
       if (previousCategoryCurrent && !newCategoryCurrent) {
          // Case of Income Category -> Income or Income
-         await query.runQuery("Update Categories Set Current = ? WHERE CategoryID = ?",
+         await query.runQuery("Update categories Set current = ? WHERE category_id = ?",
             [previousCategoryCurrent.toString(), previousTransaction.categoryID]);
 
          // Update cache
          request.session.budget.categories[previousTransaction.categoryID].current = parseFloat(previousCategoryCurrent.toString());
       } else if (!previousCategoryCurrent && newCategoryCurrent) {
          // All other cases involving from main to new category within current month
-         await query.runQuery("Update Categories Set Current = ? WHERE CategoryID = ?",
+         await query.runQuery("Update categories Set current = ? WHERE category_id = ?",
             [newCategoryCurrent.toString(), trimmedInputs.ID]);
 
          // Update cache
@@ -322,14 +322,14 @@ exports.editTransaction = asyncHandler(async (request, result, next) => {
       } else if (previousCategoryCurrent && newCategoryCurrent) {
          // Updating two categories in one go
          const updateCategoriesQuery = `
-            UPDATE Categories
-            Set Current =
+            UPDATE categories
+            Set current =
                CASE
-                  WHEN CategoryID = ? THEN ?
-                  WHEN CategoryID = ? THEN ?
-                  ELSE Current
+                  WHEN category_id = ? THEN ?
+                  WHEN category_id = ? THEN ?
+                  ELSE current
                END
-            WHERE CategoryID IN (?,?);
+            WHERE category_id IN (?,?);
          `;
          await query.runQuery(updateCategoriesQuery,
             [trimmedInputs.ID, newCategoryCurrent.toString(), previousTransaction.categoryID,
@@ -345,21 +345,21 @@ exports.editTransaction = asyncHandler(async (request, result, next) => {
 
       // Update transactions and budgets table in one go for monthly budget affects
       const updateQuery = `UPDATE Transactions T
-                           JOIN Budgets B ON T.UserID = B.UserID
+                           JOIN budgets B ON T.user_id = B.user_id
                            SET
-                              B.IncomeCurrent = ?,
-                              B.ExpensesCurrent = ?,
-                              T.Title = ?,
-                              T.CategoryID = ?,
-                              T.AccountID = ?,
-                              T.Type = ?,
-                              T.Date = ?,
-                              T.Amount = ?
-                           WHERE T.UserID = ? AND T.TransactionID = ?;`;
+                              B.income_current = ?,
+                              B.expenses_current = ?,
+                              T.title = ?,
+                              T.category_id = ?,
+                              T.account_id = ?,
+                              T.type = ?,
+                              T.date = ?,
+                              T.amount = ?
+                           WHERE T.user_id = ? AND T.transaction_id = ?;`;
 
       await query.runQuery(updateQuery, [newIncomeCurrent.toString(), newExpensesCurrent.toString(), trimmedInputs.title,
          trimmedInputs.category, trimmedInputs.account, trimmedInputs.type, trimmedInputs.date,
-         trimmedInputs.amount.toString(), request.session.UserID, trimmedInputs.ID]);
+         trimmedInputs.amount.toString(), request.session.user_id, trimmedInputs.ID]);
 
       trimmedInputs.amount = parseFloat(trimmedInputs.amount.toString());
 

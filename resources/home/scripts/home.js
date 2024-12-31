@@ -164,7 +164,7 @@ function constructAccountsGraph (accounts) {
    const data = {
       labels: accountNames,
       datasets: [{
-         label: "Balance",
+         label: "balance",
          backgroundColor: accountColors,
          borderColor: accountColors,
          borderWidth: 1,

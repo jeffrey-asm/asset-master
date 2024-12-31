@@ -12,20 +12,20 @@ async function renderOrRedirect (request, result, file) {
       return;
    } else {
       // In case that ID no longer cached, retrieve from database
-      if (!request.session.UserID) {
-         const userData = await query.runQuery("SELECT * FROM Users WHERE UserID = ?", [userID]);
+      if (!request.session.user_id) {
+         const userData = await query.runQuery("SELECT * FROM users WHERE user_id = ?", [userID]);
 
          if (userData.length === 0) {
-            delete request.session.UserID;
+            delete request.session.user_id;
             result.clearCookie("userID");
             result.redirect("../");
             return;
          }
 
-         request.session.UserID = userData[0].UserID;
-         request.session.Username = userData[0].Username;
-         request.session.Email = userData[0].Email;
-         request.session.Verified = userData[0].Verified;
+         request.session.user_id = userData[0].user_id;
+         request.session.username = userData[0].username;
+         request.session.email = userData[0].email;
+         request.session.verified = userData[0].verified;
          await request.session.save();
       }
 
@@ -60,9 +60,9 @@ exports.userInformation = asyncHandler(async (request, result, next) => {
       return result.redirect("../");
    } else {
       result.send({
-         Username:request.session.Username,
-         Email:request.session.Email,
-         Verified:request.session.Verified
+         username:request.session.username,
+         email:request.session.email,
+         verified:request.session.verified
       });
    }
 });

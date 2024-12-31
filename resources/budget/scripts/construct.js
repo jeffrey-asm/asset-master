@@ -183,7 +183,7 @@ export async function getBudget () {
       const data = await response.json();
 
       // Render object holds all variables essential to constructing front end data
-      const formattedDate = data.render.Month.split("-");
+      const formattedDate = data.render.month.split("-");
       // Assume form YY-MM-DD
       const dateText = document.getElementById("dateText");
       dateText.innerHTML = `Budget for ${formattedDate[1]}/${formattedDate[0]}`;

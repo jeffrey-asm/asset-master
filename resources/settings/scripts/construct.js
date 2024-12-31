@@ -12,8 +12,8 @@ export async function updateProfileInfo () {
 
       const data = await response.json();
 
-      username.value = `${data.Username}`;
-      email.value = `${data.Email}`;
+      username.value = `${data.username}`;
+      email.value = `${data.email}`;
       document.body.style.opacity = "1";
    } catch (error) {
       console.log(error);

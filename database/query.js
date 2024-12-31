@@ -81,20 +81,6 @@ exports.changesMade = function (inputObject, comparingObject) {
    return changesMade;
 };
 
-exports.retrieveRandomID = async function (query) {
-   let randomID = exports.randomIdentification();
-   // Assume query maintains structure of SELECT * FROM X WHERE Y = ?
-   let randomIDCheck =  await exports.runQuery(query, [randomID]);
-
-   while (randomIDCheck.length != 0) {
-      // Ensure all ID's are unique
-      randomID = exports.randomIdentification();
-      randomIDCheck =  await exports.runQuery(query, [randomID]);
-   }
-
-   return randomID;
-};
-
 exports.getCurrentMonth = function () {
    const currentDate = new Date();
    const year = currentDate.getFullYear();

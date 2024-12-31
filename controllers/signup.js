@@ -18,7 +18,7 @@ exports.signup = asyncHandler(async (request, result, next) => {
 
    try {
       const passwordHash = query.hash(trimmedInputs.password);
-      const usernameCheck = await query.runQuery("SELECT * FROM Users WHERE Username = ?;", [trimmedInputs.username]);
+      const usernameCheck = await query.runQuery("SELECT * FROM users WHERE username = ?;", [trimmedInputs.username]);
 
       // Following tests are for conflicts in current database
       if (usernameCheck.length >= 1) {
@@ -26,27 +26,27 @@ exports.signup = asyncHandler(async (request, result, next) => {
          return;
       }
 
-      const emailCheck =  await query.runQuery("SELECT * FROM Users WHERE Email = ?;", [trimmedInputs.email]);
+      const emailCheck =  await query.runQuery("SELECT * FROM users WHERE email = ?;", [trimmedInputs.email]);
 
       if (emailCheck.length >= 1) {
          sharedReturn.sendError(result, 409, "email", "Email already taken! <i class='fa-solid fa-database'></i>");
          return;
       }
 
-      const randomID = await query.retrieveRandomID("SELECT * FROM Users WHERE UserID = ?;");
+      const randomID = await query.retrieveRandomID("SELECT * FROM users WHERE user_id = ?;");
       const verified = false;
-      const insertQuery = "INSERT INTO Users (UserID,Username,Password,Email,Verified) VALUES (?,?,?,?,?);";
+      const insertQuery = "INSERT INTO users (user_id,username,password,email,verified) VALUES (?,?,?,?,?);";
       await query.runQuery(insertQuery, [randomID, trimmedInputs.username, passwordHash, trimmedInputs.email, verified]);
 
       // After adding a user, a budget instance must be created
       const currentMonth = query.getCurrentMonth();
-      await query.runQuery("INSERT INTO Budgets (UserID,IncomeCurrent,IncomeTotal,ExpensesCurrent,ExpensesTotal,Month) VALUES (?,?,?,?,?,?);", [randomID, 0.00, 1600.00, 0.00, 500.00, currentMonth]);
+      await query.runQuery("INSERT INTO budgets (user_id,income_current,income_total,expenses_current,expenses_total,month) VALUES (?,?,?,?,?,?);", [randomID, 0.00, 1600.00, 0.00, 500.00, currentMonth]);
 
       // Cache user data in session for further requests
-      request.session.UserID = randomID;
-      request.session.Username = trimmedInputs.username;
-      request.session.Email = trimmedInputs.email;
-      request.session.Verified = verified;
+      request.session.user_id = randomID;
+      request.session.username = trimmedInputs.username;
+      request.session.email = trimmedInputs.email;
+      request.session.verified = verified;
 
       const userID = randomID;
       result.cookie("userID", userID, { httpOnly: true });

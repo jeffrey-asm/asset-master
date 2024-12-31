@@ -22,44 +22,44 @@ exports.grabBudgetInformation = async function (request, result, next) {
    try {
       let returnData = {};
       const userBudget = await query.runQuery(
-         "SELECT * FROM Budgets WHERE UserID = ?;",
-         [request.session.UserID]
+         "SELECT * FROM budgets WHERE user_id = ?;",
+         [request.session.user_id]
       );
       const userCategories = await query.runQuery(
-         "SELECT * FROM Categories WHERE UserID = ? ORDER BY Type DESC;",
-         [request.session.UserID]
+         "SELECT * FROM categories WHERE user_id = ? ORDER BY type DESC;",
+         [request.session.user_id]
       );
 
       returnData.Income = {
-         current: parseFloat(userBudget[0].IncomeCurrent),
-         total: parseFloat(userBudget[0].IncomeTotal),
+         current: parseFloat(userBudget[0].income_current),
+         total: parseFloat(userBudget[0].income_total),
       };
 
       returnData.Expenses = {
-         current: parseFloat(userBudget[0].ExpensesCurrent),
-         total: parseFloat(userBudget[0].ExpensesTotal),
+         current: parseFloat(userBudget[0].expenses_current),
+         total: parseFloat(userBudget[0].expenses_total),
       };
 
       returnData.categories = {};
 
       for (const category of userCategories) {
-         returnData.categories[category.CategoryID] = {
-            name: category.Name,
-            type: category.Type,
-            current: parseFloat(category.Current),
-            total: parseFloat(category.Total),
-            month: category.Month,
+         returnData.categories[category.category_id] = {
+            name: category.name,
+            type: category.type,
+            current: parseFloat(category.current),
+            total: parseFloat(category.total),
+            month: category.month,
          };
       }
 
-      returnData.Month = userBudget[0].Month;
+      returnData.month = userBudget[0].month;
       request.session.budget = returnData;
       await request.session.save();
 
-      const resetBudgetTest = exports.testNewMonth(returnData.Month);
+      const resetBudgetTest = exports.testNewMonth(returnData.month);
 
-      const incomeFixed = new Decimal(userBudget[0].IncomeCurrent);
-      const expensesFixed = new Decimal(userBudget[0].ExpensesCurrent);
+      const incomeFixed = new Decimal(userBudget[0].income_current);
+      const expensesFixed = new Decimal(userBudget[0].expenses_current);
 
       if (resetBudgetTest) {
          returnData = await exports.resetBudget(request, result, next);
@@ -128,12 +128,12 @@ exports.addCategory = asyncHandler(async (request, result, next) => {
 
    try {
       const randomID = await query.retrieveRandomID(
-         "SELECT * FROM Categories WHERE CategoryID = ?;"
+         "SELECT * FROM categories WHERE category_id = ?;"
       );
       const formattedDate = query.getCurrentMonth();
 
       await query.runQuery(
-         "INSERT INTO Categories (CategoryID,Name,Type,Current,Total,Month,UserID) VALUES (?,?,?,?,?,?,?);",
+         "INSERT INTO categories (category_id,name,type,current,total,month,user_id) VALUES (?,?,?,?,?,?,?);",
          [
             randomID,
             trimmedInputs.name,
@@ -141,7 +141,7 @@ exports.addCategory = asyncHandler(async (request, result, next) => {
             0.0,
             trimmedInputs.amount.toString(),
             formattedDate,
-            request.session.UserID,
+            request.session.user_id,
          ]
       );
 
@@ -200,7 +200,7 @@ exports.updateCategory = asyncHandler(async (request, result, next) => {
 
       if (trimmedInputs.remove == "true" && !editingMainCategory) {
       // Handle remove (Main Income/Expenses are not changed at all because all transactions are moved to main types)
-         await query.runQuery("DELETE FROM Categories WHERE CategoryID = ?;", [
+         await query.runQuery("DELETE FROM categories WHERE category_id = ?;", [
             trimmedInputs.ID,
          ]);
 
@@ -212,7 +212,7 @@ exports.updateCategory = asyncHandler(async (request, result, next) => {
          const previousType =
         request.session.budget.categories[trimmedInputs.ID].type;
          await query.runQuery(
-            "UPDATE Transactions SET CategoryID = ? WHERE CategoryID = ?;",
+            "UPDATE Transactions SET category_id = ? WHERE category_id = ?;",
             [previousType, trimmedInputs.ID]
          );
 
@@ -247,10 +247,10 @@ exports.updateCategory = asyncHandler(async (request, result, next) => {
 
          // May only update total if there is a change using cached data
          if (!previousTotal.equals(trimmedInputs.amount)) {
-            await query.runQuery("UPDATE Budgets SET ?? = ? WHERE UserID = ?;", [
-               `${trimmedInputs.type}Total`,
+            await query.runQuery("UPDATE budgets SET ?? = ? WHERE user_id = ?;", [
+               `${trimmedInputs.type}total`,
                trimmedInputs.amount.toString(),
-               request.session.UserID,
+               request.session.user_id,
             ]);
 
             // Update cache and format rendering data
@@ -316,15 +316,15 @@ exports.updateCategory = asyncHandler(async (request, result, next) => {
           parseFloat(newExpensesCurrent.toString());
 
             await query.runQuery(
-               "UPDATE Budgets SET IncomeCurrent = ?, ExpensesCurrent = ? WHERE UserID = ?;",
+               "UPDATE budgets SET income_current = ?, expenses_current = ? WHERE user_id = ?;",
                [
                   newIncomeCurrent.toString(),
                   newExpensesCurrent.toString(),
-                  request.session.UserID,
+                  request.session.user_id,
                ]
             );
             await query.runQuery(
-               "UPDATE Transactions SET Type = ? WHERE CategoryID = ?;",
+               "UPDATE Transactions SET type = ? WHERE category_id = ?;",
                [trimmedInputs.type, trimmedInputs.ID]
             );
 
@@ -354,7 +354,7 @@ exports.updateCategory = asyncHandler(async (request, result, next) => {
 
          if (changesMade) {
             await query.runQuery(
-               "UPDATE Categories SET Name = ?, Type = ?, Current = ?, Total = ? WHERE CategoryID = ?;",
+               "UPDATE categories SET name = ?, type = ?, current = ?, total = ? WHERE category_id = ?;",
                [
                   trimmedInputs.name,
                   trimmedInputs.type,
@@ -403,26 +403,26 @@ exports.updateCategory = asyncHandler(async (request, result, next) => {
 
 exports.resetBudget = asyncHandler(async (request, result, next) => {
    try {
-      const validRequest = exports.testNewMonth(request.session.budget.Month);
+      const validRequest = exports.testNewMonth(request.session.budget.month);
       const currentMonth = query.getCurrentMonth();
 
       if (!validRequest) {
          throw new Error("");
       }
 
-      const resetQuery = `UPDATE Budgets B
-                        JOIN Categories C ON B.UserID = C.UserID
-                        SET B.IncomeCurrent = 0.00,
-                           B.ExpensesCurrent = 0.00,
-                           B.Month = ?,
-                           C.Current = 0.00,
-                           C.Month = ?
-                        WHERE B.UserID = ?;`;
+      const resetQuery = `UPDATE budgets B
+                        JOIN categories C ON B.user_id = C.user_id
+                        SET B.income_current = 0.00,
+                           B.expenses_current = 0.00,
+                           B.month = ?,
+                           C.current = 0.00,
+                           C.month = ?
+                        WHERE B.user_id = ?;`;
 
       await query.runQuery(resetQuery, [
          currentMonth,
          currentMonth,
-         request.session.UserID,
+         request.session.user_id,
       ]);
 
       // Await for cache to store data first for proper rendering
@@ -437,7 +437,7 @@ exports.resetBudget = asyncHandler(async (request, result, next) => {
       });
 
       request.session.budget.leftOver = 0.0;
-      request.session.budget.Month = currentMonth;
+      request.session.budget.month = currentMonth;
       await request.session.save();
 
       return request.session.budget;
