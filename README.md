@@ -1,4 +1,4 @@
-# asset-master
+# capital
 
 Full-stack web application intended to allow users to accurately track their finances with ease.
 
