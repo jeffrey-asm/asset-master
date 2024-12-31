@@ -1,7 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const path = require("path");
 
-async function renderOrRedirect (request, result, file) {
+async function renderOrRedirect(request, result, file) {
    // Share function for various get requests to send logged in users to users space or direct to requested page
    const userID = request.cookies["userID"];
 
@@ -12,14 +12,14 @@ async function renderOrRedirect (request, result, file) {
    }
 }
 
-exports.landing = asyncHandler(async (request, result, next) => {
+exports.landing = asyncHandler(async(request, result) => {
    await renderOrRedirect(request, result, "landing.html");
 });
 
-exports.login = asyncHandler(async (request, result, next) => {
+exports.login = asyncHandler(async(request, result) => {
    await renderOrRedirect(request, result, "login.html");
 });
 
-exports.signup = asyncHandler(async (request, result, next) => {
+exports.signup = asyncHandler(async(request, result) => {
    await renderOrRedirect(request, result, "signup.html");
 });

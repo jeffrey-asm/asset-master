@@ -3,7 +3,7 @@ const asyncHandler = require("express-async-handler");
 const path = require("path");
 const query = require("../database/query.js");
 
-async function renderOrRedirect (request, result, file) {
+async function renderOrRedirect(request, result, file) {
    // Share function for various get requests to send signed out in users to landing page or direct to requested page
    const userID = request.cookies["userID"];
 
@@ -33,27 +33,27 @@ async function renderOrRedirect (request, result, file) {
    }
 }
 
-exports.redirect = asyncHandler(async (request, result, next) => {
+exports.redirect = asyncHandler(async(request, result) => {
    result.redirect("./home");
 });
 
-exports.home = asyncHandler(async (request, result, next) => {
+exports.home = asyncHandler(async(request, result) => {
    await renderOrRedirect(request, result, "home.html");
 });
 
-exports.budget = asyncHandler(async (request, result, next) => {
+exports.budget = asyncHandler(async(request, result) => {
    await renderOrRedirect(request, result, "budget.html");
 });
 
-exports.accounts = asyncHandler(async (request, result, next) => {
+exports.accounts = asyncHandler(async(request, result) => {
    await renderOrRedirect(request, result, "accounts.html");
 });
 
-exports.settings = asyncHandler(async (request, result, next) => {
+exports.settings = asyncHandler(async(request, result) => {
    await renderOrRedirect(request, result, "settings.html");
 });
 
-exports.userInformation = asyncHandler(async (request, result, next) => {
+exports.userInformation = asyncHandler(async(request, result) => {
    const userID = request.cookies["userID"];
 
    if (userID === undefined) {
@@ -67,7 +67,7 @@ exports.userInformation = asyncHandler(async (request, result, next) => {
    }
 });
 
-exports.logout = asyncHandler(async (request, result, next) => {
+exports.logout = asyncHandler(async(request, result) => {
    result.clearCookie("userID");
 
    request.session.destroy((error) => {

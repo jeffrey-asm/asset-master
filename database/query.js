@@ -4,18 +4,20 @@ const util = require("util");
 const cryptoJS = require("crypto-js");
 const sharedReturn = require("../controllers/message.js");
 
-exports.runQuery = async function (query="", inputs=[]) {
+exports.runQuery = async function(query = "", inputs = []) {
+   // Initialize connection to database
    const connection = mysql.createConnection({
       host: process.env.HOST,
       user: process.env.USER,
       password: process.env.PASSWORD,
       database: "capital"
    });
+
    const asyncQuery = util.promisify(connection.query).bind(connection);
 
+   // Run query and return resulting data
    try {
-      const results = await asyncQuery(query, inputs);
-      return results;
+      return await asyncQuery(query, inputs);
    } catch (error) {
       console.log(error);
       throw error;
@@ -24,13 +26,13 @@ exports.runQuery = async function (query="", inputs=[]) {
    }
 };
 
-exports.updateDatabase = async function (result, query="", items=[], returnInfo={}) {
+exports.updateDatabase = async function(result, query = "", items = [], returnInfo = {}) {
    await exports.runQuery(query, items);
 
    sharedReturn.sendSuccess(result, "Changes saved <i class=\"fa-solid fa-check\"></i>", returnInfo);
 };
 
-exports.searchDuplicates = async function (result, query, items, componentID, message) {
+exports.searchDuplicates = async function(result, query, items, componentID, message) {
    try {
       const duplicateCheck = await exports.runQuery(query, items);
 
@@ -47,7 +49,7 @@ exports.searchDuplicates = async function (result, query, items, componentID, me
    }
 };
 
-exports.randomIdentification = function () {
+exports.randomIdentification = function() {
    // Create random ID for various tables across the database
    const randomID = cryptoJS.lib.WordArray.random(30);
    const hexString = cryptoJS.enc.Hex.stringify(randomID);
@@ -59,7 +61,7 @@ exports.randomIdentification = function () {
    return characters[randomIndex] + hexString.substring(0, 29).padEnd(29, "0");
 };
 
-exports.changesMade = function (inputObject, comparingObject) {
+exports.changesMade = function(inputObject, comparingObject) {
    const inputKeys = Object.keys(inputObject);
    let changesMade = false;
 
@@ -81,7 +83,7 @@ exports.changesMade = function (inputObject, comparingObject) {
    return changesMade;
 };
 
-exports.getCurrentMonth = function () {
+exports.getCurrentMonth = function() {
    const currentDate = new Date();
    const year = currentDate.getFullYear();
    const month = (currentDate.getUTCMonth() + 1).toString().padStart(2, "0");
@@ -90,7 +92,7 @@ exports.getCurrentMonth = function () {
    return year + "-" + month + "-" + day;
 };
 
-exports.hash = function (password) {
+exports.hash = function(password) {
    // Simple hash method provided by crypto-js
    return cryptoJS.SHA256(password).toString(cryptoJS.enc.Hex);
 };

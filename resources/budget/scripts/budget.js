@@ -9,8 +9,7 @@ const editCategoryForm = document.getElementById("editCategoryForm");
 const editCategorySubmitButton = document.getElementById("editCategorySubmitButton");
 const exitEditCategoryIcon = document.getElementById("exitEditCategoryIcon");
 
-
-function disableEditButtons () {
+function disableEditButtons() {
    const editButtons = document.querySelectorAll(".editCategory");
 
    editButtons.forEach((editButton) => {
@@ -24,15 +23,14 @@ function disableEditButtons () {
    }, 1500);
 }
 
-
-exitEditCategoryIcon.onclick = function () {
+exitEditCategoryIcon.onclick = function() {
    exitPopUp(editCategoryContainer, editCategoryForm, exitEditCategoryIcon);
    disableEditButtons();
 };
 
 getBudget();
 
-addCategoryForm.onsubmit = async function (event) {
+addCategoryForm.onsubmit = async function(event) {
    event.preventDefault();
 
    const successFunction = (data) => {
@@ -50,7 +48,7 @@ addCategoryForm.onsubmit = async function (event) {
    await sendRequest("./addCategory", structuredFormData, addCategorySubmitButton, "Submit", successFunction, failFunction);
 };
 
-editCategoryForm.onsubmit = async function (event) {
+editCategoryForm.onsubmit = async function(event) {
    event.preventDefault();
 
    const successFunction = (data) => {

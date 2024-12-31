@@ -1,13 +1,13 @@
 
 import { openNotification }  from "../../shared/scripts/shared.js";
 
-export async function updateProfileInfo () {
+export async function updateProfileInfo() {
    const username = document.getElementById("username");
    const email = document.getElementById("email");
 
    try {
       const response = await fetch("../users/getUserInfo", {
-         method: "GET",
+         method: "GET"
       });
 
       const data = await response.json();

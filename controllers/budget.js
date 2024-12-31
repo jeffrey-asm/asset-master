@@ -5,7 +5,7 @@ const sharedReturn = require("./message.js");
 const Decimal = require("decimal.js");
 const accountController = require("./accounts.js");
 
-exports.testNewMonth = function (oldDate) {
+exports.testNewMonth = function(oldDate) {
    // YY-MM-DD
    const currentDate = query.getCurrentMonth().split("-");
    const currentMonth = parseInt(currentDate[1]);
@@ -18,7 +18,7 @@ exports.testNewMonth = function (oldDate) {
    return testingMonth != currentMonth || currentYear != testingYear;
 };
 
-exports.grabBudgetInformation = async function (request, result, next) {
+exports.grabBudgetInformation = async function(request, result, next) {
    try {
       let returnData = {};
       const userBudget = await query.runQuery(
@@ -32,12 +32,12 @@ exports.grabBudgetInformation = async function (request, result, next) {
 
       returnData.Income = {
          current: parseFloat(userBudget[0].income_current),
-         total: parseFloat(userBudget[0].income_total),
+         total: parseFloat(userBudget[0].income_total)
       };
 
       returnData.Expenses = {
          current: parseFloat(userBudget[0].expenses_current),
-         total: parseFloat(userBudget[0].expenses_total),
+         total: parseFloat(userBudget[0].expenses_total)
       };
 
       returnData.categories = {};
@@ -48,7 +48,7 @@ exports.grabBudgetInformation = async function (request, result, next) {
             type: category.type,
             current: parseFloat(category.current),
             total: parseFloat(category.total),
-            month: category.month,
+            month: category.month
          };
       }
 
@@ -79,7 +79,7 @@ exports.grabBudgetInformation = async function (request, result, next) {
    }
 };
 
-exports.getUserBudget = asyncHandler(async (request, result, next) => {
+exports.getUserBudget = asyncHandler(async(request, result, next) => {
    try {
       let returnData = {};
 
@@ -111,7 +111,7 @@ exports.getUserBudget = asyncHandler(async (request, result, next) => {
    }
 });
 
-exports.addCategory = asyncHandler(async (request, result, next) => {
+exports.addCategory = asyncHandler(async(request, result) => {
    const trimmedInputs = validation.trimInputs(result, request.body, "amount");
 
    if (trimmedInputs.status != undefined) return;
@@ -127,35 +127,32 @@ exports.addCategory = asyncHandler(async (request, result, next) => {
    if (validationCheck.status != "pass") return;
 
    try {
-      const randomID = await query.retrieveRandomID(
-         "SELECT * FROM categories WHERE category_id = ?;"
-      );
       const formattedDate = query.getCurrentMonth();
 
-      await query.runQuery(
-         "INSERT INTO categories (category_id,name,type,current,total,month,user_id) VALUES (?,?,?,?,?,?,?);",
+      const category = await query.runQuery(
+         "INSERT INTO categories (name, type, current, total, month, user_id) VALUES (?, ?, ?, ?, ?, ?);",
          [
-            randomID,
             trimmedInputs.name,
             trimmedInputs.type,
             0.0,
             trimmedInputs.amount.toString(),
             formattedDate,
-            request.session.user_id,
+            request.session.user_id
          ]
       );
 
       // Return database values for front end rendering
-      trimmedInputs.ID = randomID;
+      const insertId = category.insertId;
+      trimmedInputs.ID = insertId;
       trimmedInputs.amount = parseFloat(trimmedInputs.amount.toString());
 
       // Update cache
-      request.session.budget.categories[randomID] = {
+      request.session.budget.categories[insertId] = {
          name: trimmedInputs.name,
          type: trimmedInputs.type,
          current: 0.0,
          total: trimmedInputs.amount,
-         month: formattedDate,
+         month: formattedDate
       };
 
       await request.session.save();
@@ -175,7 +172,7 @@ exports.addCategory = asyncHandler(async (request, result, next) => {
    }
 });
 
-exports.updateCategory = asyncHandler(async (request, result, next) => {
+exports.updateCategory = asyncHandler(async(request, result) => {
    try {
       const trimmedInputs = validation.trimInputs(
          result,
@@ -199,9 +196,9 @@ exports.updateCategory = asyncHandler(async (request, result, next) => {
       let previousCategory, previousCurrent, previousTotal;
 
       if (trimmedInputs.remove == "true" && !editingMainCategory) {
-      // Handle remove (Main Income/Expenses are not changed at all because all transactions are moved to main types)
+         // Handle remove (Main Income/Expenses are not changed at all because all transactions are moved to main types)
          await query.runQuery("DELETE FROM categories WHERE category_id = ?;", [
-            trimmedInputs.ID,
+            trimmedInputs.ID
          ]);
 
          if (!request.session.transactions) {
@@ -209,10 +206,9 @@ exports.updateCategory = asyncHandler(async (request, result, next) => {
          }
 
          const possibleTransactionIDs = Object.keys(request.session.transactions);
-         const previousType =
-        request.session.budget.categories[trimmedInputs.ID].type;
+         const previousType = request.session.budget.categories[trimmedInputs.ID].type;
          await query.runQuery(
-            "UPDATE Transactions SET category_id = ? WHERE category_id = ?;",
+            "UPDATE transactions SET type = ? WHERE category_id = ?;",
             [previousType, trimmedInputs.ID]
          );
 
@@ -250,7 +246,7 @@ exports.updateCategory = asyncHandler(async (request, result, next) => {
             await query.runQuery("UPDATE budgets SET ?? = ? WHERE user_id = ?;", [
                `${trimmedInputs.type}total`,
                trimmedInputs.amount.toString(),
-               request.session.user_id,
+               request.session.user_id
             ]);
 
             // Update cache and format rendering data
@@ -320,11 +316,11 @@ exports.updateCategory = asyncHandler(async (request, result, next) => {
                [
                   newIncomeCurrent.toString(),
                   newExpensesCurrent.toString(),
-                  request.session.user_id,
+                  request.session.user_id
                ]
             );
             await query.runQuery(
-               "UPDATE Transactions SET type = ? WHERE category_id = ?;",
+               "UPDATE transactions SET type = ? WHERE category_id = ?;",
                [trimmedInputs.type, trimmedInputs.ID]
             );
 
@@ -360,7 +356,7 @@ exports.updateCategory = asyncHandler(async (request, result, next) => {
                   trimmedInputs.type,
                   trimmedInputs.current.toString(),
                   trimmedInputs.amount.toString(),
-                  trimmedInputs.ID,
+                  trimmedInputs.ID
                ]
             );
 
@@ -401,7 +397,7 @@ exports.updateCategory = asyncHandler(async (request, result, next) => {
    }
 });
 
-exports.resetBudget = asyncHandler(async (request, result, next) => {
+exports.resetBudget = asyncHandler(async(request) => {
    try {
       const validRequest = exports.testNewMonth(request.session.budget.month);
       const currentMonth = query.getCurrentMonth();
@@ -422,7 +418,7 @@ exports.resetBudget = asyncHandler(async (request, result, next) => {
       await query.runQuery(resetQuery, [
          currentMonth,
          currentMonth,
-         request.session.user_id,
+         request.session.user_id
       ]);
 
       // Await for cache to store data first for proper rendering

@@ -3,7 +3,7 @@ import { sendRequest, transitionToPage }  from "../../shared/scripts/shared.js";
 const signUpForm = document.getElementById("signUpForm");
 const submitButton = document.getElementById("submitButton");
 
-signUpForm.onsubmit = async function (event) {
+signUpForm.onsubmit = async function(event) {
    event.preventDefault();
 
    const successFunction = () => {

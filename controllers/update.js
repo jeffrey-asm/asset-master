@@ -3,7 +3,7 @@ const query = require("../database/query.js");
 const validation = require("../database/validation.js");
 const sharedReturn = require("./message.js");
 
-exports.updateUser = asyncHandler(async (request, result, next) => {
+exports.updateUser = asyncHandler(async(request, result) => {
    const trimmedInputs = validation.trimInputs(result, request.body);
 
    // Validate form first
@@ -65,7 +65,7 @@ exports.updateUser = asyncHandler(async (request, result, next) => {
    }
 });
 
-exports.updatePassword = asyncHandler(async (request, result, next) => {
+exports.updatePassword = asyncHandler(async(request, result) => {
    const trimmedInputs = validation.trimInputs(result, request.body);
 
    // Validate form first
@@ -100,7 +100,7 @@ exports.updatePassword = asyncHandler(async (request, result, next) => {
    }
 });
 
-exports.deleteAccount = asyncHandler(async (request, result, next) => {
+exports.deleteAccount = asyncHandler(async(request, result) => {
    const trimmedInputs = validation.trimInputs(result, request.body);
 
    if (trimmedInputs.message !== `sudo deluser ${request.session.username}`) {
@@ -109,7 +109,7 @@ exports.deleteAccount = asyncHandler(async (request, result, next) => {
    }
 
    try {
-      const removeUserQuery = "DELETE FROM users WHERE user_id = ?;"
+      const removeUserQuery = "DELETE FROM users WHERE user_id = ?;";
 
       await query.runQuery(removeUserQuery, [request.session.user_id]);
       sharedReturn.sendSuccess(result, "Successfully removed account <i class=\"fa-solid fa-trash\"></i>");

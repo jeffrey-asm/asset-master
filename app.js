@@ -36,7 +36,7 @@ app.use(
          defaultSrc: ["'self'"],
          imgSrc: ["'self'", "https://images.mktw.net", "data:"],
          scriptSrc: ["'self'", "https://cdn.jsdelivr.net"]
-      },
+      }
    })
 );
 app.use(logger("dev"));
@@ -52,12 +52,12 @@ app.use("/", indexRouter);
 app.use("/users", usersRouter);
 
 // catch 404 and forward to error handler
-app.use(function (request, result, next) {
+app.use(function(request, result, next) {
    next(createError(404));
 });
 
 // error handler
-app.use(function (error, request, result, next) {
+app.use(function(error, request, result) {
    // set locals, only providing error in development
    result.locals.message = error.message;
    result.locals.error = request.app.get("env") === "development" ? error : {};

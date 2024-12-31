@@ -1,6 +1,6 @@
 import { openPopUp, openNotification }  from "../../shared/scripts/shared.js";
 
-export function constructAccount (name, type, balance, ID) {
+export function constructAccount(name, type, balance, ID) {
    const container = document.createElement("div");
    container.className = "accountContainer";
    container.id = ID;
@@ -41,7 +41,7 @@ export function constructAccount (name, type, balance, ID) {
    const editAccountContainer = document.getElementById("editAccountContainer");
    const editAccountForm = document.getElementById("editAccountForm");
 
-   container.onclick = function () {
+   container.onclick = function() {
       editAccountForm.querySelector("#editName").value = name;
       editAccountForm.querySelector("#editType").value = type;
       editAccountForm.querySelector("#editBalance").value = balance;
@@ -50,7 +50,7 @@ export function constructAccount (name, type, balance, ID) {
    };
 }
 
-function insertTransactionByDate (container) {
+function insertTransactionByDate(container) {
    const mainContainer = document.querySelector("tbody");
    const possibleTransactions = mainContainer.querySelectorAll("tr");
    let found = false;
@@ -71,7 +71,7 @@ function insertTransactionByDate (container) {
    }
 }
 
-export function constructTransaction (accountID, title, type, categoryID, date, amount, ID) {
+export function constructTransaction(accountID, title, type, categoryID, date, amount, ID) {
    const currentAmountFixed = amount.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
    const transactionContainer = document.createElement("tr");
@@ -128,12 +128,11 @@ export function constructTransaction (accountID, title, type, categoryID, date, 
 
    insertTransactionByDate(transactionContainer);
 
-
    const editTransactionContainer = document.getElementById("editTransactionContainer");
    const editTransactionForm = document.getElementById("editTransactionForm");
    const editTransactionButton =  transactionContainer.querySelector(".editTransactionIcon");
 
-   editTransactionButton.onclick = function () {
+   editTransactionButton.onclick = function() {
       editTransactionForm.querySelector("#editAccount").value = transactionContainer.dataset.account;
       editTransactionForm.querySelector("#editTitle").value = title;
       editTransactionForm.querySelector("#editCategory").value = categoryID;
@@ -150,7 +149,7 @@ export function constructTransaction (accountID, title, type, categoryID, date, 
       accountNameLink.style.cursor = "pointer";
       accountNameLink.style.color = "#178eef";
 
-      accountNameLink.onclick = function () {
+      accountNameLink.onclick = function() {
          accountContainer.scrollIntoView({ behavior:"smooth" });
          accountContainer.classList.add("highlighted");
 
@@ -170,10 +169,10 @@ export function constructTransaction (accountID, title, type, categoryID, date, 
    return transactionContainer;
 }
 
-export async function getUserData () {;
+export async function getUserData() {;
    try {
       const response = await fetch("../users/getUserAccounts", {
-         method: "GET",
+         method: "GET"
       });
 
       const data = await response.json();
@@ -195,7 +194,7 @@ export async function getUserData () {;
 
       if (data.render.netWorth < 0) {
          document.getElementById("netWorthText").innerHTML =
-         `Net Worth: <span class = 'negativeNetWorth'>-$${(parseFloat(data.render.netWorth)*-1).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>`;
+         `Net Worth: <span class = 'negativeNetWorth'>-$${(parseFloat(data.render.netWorth) * -1).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>`;
       } else {
          document.getElementById("netWorthText").innerHTML =
          `Net Worth: <span class = 'positiveNetWorth'>$${parseFloat(data.render.netWorth).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>`;
@@ -207,7 +206,7 @@ export async function getUserData () {;
       const categories = data.render.budget.categories;
       const categoriesKeys = Object.keys(categories);
 
-      categoriesKeys.sort(function (a, b) {
+      categoriesKeys.sort(function(a, b) {
          return categories[b].type.localeCompare(categories[a].type);
       });
 
@@ -224,14 +223,12 @@ export async function getUserData () {;
          categoryOptions += `<option data-type = '${categories[key].type}' value = ${key}>${categories[key].name}</option>`;
       });
 
-
       if (!expensesShown) {
          // Case of no expenses categories
          categoryOptions +=  "<option data-type = 'Expenses' value = 'Expenses'>Expenses</option>";
       }
 
       document.getElementById("category").innerHTML = document.getElementById("editCategory").innerHTML = categoryOptions;
-
 
       const transactionKeys = Object.keys(data.render.transactions);
 

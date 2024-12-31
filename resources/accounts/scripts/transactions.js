@@ -12,20 +12,20 @@ const editTransactionForm = document.getElementById("editTransactionForm");
 const editTransactionSubmitButton = document.getElementById("editTransactionSubmitButton");
 const exitEditTransactionIcon = document.getElementById("exitEditTransactionIcon");
 
-addTransactionButton.onclick = function () {
+addTransactionButton.onclick = function() {
    openPopUp(addTransactionContainer);
 };
 
-exitAddTransactionIcon.onclick = function () {
+exitAddTransactionIcon.onclick = function() {
    exitPopUp(addTransactionContainer, addTransactionForm, exitAddTransactionIcon, addTransactionButton);
 };
 
-exitEditTransactionIcon.onclick = function () {
+exitEditTransactionIcon.onclick = function() {
    exitPopUp(editTransactionContainer, editTransactionForm, exitEditTransactionIcon);
    disableEditButtons();
 };
 
-function disableEditButtons () {
+function disableEditButtons() {
    const editTransactionButtons = document.querySelectorAll(".editTransactionIcon");
 
    editTransactionButtons.forEach((editButton) => {
@@ -39,8 +39,7 @@ function disableEditButtons () {
    }, 1500);
 }
 
-
-addTransactionForm.onsubmit = async function (event) {
+addTransactionForm.onsubmit = async function(event) {
    event.preventDefault();
 
    const successFunction = (data) => {
@@ -64,7 +63,7 @@ addTransactionForm.onsubmit = async function (event) {
    await sendRequest("../users/addTransaction", structuredFormData, addTransactionSubmitButton, "Submit", successFunction, failFunction);
 };
 
-editTransactionForm.onsubmit = async function (event) {
+editTransactionForm.onsubmit = async function(event) {
    event.preventDefault();
 
    const successFunction = (data) => {
@@ -87,7 +86,6 @@ editTransactionForm.onsubmit = async function (event) {
 
             }, 1600);
 
-
          } else if (data.render.changes) {
             // Edit instance in current table
             constructTransaction(data.render.account, data.render.title, data.render.type, data.render.category, data.render.date, data.render.amount, data.render.ID);
@@ -109,4 +107,3 @@ editTransactionForm.onsubmit = async function (event) {
 
    await sendRequest("../users/editTransaction", structuredFormData, editTransactionSubmitButton, "Submit", successFunction, failFunction);
 };
-

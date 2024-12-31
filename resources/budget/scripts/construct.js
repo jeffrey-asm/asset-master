@@ -31,7 +31,7 @@ Chart.defaults.font.weight = "bold";
 Chart.defaults.responsive = true;
 Chart.defaults.maintainAspectRatio = false;
 
-export function constructChart (income, expenses) {
+export function constructChart(income, expenses) {
    const ctx = document.getElementById("incomeExpenseChart").getContext("2d");
    const existingChart = Chart.getChart(ctx);
 
@@ -54,7 +54,7 @@ export function constructChart (income, expenses) {
    });
 }
 
-export function constructCategory (mainOrSub, type, ID, name, current, total) {
+export function constructCategory(mainOrSub, type, ID, name, current, total) {
    const formattedCurrent = current.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
    const formattedTotal = total.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
    const mainContainer = document.getElementById(`${type}`);
@@ -79,7 +79,7 @@ export function constructCategory (mainOrSub, type, ID, name, current, total) {
    const editContainer = container.querySelector(".editCategory");
 
    // Store relevant information for specific category in dataset for efficient input into edit form
-   editContainer.onclick = function () {
+   editContainer.onclick = function() {
       // Update form accordingly given the input
       const editName = document.getElementById("editName");
       const editType = document.getElementById("editType");
@@ -128,7 +128,6 @@ export function constructCategory (mainOrSub, type, ID, name, current, total) {
       mainContainer.replaceChild(container, possibleSwap);
    }
 
-
    setTimeout(() => {
       // Update progress bar during animation for changing progress visuals
       containerProgressBar.style.width = `${Math.ceil(fraction * 100)}%`;
@@ -136,8 +135,7 @@ export function constructCategory (mainOrSub, type, ID, name, current, total) {
    }, 50);
 }
 
-
-export async function getBudget () {
+export async function getBudget() {
    // Hide main tag till fetching user data
    document.body.style.opacity = "0";
 
@@ -152,13 +150,12 @@ export async function getBudget () {
          <button class = "addCategoryButton" id = "addExpensesCategory" data-type = 'Expenses'>Add Category</button>
       </div>`;
 
-
    const categoryType = document.getElementById("type");
    const addCategoryContainer = document.getElementById("addCategoryContainer");
    const addCategoryButtons = document.querySelectorAll(".addCategoryButton");
 
    addCategoryButtons.forEach((button) => {
-      button.onclick = function () {
+      button.onclick = function() {
          categoryType.value = this.dataset.type;
          openPopUp(addCategoryContainer);
       };
@@ -167,7 +164,7 @@ export async function getBudget () {
    const addCategoryForm = document.getElementById("addCategoryForm");
    const exitAddCategoryIcon = document.getElementById("exitAddCategoryIcon");
 
-   exitAddCategoryIcon.onclick = function () {
+   exitAddCategoryIcon.onclick = function() {
       exitPopUp(addCategoryContainer, addCategoryForm, exitAddCategoryIcon);
       addCategoryButtons[0].disabled = addCategoryButtons[1].disabled = true;
       setTimeout(() => {
@@ -177,7 +174,7 @@ export async function getBudget () {
 
    try {
       const response = await fetch("../users/getUserBudget", {
-         method: "GET",
+         method: "GET"
       });
 
       const data = await response.json();
@@ -195,7 +192,7 @@ export async function getBudget () {
       const categories = data.render.categories;
       const categoriesKeys = Object.keys(categories);
 
-      categoriesKeys.sort(function (a, b) {
+      categoriesKeys.sort(function(a, b) {
          return (categories[a].name).localeCompare(categories[b].name);
       });
 
@@ -203,7 +200,6 @@ export async function getBudget () {
          // Construct sub categories
          constructCategory("sub", categories[key].type, key, categories[key].name, categories[key].current, categories[key].total);
       });
-
 
       const leftOverSpan = document.getElementById("leftOverSpan");
 

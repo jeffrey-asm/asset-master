@@ -2,7 +2,7 @@ const asyncHandler = require("express-async-handler");
 const query = require("../database/query.js");
 const sharedReturn = require("./message.js");
 
-exports.login = asyncHandler(async (request, result, next) => {
+exports.login = asyncHandler(async(request, result) => {
    try {
       const passwordHash = query.hash(request.body.password);
       const credentialsCheck = await query.runQuery("SELECT * FROM users WHERE username = ?;", [request.body.username]);
@@ -30,4 +30,3 @@ exports.login = asyncHandler(async (request, result, next) => {
       return;
    }
 });
-

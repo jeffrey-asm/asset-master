@@ -8,7 +8,7 @@ const { parseString } = require("xml2js");
 const accountController = require("./accounts.js");
 const { grabUserData } = require("./accounts.js");
 
-async function fetchStories () {
+async function fetchStories() {
    try {
       const response = await axios.get("https://feeds.content.dowjones.io/public/rss/mw_topstories");
       const data = await parseXML(response.data);
@@ -22,7 +22,7 @@ async function fetchStories () {
    }
 }
 
-function parseXML (xmlData) {
+function parseXML(xmlData) {
    return new Promise((resolve, reject) => {
       parseString(xmlData, (error, data) => {
          if (error) {
@@ -34,8 +34,7 @@ function parseXML (xmlData) {
    });
 }
 
-
-async function fetchStocks (request, time) {
+async function fetchStocks(request, time) {
    const possibleData = await query.runQuery("SELECT * FROM stocks", []);
    let initializeData = false;
 
@@ -56,7 +55,6 @@ async function fetchStocks (request, time) {
       return stocks;
    }
 
-
    const options = {
       method: "GET",
       url: "https://alpha-vantage.p.rapidapi.com/query",
@@ -68,7 +66,7 @@ async function fetchStocks (request, time) {
       },
       headers: {
          "X-RapidAPI-Key": process.env.XRapidAPIKey,
-         "X-RapidAPI-Host": process.env.XRapidAPIHost,
+         "X-RapidAPI-Host": process.env.XRapidAPIHost
       }
    };
 
@@ -93,7 +91,7 @@ async function fetchStocks (request, time) {
 
    if (initializeData) {
       await query.runQuery("DELETE FROM stocks");
-      await query.runQuery("INSERT INTO stocks (time,data) VALUES(?,?)", [time, JSON.stringify(stocks)]);
+      await query.runQuery("INSERT INTO stocks (time, data) VALUES(?, ?)", [time, JSON.stringify(stocks)]);
    }
 
    request.session.stocks = stocks;
@@ -102,7 +100,7 @@ async function fetchStocks (request, time) {
    return stocks;
 }
 
-exports.fetchHomeData = asyncHandler(async (request, result, next) => {
+exports.fetchHomeData = asyncHandler(async(request, result) => {
    try {
       const data = {};
 
@@ -136,4 +134,3 @@ exports.fetchHomeData = asyncHandler(async (request, result, next) => {
       sharedReturn.sendError(result, 500, "email", "Could not successfully process request <i class='fa-solid fa-database'></i>");
    }
 });
-

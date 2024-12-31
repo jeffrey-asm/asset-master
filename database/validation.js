@@ -1,7 +1,7 @@
 const Decimal = require("decimal.js");
 const sharedReturn = require("../controllers/message");
 
-exports.validateUsername = function (result, username) {
+exports.validateUsername = function(result, username) {
    if (username.length == 0 || username.length > 30) {
       sharedReturn.sendError(result, 400, "username", "Username must be between 1 and 30 characters <i class='fa-solid fa-signature'></i>");
       return { status: "fail" };
@@ -10,7 +10,7 @@ exports.validateUsername = function (result, username) {
    return { status: "pass" };
 };
 
-exports.validateEmail = function (result, email) {
+exports.validateEmail = function(result, email) {
    const emailTest = new RegExp(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);
 
    if (emailTest.test(email) == 0) {
@@ -22,7 +22,7 @@ exports.validateEmail = function (result, email) {
    return { status: "pass" };
 };
 
-exports.validatePasswords = function (result, password, secondPassword) {
+exports.validatePasswords = function(result, password, secondPassword) {
    const passwordTest = new RegExp("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$");
    if (passwordTest.test(password) == 0) {
       // Passwords must have at least one special character, one digit, 1 uppercase, 1 lowercase, and at least 8 total characters
@@ -36,7 +36,7 @@ exports.validatePasswords = function (result, password, secondPassword) {
    return { status: "pass" };
 };
 
-exports.trimInputs = function (result, inputs = {}, decimalComponentID="amount", dateComponentID="date") {
+exports.trimInputs = function(result, inputs = {}, decimalComponentID = "amount", dateComponentID = "date") {
    const keys = Object.keys(inputs);
    const trimmedInputs = {};
 
@@ -99,7 +99,7 @@ exports.trimInputs = function (result, inputs = {}, decimalComponentID="amount",
    return trimmedInputs;
 };
 
-exports.validateBudgetForm = function (result, name, nameComponentID, type, typeComponentID, editingMainCategory=false) {
+exports.validateBudgetForm = function(result, name, nameComponentID, type, typeComponentID, editingMainCategory = false) {
    if (name.length == 0 || name.length > 30) {
       sharedReturn.sendError(result, 400, nameComponentID, "Category names must be between 1 and 30 characters <i class='fa-solid fa-signature'></i>");
       return { status: "fail" };
@@ -116,7 +116,7 @@ exports.validateBudgetForm = function (result, name, nameComponentID, type, type
    return { status: "pass" };
 };
 
-exports.validateAccountForm = function (result, name, nameComponentID, type, typeComponentID) {
+exports.validateAccountForm = function(result, name, nameComponentID, type, typeComponentID) {
    const options = {
       "Checking": 1,
       "Savings": 1,
@@ -139,7 +139,7 @@ exports.validateAccountForm = function (result, name, nameComponentID, type, typ
    return { status: "pass" };
 };
 
-exports.validateTransactionForm = function (request, result, account, accountComponentID, title, titleComponentID, category, categoryComponentID) {
+exports.validateTransactionForm = function(request, result, account, accountComponentID, title, titleComponentID, category, categoryComponentID) {
    // Test that ID's exist within request
    // Amount and date is validated in the trim inputs function
    if (title.length == 0 || title.length > 50) {

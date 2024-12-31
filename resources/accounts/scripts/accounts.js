@@ -12,11 +12,11 @@ const editAccountForm = document.getElementById("editAccountForm");
 const editAccountSubmitButton = document.getElementById("editAccountSubmitButton");
 const exitEditAccountIcon = document.getElementById("exitEditAccountIcon");
 
-addAccountButton.onclick = function () {
+addAccountButton.onclick = function() {
    openPopUp(addAccountContainer);
 };
 
-exitAddAccountIcon.onclick = function () {
+exitAddAccountIcon.onclick = function() {
    exitPopUp(addAccountContainer, addAccountForm, exitAddAccountIcon, addAccountButton);
    disabledAddButton();
 
@@ -26,13 +26,13 @@ exitAddAccountIcon.onclick = function () {
    }, 1500);
 };
 
-exitEditAccountIcon.onclick = function () {
+exitEditAccountIcon.onclick = function() {
    exitPopUp(editAccountContainer, addAccountForm, exitEditAccountIcon);
 };
 
 getUserData();
 
-function disabledAddButton () {
+function disabledAddButton() {
    addAccountButton.disabled = true;
 
    setTimeout(() => {
@@ -40,7 +40,7 @@ function disabledAddButton () {
    }, 1500);
 }
 
-addAccountForm.onsubmit = async function (event) {
+addAccountForm.onsubmit = async function(event) {
    event.preventDefault();
 
    const successFunction = (data) => {
@@ -50,7 +50,7 @@ addAccountForm.onsubmit = async function (event) {
 
          if (data.render.netWorth < 0) {
             document.getElementById("netWorthText").innerHTML =
-            `Net Worth: <span class = 'negativeNetWorth'>-$${(parseFloat(data.render.netWorth)*-1).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>`;
+            `Net Worth: <span class = 'negativeNetWorth'>-$${(parseFloat(data.render.netWorth) * -1).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>`;
          } else {
             document.getElementById("netWorthText").innerHTML =
             `Net Worth: <span class = 'positiveNetWorth'>$${parseFloat(data.render.netWorth).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>`;
@@ -66,8 +66,7 @@ addAccountForm.onsubmit = async function (event) {
    await sendRequest("../users/addAccount", structuredFormData, addAccountSubmitButton, "Submit", successFunction, failFunction);
 };
 
-
-editAccountForm.onsubmit = async function (event) {
+editAccountForm.onsubmit = async function(event) {
    event.preventDefault();
 
    const successFunction = (data) => {
@@ -89,7 +88,7 @@ editAccountForm.onsubmit = async function (event) {
                   // Update names if applicable!
                   const accountNameLink = transaction.querySelector(".accountNameLink");
                   accountNameLink.innerHTML = data.render.name;
-                  accountNameLink.onclick = function () {
+                  accountNameLink.onclick = function() {
                      const accountContainer = document.querySelector(`#accounts #${data.render.ID}`);
                      accountContainer.scrollIntoView({ behavior:"smooth" });
                      accountContainer.classList.add("highlighted");
@@ -129,7 +128,7 @@ editAccountForm.onsubmit = async function (event) {
 
             if (data.render.netWorth < 0) {
                document.getElementById("netWorthText").innerHTML =
-               `Net Worth: <span class = 'negativeNetWorth'>-$${(parseFloat(data.render.netWorth)*-1).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>`;
+               `Net Worth: <span class = 'negativeNetWorth'>-$${(parseFloat(data.render.netWorth) * -1).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>`;
             } else {
                document.getElementById("netWorthText").innerHTML =
                `Net Worth: <span class = 'positiveNetWorth'>$${parseFloat(data.render.netWorth).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>`;

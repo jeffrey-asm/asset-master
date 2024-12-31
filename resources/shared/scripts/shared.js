@@ -19,7 +19,7 @@ const sideBarIcon = document.getElementById("sidebarIcon");
 if (sideBarIcon) {
    const nav = document.querySelector("nav");
 
-   sideBarIcon.onclick = function () {
+   sideBarIcon.onclick = function() {
       if (nav.classList.contains("navShown")) {
          nav.classList.remove("navShown");
          nav.classList.add("navHidden");
@@ -32,7 +32,7 @@ if (sideBarIcon) {
    };
 }
 
-function checkDimensions (component, link) {
+function checkDimensions(component, link) {
    const viewportWidth =
     window.innerWidth || document.documentElement.clientWidth;
    const viewportHeight =
@@ -50,7 +50,7 @@ function checkDimensions (component, link) {
 
 let dimensionInterval;
 
-function transitionToPage (component, link) {
+function transitionToPage(component, link) {
    // Complicated transitions needed for login/signup transitions to dashboard
    setTimeout(() => {
       component.innerHTML = "";
@@ -65,7 +65,7 @@ function transitionToPage (component, link) {
       checkDimensions(component, link);
    }, 100);
 
-   window.addEventListener("beforeunload", function () {
+   window.addEventListener("beforeunload", function() {
       clearInterval(dimensionInterval);
    });
 
@@ -79,7 +79,7 @@ const inputs = document.getElementsByTagName("input");
 let messageContainer;
 let editingContainer;
 
-function removeMessage () {
+function removeMessage() {
    if (document.body.contains(editingContainer)) {
       editingContainer.classList.remove("errorInput");
    }
@@ -92,7 +92,7 @@ function removeMessage () {
    }
 }
 
-function displayMessage (inputComponent, message, classType) {
+function displayMessage(inputComponent, message, classType) {
    removeMessage();
 
    setTimeout(() => {
@@ -101,7 +101,7 @@ function displayMessage (inputComponent, message, classType) {
       }
       messageContainer = Object.assign(document.createElement("p"), {
          className: classType,
-         innerHTML: message,
+         innerHTML: message
       });
       inputComponent.before(messageContainer);
    }, 450);
@@ -111,7 +111,7 @@ const header = document.querySelector("header");
 const mainTag = document.querySelector("main");
 const footerTag = document.querySelector("footer");
 
-function openPopUp (component) {
+function openPopUp(component) {
    component.dataset.visible = true;
 
    if (!(component.classList.contains("popupShown"))) {
@@ -131,7 +131,7 @@ function openPopUp (component) {
    }
 }
 
-function exitPopUp (component, form, icon, button) {
+function exitPopUp(component, form, icon, button) {
    component.dataset.visible = false;
 
    if (component.classList.contains("popupShown")) {
@@ -157,7 +157,7 @@ function exitPopUp (component, form, icon, button) {
          if (!(component.dataset.visible)) {
             component.style.visibility = "hidden";
          }
-         
+
          icon.classList.remove("clicked");
 
          // Ensure form is reset for further usage
@@ -178,7 +178,7 @@ function exitPopUp (component, form, icon, button) {
    }
 }
 
-function openNotification (iconClass, notificationHTML, notificationType) {
+function openNotification(iconClass, notificationHTML, notificationType) {
    const notification = document.createElement("div");
    notification.className = "popupNotification";
 
@@ -195,11 +195,11 @@ function openNotification (iconClass, notificationHTML, notificationType) {
    document.body.append(notification);
    notification.classList.add("notificationShown");
 
-   notification.querySelector(".exitNotificationIcon").onclick = function () {
+   notification.querySelector(".exitNotificationIcon").onclick = function() {
       this.classList.add("clicked");
    };
 
-   notification.querySelector(".popupExitContainer").onclick = function () {
+   notification.querySelector(".popupExitContainer").onclick = function() {
       notification.classList.remove("notificationShown");
       notification.classList.add("notificationHidden");
       setTimeout(() => {
@@ -210,7 +210,7 @@ function openNotification (iconClass, notificationHTML, notificationType) {
    return notification;
 }
 
-async function sendRequest (
+async function sendRequest(
    url,
    structuredFormData,
    formButton,
@@ -229,8 +229,8 @@ async function sendRequest (
          method: "POST",
          body: structuredFormData,
          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-         },
+            "Content-Type": "application/x-www-form-urlencoded"
+         }
       });
 
       const data = await response.json();
@@ -270,7 +270,7 @@ async function sendRequest (
 
 // Shared onfocus for all form inputs
 for (const input of inputs) {
-   input.onfocus = function () {
+   input.onfocus = function() {
       removeMessage();
       this.classList.remove("errorInput");
    };
@@ -280,7 +280,7 @@ for (const input of inputs) {
 const passwordIcons = document.querySelectorAll(".fa-regular.fa-eye");
 
 passwordIcons.forEach((icon) => {
-   icon.onclick = function () {
+   icon.onclick = function() {
       // Target container in dataset to toggle visible or hidden password
       const passwordContainer = document.getElementById(this.dataset.container);
 
@@ -300,7 +300,7 @@ if (footerYear) {
    footerYear.innerText = new Date().getUTCFullYear().toString();
 }
 
-document.addEventListener("keydown", function (event) {
+document.addEventListener("keydown", function(event) {
    if (event.key == "Escape") {
       const possiblePopUp = document.querySelector(".popupShown");
 
@@ -318,5 +318,5 @@ export {
    openPopUp,
    exitPopUp,
    openNotification,
-   sendRequest,
+   sendRequest
 };

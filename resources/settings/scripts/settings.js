@@ -21,30 +21,30 @@ updateProfileInfo();
 const logoutIcon = document.querySelector("#logOutIcon");
 
 // Some pages may have two log out icons (settings)
-logoutIcon.onclick = function () {
+logoutIcon.onclick = function() {
    window.location.href = "./logOut";
 };
 
 // Handling removing disabled inputs individually
-function enableInput (input) {
+function enableInput(input) {
    input.disabled = false;
    changesButton.disabled = false;
 }
 
-editUsername.onclick = function () {
+editUsername.onclick = function() {
    enableInput(username);
 };
 
-editEmail.onclick = function () {
+editEmail.onclick = function() {
    enableInput(email);
 };
 
-editPasswordPopUp.onclick = function () {
+editPasswordPopUp.onclick = function() {
    passwordForm.reset();
    openPopUp(passwordFormContainer);
 };
 
-exitPasswordIcon.onclick = function () {
+exitPasswordIcon.onclick = function() {
    exitPopUp(passwordFormContainer, passwordForm, exitPasswordIcon, editPasswordPopUp);
 };
 
@@ -68,18 +68,18 @@ const deleteForm = document.getElementById("deleteForm");
 const exitDeleteIcon = document.getElementById("exitDeleteIcon");
 const deleteSubmitButton = document.getElementById("deleteSubmitButton");
 
-deletePopUpButton.onclick = function () {
+deletePopUpButton.onclick = function() {
    const username = document.getElementById("username").value;
    deleteMessage.innerHTML = `<strong>sudo deluser ${username}</strong>`;
    openPopUp(deleteFormContainer);
 };
 
-exitDeleteIcon.onclick = function () {
+exitDeleteIcon.onclick = function() {
    exitPopUp(deleteFormContainer, deleteForm, exitDeleteIcon, deletePopUpButton);
 };
 
 // Send post request to handle validation and updating values
-detailsForm.onsubmit = async function (event) {
+detailsForm.onsubmit = async function(event) {
    event.preventDefault();
 
    const successFunction = (data, messageContainer) => {
@@ -113,7 +113,7 @@ detailsForm.onsubmit = async function (event) {
    await sendRequest("./updateUser", structuredFormData, changesButton, "Save Changes", successFunction, failFunction);
 };
 
-passwordForm.onsubmit = async function (event) {
+passwordForm.onsubmit = async function(event) {
    event.preventDefault();
 
    const successFunction = () => {
@@ -129,12 +129,12 @@ passwordForm.onsubmit = async function (event) {
    await sendRequest("./updatePassword", structuredFormData, editPasswordButton, "Submit", successFunction, failFunction);
 };
 
-document.getElementById("message").onpaste = function (event) {
+document.getElementById("message").onpaste = function(event) {
    // Don't allow simple copy paste for security reasons
    event.preventDefault();
 };
 
-deleteForm.onsubmit = async function (event) {
+deleteForm.onsubmit = async function(event) {
    event.preventDefault();
 
    const successFunction = () => {

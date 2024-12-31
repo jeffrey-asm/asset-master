@@ -3,7 +3,7 @@ const validation = require("../database/validation.js");
 const query = require("../database/query.js");
 const sharedReturn = require("./message.js");
 
-exports.signup = asyncHandler(async (request, result, next) => {
+exports.signup = asyncHandler(async(request, result) => {
    const trimmedInputs = validation.trimInputs(result, request.body);
 
    // First validate each form input
@@ -33,22 +33,24 @@ exports.signup = asyncHandler(async (request, result, next) => {
          return;
       }
 
-      const randomID = await query.retrieveRandomID("SELECT * FROM users WHERE user_id = ?;");
       const verified = false;
-      const insertQuery = "INSERT INTO users (user_id,username,password,email,verified) VALUES (?,?,?,?,?);";
-      await query.runQuery(insertQuery, [randomID, trimmedInputs.username, passwordHash, trimmedInputs.email, verified]);
+      const insertQuery = "INSERT INTO users (username, password, email, verified) VALUES (?, ?, ?, ?);";
+      const user = await query.runQuery(insertQuery, [trimmedInputs.username, passwordHash, trimmedInputs.email, verified]);
+      const user_id = user.insertId;
 
       // After adding a user, a budget instance must be created
       const currentMonth = query.getCurrentMonth();
-      await query.runQuery("INSERT INTO budgets (user_id,income_current,income_total,expenses_current,expenses_total,month) VALUES (?,?,?,?,?,?);", [randomID, 0.00, 1600.00, 0.00, 500.00, currentMonth]);
-
+      await query.runQuery(
+         "INSERT INTO budgets (income_total, expenses_total, income_current, expenses_current, month, user_id) VALUES (?, ?, ?, ?, ?, ?);",
+         [1600.00, 500.00, 0.00, 0.00, currentMonth, user_id]
+      );
       // Cache user data in session for further requests
-      request.session.user_id = randomID;
+      request.session.user_id = user_id;
       request.session.username = trimmedInputs.username;
       request.session.email = trimmedInputs.email;
       request.session.verified = verified;
 
-      const userID = randomID;
+      const userID = user_id;
       result.cookie("userID", userID, { httpOnly: true });
 
       await request.session.save();

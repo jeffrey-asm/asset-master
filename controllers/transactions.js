@@ -4,7 +4,7 @@ const validation = require("../database/validation.js");
 const sharedReturn = require("./message.js");
 const Decimal = require("decimal.js");
 
-async function updateBudgetLeftOver (request) {
+async function updateBudgetLeftOver(request) {
    const incomeFixed = new Decimal(request.session.budget.Income.current);
    const expensesFixed =  new Decimal(request.session.budget.Expenses.current);
 
@@ -12,7 +12,7 @@ async function updateBudgetLeftOver (request) {
    await request.session.save();
 }
 
-exports.addTransaction = asyncHandler(async (request, result, next) => {
+exports.addTransaction = asyncHandler(async(request, result) => {
    try {
       const trimmedInputs = validation.trimInputs(result, request.body, "amount", "date");
       if (trimmedInputs.status != undefined) return;
@@ -24,14 +24,12 @@ exports.addTransaction = asyncHandler(async (request, result, next) => {
       const formValidation = validation.validateTransactionForm(request, result, trimmedInputs.account, "account", trimmedInputs.title, "title", trimmedInputs.category, "category");
       if (formValidation.status != "pass") return;
 
-
-      const randomID = await query.retrieveRandomID("SELECT * FROM Transactions WHERE transaction_id = ?");
-
-      await query.runQuery("INSERT INTO Transactions (transaction_id, title, date, type, amount, user_id, account_id, category_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-         [randomID, trimmedInputs.title, trimmedInputs.date, trimmedInputs.type, trimmedInputs.amount.toString(),
+      const transaction = await query.runQuery("INSERT INTO transactions (title, date, type, amount, user_id, account_id, category_id) VALUES (?, ?, ?, ?, ?, ?, ?)",
+         [trimmedInputs.title, trimmedInputs.date, trimmedInputs.type, trimmedInputs.amount.toString(),
             request.session.user_id, trimmedInputs.account, trimmedInputs.category]);
 
-      trimmedInputs.ID = randomID;
+      const transactionID = transaction.insertId;
+      trimmedInputs.ID = transactionID;
 
       // Must be in same month and year to affect budget
       const currentBudgetDate = (request.session.budget.month).toString().split("-");
@@ -41,7 +39,7 @@ exports.addTransaction = asyncHandler(async (request, result, next) => {
          // Only update budget for current month expenses
          trimmedInputs.amount = parseFloat((trimmedInputs.amount).toString());
 
-         request.session.transactions[randomID] = {
+         request.session.transactions[transactionID] = {
             title : trimmedInputs.title,
             type : trimmedInputs.type,
             categoryID : trimmedInputs.category,
@@ -94,7 +92,7 @@ exports.addTransaction = asyncHandler(async (request, result, next) => {
    }
 });
 
-exports.editTransaction = asyncHandler(async (request, result, next) => {
+exports.editTransaction = asyncHandler(async(request, result) => {
    try {
       const trimmedInputs = validation.trimInputs(result, request.body, "editAmount", "editDate");
       if (trimmedInputs.status != undefined) return;
@@ -148,7 +146,7 @@ exports.editTransaction = asyncHandler(async (request, result, next) => {
       const currentDateAffectsBudget = (inputDate[0] == currentBudgetDate[0] && inputDate[1] == currentBudgetDate[1]);
 
       if (trimmedInputs.remove == "true") {
-         await query.runQuery("DELETE FROM Transactions WHERE transaction_id = ?;", [trimmedInputs.ID]);
+         await query.runQuery("DELETE FROM transactions WHERE transaction_id = ?;", [trimmedInputs.ID]);
          trimmedInputs.remove = true;
 
          if (!previousDateAffectsBudget) {
@@ -190,7 +188,7 @@ exports.editTransaction = asyncHandler(async (request, result, next) => {
          }
       } else if (!currentDateAffectsBudget && !previousDateAffectsBudget) {
          // Simple update transaction table, no budget if not within same month
-         await query.runQuery("UPDATE Transactions SET title = ?, date = ?, type = ?, amount = ?, account_id = ?, category_id = ? WHERE transaction_id = ?",
+         await query.runQuery("UPDATE transactions SET title = ?, date = ?, type = ?, amount = ?, account_id = ?, category_id = ? WHERE transaction_id = ?",
             [trimmedInputs.title, trimmedInputs.date, trimmedInputs.type, trimmedInputs.amount.toString(), trimmedInputs.account,
                trimmedInputs.category, trimmedInputs.ID]);
 
@@ -329,7 +327,7 @@ exports.editTransaction = asyncHandler(async (request, result, next) => {
                   WHEN category_id = ? THEN ?
                   ELSE current
                END
-            WHERE category_id IN (?,?);
+            WHERE category_id IN (?, ?);
          `;
          await query.runQuery(updateCategoriesQuery,
             [trimmedInputs.ID, newCategoryCurrent.toString(), previousTransaction.categoryID,
@@ -344,7 +342,7 @@ exports.editTransaction = asyncHandler(async (request, result, next) => {
       await updateBudgetLeftOver(request);
 
       // Update transactions and budgets table in one go for monthly budget affects
-      const updateQuery = `UPDATE Transactions T
+      const updateQuery = `UPDATE transactions T
                            JOIN budgets B ON T.user_id = B.user_id
                            SET
                               B.income_current = ?,

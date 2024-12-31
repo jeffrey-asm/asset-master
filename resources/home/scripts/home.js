@@ -9,8 +9,7 @@ Chart.defaults.maintainAspectRatio = false;
 Chart.defaults.plugins.legend.display = false;
 Chart.defaults.datasets.bar.maxBarThickness = 50;
 
-
-function updateChartColors () {
+function updateChartColors() {
    // Manually set color based on current mode for Chart JS graphs
    charts.forEach((chart) => {
       chart.options.scales.x.ticks.color = getComputedStyle(document.body).getPropertyValue("--text-color");
@@ -19,7 +18,7 @@ function updateChartColors () {
    });
 }
 
-function constructStories (stories) {
+function constructStories(stories) {
    const storiesContainer = document.getElementById("stories");
    const storiesItems = stories.rss.channel[0].item;
 
@@ -60,7 +59,7 @@ function constructStories (stories) {
    });
 }
 
-function constructGraph (graphType, graphData, graphOptions, text, container) {
+function constructGraph(graphType, graphData, graphOptions, text, container) {
    const graphContainer = document.createElement("div");
    graphContainer.className = "graphContainer";
    graphContainer.innerHTML = `
@@ -82,7 +81,7 @@ function constructGraph (graphType, graphData, graphOptions, text, container) {
    }));
 }
 
-function constructStocks (stocks) {
+function constructStocks(stocks) {
    const allStocks = Object.values(stocks);
 
    // Show a limited amount of index funds
@@ -126,7 +125,7 @@ function constructStocks (stocks) {
             pointHitRadius: 10,
             pointBorderWidth: 2,
             tension: 0.2
-         }],
+         }]
       };
 
       const options = {};
@@ -134,17 +133,16 @@ function constructStocks (stocks) {
    });
 }
 
-function constructAccountsGraph (accounts) {
+function constructAccountsGraph(accounts) {
    const accountData = Object.values(accounts);
    const accountNames = [];
    const accountValues = [];
-
 
    const backgroundColors = [
       "#59FD59", "#36A2EB", "#FFCE56",
       "#4BC0C0", "#9966FF", "#FF9F40",
       "#FF35FF", "#6699FF", "#FFD966",
-      "#45B6FE", "#FF6384", "#4BC0C0",
+      "#45B6FE", "#FF6384", "#4BC0C0"
    ];
 
    const accountColors = [];
@@ -168,14 +166,14 @@ function constructAccountsGraph (accounts) {
          backgroundColor: accountColors,
          borderColor: accountColors,
          borderWidth: 1,
-         data: accountValues,
+         data: accountValues
       }]
    };
 
    const options = {
       scales: {
          y: {
-            beginAtZero: true,
+            beginAtZero: true
          }
 
       },
@@ -183,10 +181,10 @@ function constructAccountsGraph (accounts) {
          bar: {
             borderWidth: 1,
             borderRadius: 1,
-            barThickness: function (context) {
+            barThickness: function(context) {
                const minBarThickness = 50;
                return Math.max(minBarThickness, context.parsed.y) / 2;
-            },
+            }
          }
       }
    };
@@ -195,7 +193,7 @@ function constructAccountsGraph (accounts) {
    constructGraph("bar", data, options, innerText, document.getElementById("accounts"));
 }
 
-function constructFinanceGraph (transactions, budget) {
+function constructFinanceGraph(transactions, budget) {
    // Graph showing Income vs Expenses for current year
    const currentYear = new Date().getFullYear();
    const months = ["Jan", "Feb", "Mar", "Apr.", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -239,7 +237,7 @@ function constructFinanceGraph (transactions, budget) {
 
    incomeCategoriesData.datasets.push(incomeGraphClone);
 
-   const expensesGraphClone ={
+   const expensesGraphClone = {
       label:"General Expenses",
       data: Array.from({ length: 12 }, () => 0),
       stack:"Expenses",
@@ -304,7 +302,7 @@ function constructFinanceGraph (transactions, budget) {
 
    const incomeExpensesData = {
       labels: months,
-      datasets: [incomeData, expensesData],
+      datasets: [incomeData, expensesData]
    };
 
    const options = {
@@ -313,7 +311,7 @@ function constructFinanceGraph (transactions, budget) {
             minBarLength: 2,
             beginAtZero: true,
             ticks: {
-               beginAtZero:true,
+               beginAtZero:true
             }
          }
       },
@@ -328,28 +326,28 @@ function constructFinanceGraph (transactions, budget) {
    const stackedOptions = {
       scales: {
          x:{
-            stacked:true,
+            stacked:true
          },
          y: {
             minBarLength: 2,
             stacked:true,
             beginAtZero: true,
             ticks: {
-               beginAtZero:true,
+               beginAtZero:true
             }
-         },
+         }
       },
       elements: {
          bar: {
             borderWidth: 1,
-            borderRadius: 1,
+            borderRadius: 1
          }
       }
    };
 
    const categoryData = {
       labels: months,
-      datasets: [...incomeCategoriesData.datasets, ...expensesCategoriesData.datasets],
+      datasets: [...incomeCategoriesData.datasets, ...expensesCategoriesData.datasets]
    };
 
    // Construct Income and Category Graphs for current year
@@ -357,7 +355,7 @@ function constructFinanceGraph (transactions, budget) {
    constructGraph("bar", categoryData, stackedOptions, "<h2><a href = \"./budget\">Category Trends</a></h2>", document.getElementById("finances"));
 }
 
-async function fetchData () {
+async function fetchData() {
    try {
       const response = await fetch("./fetchHomeData");
       const data = (await response.json()).render;

@@ -5,7 +5,7 @@ const sharedReturn = require("./message.js");
 const Decimal = require("decimal.js");
 const budgetController = require("./budget.js");
 
-exports.grabUserData =  async function (request) {
+exports.grabUserData =  async function(request) {
    try {
       const returnData = {
          accounts : {},
@@ -15,8 +15,8 @@ exports.grabUserData =  async function (request) {
       };
 
       let netWorth = new Decimal("0.00");
-      const accounts = await query.runQuery("SELECT * FROM Accounts WHERE user_id = ?;", [request.session.user_id]);
-      const transactions = await query.runQuery("SELECT * FROM Transactions WHERE user_id = ?;", [request.session.user_id]);
+      const accounts = await query.runQuery("SELECT * FROM accounts WHERE user_id = ?;", [request.session.user_id]);
+      const transactions = await query.runQuery("SELECT * FROM transactions WHERE user_id = ?;", [request.session.user_id]);
 
       for (const account of accounts) {
          let preciseBalance = new Decimal(account.balance);
@@ -24,7 +24,7 @@ exports.grabUserData =  async function (request) {
          returnData.accounts[account.account_id] = {
             name : account.name,
             type : account.type,
-            balance : parseFloat(preciseBalance.toString()),
+            balance : parseFloat(preciseBalance.toString())
          };
 
          if (account.type == "Loan" || account.type == "Credit Card") preciseBalance = preciseBalance.neg();
@@ -58,7 +58,7 @@ exports.grabUserData =  async function (request) {
    }
 };
 
-exports.setUpAccountsCache = async function (request) {
+exports.setUpAccountsCache = async function(request) {
    // Update cached user data
    const updatedAccounts = await exports.grabUserData(request);
    request.session.accounts = updatedAccounts.accounts;
@@ -69,7 +69,7 @@ exports.setUpAccountsCache = async function (request) {
    return updatedAccounts;
 };
 
-exports.getUserAccounts = asyncHandler(async (request, result, next) => {
+exports.getUserAccounts = asyncHandler(async(request, result) => {
    try {
       let returnData;
 
@@ -91,8 +91,7 @@ exports.getUserAccounts = asyncHandler(async (request, result, next) => {
    }
 });
 
-
-exports.addAccount = asyncHandler(async (request, result, next) => {
+exports.addAccount = asyncHandler(async(request, result) => {
    try {
       const trimmedInputs = validation.trimInputs(result, request.body, "balance");
       if (trimmedInputs.status != undefined) return;
@@ -100,11 +99,14 @@ exports.addAccount = asyncHandler(async (request, result, next) => {
       const formValidation = validation.validateAccountForm(result, trimmedInputs.name, "name", trimmedInputs.type, "type");
       if (formValidation.status != "pass") return;
 
+      const account = await query.runQuery(
+         "INSERT INTO accounts (name, type, balance, user_id) VALUES (?, ?, ?, ?)",
+         [trimmedInputs.name, trimmedInputs.type, trimmedInputs.balance.toString(), request.session.user_id]
+      );
 
-      const account = await query.runQuery("INSERT INTO Accounts (name,type,balance,user_id) VALUES (?,?,?,?,?)",
-         [trimmedInputs.name, trimmedInputs.type, trimmedInputs.balance.toString(), request.session.user_id]);
-
-      trimmedInputs.ID = randomID;
+      // Assign the generated ID to trimmedInputs.ID
+      const accountId = account.insertId;
+      trimmedInputs.ID = accountId;
 
       // Update net-worth and accounts cache
       let adjustingNetWorthAmount;
@@ -123,7 +125,7 @@ exports.addAccount = asyncHandler(async (request, result, next) => {
          request.session.netWorth  = trimmedInputs.netWorth  = trimmedInputs.balance;
       }
 
-      request.session.accounts[randomID] = {
+      request.session.accounts[accountId] = {
          name : trimmedInputs.name,
          type : trimmedInputs.type,
          balance : trimmedInputs.balance
@@ -137,8 +139,7 @@ exports.addAccount = asyncHandler(async (request, result, next) => {
    }
 });
 
-
-exports.editAccount = asyncHandler(async (request, result, next) => {
+exports.editAccount = asyncHandler(async(request, result) => {
    try {
       const trimmedInputs = validation.trimInputs(result, request.body, "editBalance");
       if (trimmedInputs.status != undefined) return;
@@ -162,9 +163,9 @@ exports.editAccount = asyncHandler(async (request, result, next) => {
 
       if (trimmedInputs.remove == "true") {
          // Handle remove (income/expenses is not changed at all because all transactions are moved to main types)
-         await query.runQuery("DELETE FROM Accounts WHERE account_id = ?;", [trimmedInputs.ID]);
+         await query.runQuery("DELETE FROM accounts WHERE account_id = ?;", [trimmedInputs.ID]);
 
-         await query.runQuery("UPDATE Transactions SET account_id = ? WHERE account_id = ?;", ["", trimmedInputs.ID]);
+         await query.runQuery("UPDATE transactions SET account_id = ? WHERE account_id = ?;", ["", trimmedInputs.ID]);
          // Must add onto Net worth when removing any type of debt
 
          const possibleTransactionIDs = Object.keys(request.session.transactions);
@@ -191,7 +192,7 @@ exports.editAccount = asyncHandler(async (request, result, next) => {
 
       if (query.changesMade(trimmedInputs, previousAccount)) {
          // Update columns on any change
-         await query.runQuery("UPDATE Accounts SET name = ?, type = ?, balance = ? WHERE account_id = ?;",
+         await query.runQuery("UPDATE accounts SET name = ?, type = ?, balance = ? WHERE account_id = ?;",
             [trimmedInputs.name, trimmedInputs.type, trimmedInputs.balance.toString(), trimmedInputs.ID]);
 
          trimmedInputs.changes = true;
