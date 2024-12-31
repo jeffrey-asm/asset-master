@@ -8,7 +8,7 @@ services:
       - .:/app
       - ./.env:/app/.env
     networks:
-      - asset_master_network
+      - capital_network
     ports:
       - "3000:3000"
     depends_on:
@@ -25,20 +25,20 @@ services:
         max-size: "10m"
         max-file: "3"
     command: sh -c "npm install && npm run dev"
-    container_name: asset_master_app
+    container_name: capital_app
 
   mysql: 
     image: mysql
     environment:
       MYSQL_USER: mysql
       MYSQL_PASSWORD: mysql
-      MYSQL_DATABASE: asset-master
+      MYSQL_DATABASE: capital
       MYSQL_ROOT_PASSWORD: root
     volumes:
-      - asset_master_mysql_data:/asset_master/mysql_data
+      - capital_mysql_data:/capital/mysql_data
       - ./database/startup.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
-      - asset_master_network
+      - capital_network
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 5s
@@ -50,16 +50,16 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
-    container_name: asset_master_mysql
+    container_name: capital_mysql
 
   redis:
     image: redis
     ports:
       - "6379:6379"
     networks:
-      - asset_master_network
+      - capital_network
     volumes:
-      - asset_master_redis_data:/asset_master/redis_data
+      - capital_redis_data:/capital/redis_data
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
@@ -67,12 +67,12 @@ services:
       retries: 3
       start_period: 10s
     restart: always
-    container_name: asset_master_redis
+    container_name: capital_redis
 
 networks:
-  asset_master_network:
+  capital_network:
     driver: bridge
 
 volumes:
-  asset_master_mysql_data:
-  asset_master_redis_data:
+  capital_mysql_data:
+  capital_redis_data:

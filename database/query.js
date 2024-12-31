@@ -9,7 +9,7 @@ exports.runQuery = async function (query="", inputs=[]) {
       host: process.env.HOST,
       user: process.env.USER,
       password: process.env.PASSWORD,
-      database: "asset-master"
+      database: "capital"
    });
    const asyncQuery = util.promisify(connection.query).bind(connection);
 
