@@ -46,14 +46,14 @@ addAccountForm.onsubmit = async function(event) {
    const successFunction = (data) => {
       setTimeout(() => {
          document.getElementById("exitAddAccountIcon").click();
-         constructAccount(data.render.name, data.render.type, data.render.balance, data.render.ID);
+         constructAccount(data.data.name, data.data.type, data.data.balance, data.data.ID);
 
-         if (data.render.netWorth < 0) {
+         if (data.data.netWorth < 0) {
             document.getElementById("netWorthText").innerHTML =
-            `Net Worth: <span class = 'negativeNetWorth'>-$${(parseFloat(data.render.netWorth) * -1).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>`;
+            `Net Worth: <span class = 'negativeNetWorth'>-$${(parseFloat(data.data.netWorth) * -1).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>`;
          } else {
             document.getElementById("netWorthText").innerHTML =
-            `Net Worth: <span class = 'positiveNetWorth'>$${parseFloat(data.render.netWorth).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>`;
+            `Net Worth: <span class = 'positiveNetWorth'>$${parseFloat(data.data.netWorth).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>`;
          }
       }, 1100);
    };
@@ -73,23 +73,23 @@ editAccountForm.onsubmit = async function(event) {
       setTimeout(() => {
          document.getElementById("exitEditAccountIcon").click();
 
-         if (data.render.changes) {
+         if (data.data.changes) {
             // Remove options in transaction form for upcoming changes
-            document.querySelectorAll(`option[value="${data.render.ID}"]`).forEach((option) => {
+            document.querySelectorAll(`option[value="${data.data.ID}"]`).forEach((option) => {
                option.remove();
             });
 
-            if (!data.render.remove) {
-               constructAccount(data.render.name, data.render.type, data.render.balance, data.render.ID);
+            if (!data.data.remove) {
+               constructAccount(data.data.name, data.data.type, data.data.balance, data.data.ID);
 
-               const possibleTransactions = document.querySelectorAll(`.transactionRow[data-account="${data.render.ID}"]`);
+               const possibleTransactions = document.querySelectorAll(`.transactionRow[data-account="${data.data.ID}"]`);
 
                possibleTransactions.forEach((transaction) => {
                   // Update names if applicable!
                   const accountNameLink = transaction.querySelector(".accountNameLink");
-                  accountNameLink.innerHTML = data.render.name;
+                  accountNameLink.innerHTML = data.data.name;
                   accountNameLink.onclick = function() {
-                     const accountContainer = document.querySelector(`#accounts #${data.render.ID}`);
+                     const accountContainer = document.querySelector(`#accounts #${data.data.ID}`);
                      accountContainer.scrollIntoView({ behavior:"smooth" });
                      accountContainer.classList.add("highlighted");
                      setTimeout(() => {
@@ -98,7 +98,7 @@ editAccountForm.onsubmit = async function(event) {
                   };
                });
             } else {
-               const accountContainer = document.querySelector(`.accountContainer#${data.render.ID}`);
+               const accountContainer = document.querySelector(`.accountContainer#${data.data.ID}`);
                accountContainer.style.animation = "fadeOut 2s ease-in-out forwards";
 
                setTimeout(() => {
@@ -113,7 +113,7 @@ editAccountForm.onsubmit = async function(event) {
 
                }, 1600);
 
-               const possibleTransactions = document.querySelectorAll(`.transactionRow[data-account="${data.render.ID}"]`);
+               const possibleTransactions = document.querySelectorAll(`.transactionRow[data-account="${data.data.ID}"]`);
 
                possibleTransactions.forEach((transaction) => {
                   // Reset account ID for transaction
@@ -126,12 +126,12 @@ editAccountForm.onsubmit = async function(event) {
                });
             }
 
-            if (data.render.netWorth < 0) {
+            if (data.data.netWorth < 0) {
                document.getElementById("netWorthText").innerHTML =
-               `Net Worth: <span class = 'negativeNetWorth'>-$${(parseFloat(data.render.netWorth) * -1).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>`;
+               `Net Worth: <span class = 'negativeNetWorth'>-$${(parseFloat(data.data.netWorth) * -1).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>`;
             } else {
                document.getElementById("netWorthText").innerHTML =
-               `Net Worth: <span class = 'positiveNetWorth'>$${parseFloat(data.render.netWorth).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>`;
+               `Net Worth: <span class = 'positiveNetWorth'>$${parseFloat(data.data.netWorth).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>`;
             }
          }
 

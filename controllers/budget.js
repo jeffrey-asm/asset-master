@@ -1,7 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const query = require("../database/query.js");
 const validation = require("../database/validation.js");
-const sharedReturn = require("./message.js");
+const responseHandler = require("./message.js");
 const Decimal = require("decimal.js");
 const accountController = require("./accounts.js");
 
@@ -95,18 +95,18 @@ exports.getUserBudget = asyncHandler(async(request, result, next) => {
          returnData = JSON.parse(JSON.stringify(request.session.budget));
       }
 
-      sharedReturn.sendSuccess(
+      responseHandler.sendSuccess(
          result,
          "Data for displaying user budget",
          returnData
       );
    } catch (error) {
       console.error(error);
-      sharedReturn.sendError(
+      responseHandler.sendError(
          result,
          500,
          "N/A",
-         "Could not successfully process request <i class='fa-solid fa-database'></i>"
+         "Could not successfully process request"
       );
    }
 });
@@ -156,18 +156,18 @@ exports.addCategory = asyncHandler(async(request, result) => {
       };
 
       await request.session.save();
-      sharedReturn.sendSuccess(
+      responseHandler.sendSuccess(
          result,
-         "Successfully added category <i class=\"fa-solid fa-chart-pie\" ></i>",
+         "Successfully added category",
          normalizedInputs
       );
    } catch (error) {
       console.error(error);
-      sharedReturn.sendError(
+      responseHandler.sendError(
          result,
          500,
          "addCategoryName",
-         "Could not successfully process request <i class='fa-solid fa-database'></i>"
+         "Could not successfully process request"
       );
    }
 });
@@ -228,9 +228,9 @@ exports.updateCategory = asyncHandler(async(request, result) => {
          // Update cache via deleting category
          delete request.session.budget.categories[normalizedInputs.ID];
          await request.session.save();
-         sharedReturn.sendSuccess(
+         responseHandler.sendSuccess(
             result,
-            "Successfully removed category <i class=\"fa-solid fa-trash\"></i>",
+            "Successfully removed category",
             normalizedInputs
          );
          return;
@@ -257,15 +257,15 @@ exports.updateCategory = asyncHandler(async(request, result) => {
 
             request.session.budget[normalizedInputs.type].total = normalizedInputs.total;
             await request.session.save();
-            sharedReturn.sendSuccess(
+            responseHandler.sendSuccess(
                result,
-               "Successfully updated category <i class=\"fa-solid fa-chart-pie\"></i>",
+               "Successfully updated category",
                normalizedInputs
             );
          } else {
-            sharedReturn.sendSuccess(
+            responseHandler.sendSuccess(
                result,
-               "No changes <i class=\"fa-solid fa-circle-info\"></i>",
+               "No changes",
                normalizedInputs
             );
          }
@@ -373,26 +373,26 @@ exports.updateCategory = asyncHandler(async(request, result) => {
             request.session.budget.categories[normalizedInputs.ID].total =
           normalizedInputs.total;
 
-            sharedReturn.sendSuccess(
+            responseHandler.sendSuccess(
                result,
-               "Changes saved <i class=\"fa-solid fa-check\"></i>",
+               "Changes saved",
                normalizedInputs
             );
          } else {
             normalizedInputs.changes = false;
-            sharedReturn.sendSuccess(
+            responseHandler.sendSuccess(
                result,
-               "No changes <i class=\"fa-solid fa-circle-info\"></i>"
+               "No changes"
             );
          }
       }
    } catch (error) {
       console.error(error);
-      sharedReturn.sendError(
+      responseHandler.sendError(
          result,
          500,
          "editCategoryName",
-         "Could not successfully process request <i class='fa-solid fa-database'></i>"
+         "Could not successfully process request"
       );
    }
 });

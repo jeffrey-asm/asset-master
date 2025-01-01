@@ -45,7 +45,7 @@ addTransactionForm.onsubmit = async function(event) {
    const successFunction = (data) => {
       setTimeout(() => {
          document.getElementById("exitAddTransactionIcon").click();
-         const transactionContainer = constructTransaction(data.render.account, data.render.title, data.render.type, data.render.category, data.render.date, data.render.amount, data.render.ID);
+         const transactionContainer = constructTransaction(data.data.account, data.data.title, data.data.type, data.data.category, data.data.date, data.data.amount, data.data.ID);
          transactionContainer.scrollIntoView({ behavior:"smooth" });
          disableEditButtons();
       }, 1100);
@@ -70,8 +70,8 @@ editTransactionForm.onsubmit = async function(event) {
       setTimeout(() => {
          document.getElementById("exitEditTransactionIcon").click();
 
-         if (data.render.remove === true) {
-            const transaction = document.querySelector(`tbody tr#${data.render.ID}`);
+         if (data.data.remove === true) {
+            const transaction = document.querySelector(`tbody tr#${data.data.ID}`);
             transaction.classList.add("removedTransaction");
 
             setTimeout(() => {
@@ -86,9 +86,9 @@ editTransactionForm.onsubmit = async function(event) {
 
             }, 1600);
 
-         } else if (data.render.changes) {
+         } else if (data.data.changes) {
             // Edit instance in current table
-            constructTransaction(data.render.account, data.render.title, data.render.type, data.render.category, data.render.date, data.render.amount, data.render.ID);
+            constructTransaction(data.data.account, data.data.title, data.data.type, data.data.category, data.data.date, data.data.amount, data.data.ID);
             disableEditButtons();
          }
       }, 1100);

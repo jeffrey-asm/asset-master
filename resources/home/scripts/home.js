@@ -358,7 +358,7 @@ function constructFinanceGraph(transactions, budget) {
 async function fetchData() {
    try {
       const response = await fetch("./fetchHomeData");
-      const data = (await response.json()).render;
+      const data = (await response.json()).data;
 
       constructStocks(data.stocks);
       constructStories(data.stories);

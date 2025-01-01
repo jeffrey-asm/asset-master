@@ -180,16 +180,16 @@ export async function getBudget() {
       const data = await response.json();
 
       // Render object holds all variables essential to constructing front end data
-      const formattedDate = data.render.month.split("-");
+      const formattedDate = data.data.month.split("-");
       // Assume form YY-MM-DD
       const dateText = document.getElementById("dateText");
       dateText.innerHTML = `Budget for ${formattedDate[1]}/${formattedDate[0]}`;
 
       // Construct data for income and expenses
-      constructCategory("main", "Income", "mainIncome", "Income", data.render.Income.current, data.render.Income.total);
-      constructCategory("main", "Expenses", "mainExpenses", "Expenses", data.render.Expenses.current, data.render.Expenses.total);
+      constructCategory("main", "Income", "mainIncome", "Income", data.data.Income.current, data.data.Income.total);
+      constructCategory("main", "Expenses", "mainExpenses", "Expenses", data.data.Expenses.current, data.data.Expenses.total);
 
-      const categories = data.render.categories;
+      const categories = data.data.categories;
       const categoriesKeys = Object.keys(categories);
 
       categoriesKeys.sort(function(a, b) {
@@ -204,26 +204,26 @@ export async function getBudget() {
       const leftOverSpan = document.getElementById("leftOverSpan");
 
       // Update summary section
-      document.getElementById("incomeSpan").innerHTML = "$" + data.render.Income.current.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-      document.getElementById("expensesSpan").innerHTML = "$" + data.render.Expenses.current.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      document.getElementById("incomeSpan").innerHTML = "$" + data.data.Income.current.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      document.getElementById("expensesSpan").innerHTML = "$" + data.data.Expenses.current.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
       // Differentiate between positive and negative left over amounts
-      if (data.render.leftOver < 0) {
+      if (data.data.leftOver < 0) {
          leftOverSpan.style.color = "red";
-         leftOverSpan.innerHTML = "-$" + (data.render.leftOver * -1).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+         leftOverSpan.innerHTML = "-$" + (data.data.leftOver * -1).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
       } else {
          leftOverSpan.style.color = "#178eef";
-         leftOverSpan.innerHTML = "$" + data.render.leftOver.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+         leftOverSpan.innerHTML = "$" + data.data.leftOver.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
       }
 
-      if (data.render.Income.current > 0 || data.render.Expenses.current > 0) {
-         constructChart(data.render.Income.current, data.render.Expenses.current);
+      if (data.data.Income.current > 0 || data.data.Expenses.current > 0) {
+         constructChart(data.data.Income.current, data.data.Expenses.current);
       }
 
       document.body.style.opacity = "1";
 
-      if (data.render.notify) {
+      if (data.data.notify) {
          openNotification("fa-solid fa-chart-pie", "<p>Updated budget for the month</p>", "informational");
       }
    } catch (error) {

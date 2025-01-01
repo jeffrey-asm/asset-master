@@ -36,7 +36,7 @@ addCategoryForm.onsubmit = async function(event) {
    const successFunction = (data) => {
       setTimeout(() => {
          document.getElementById("exitAddCategoryIcon").click();
-         constructCategory("sub", data.render.type, data.render.ID, data.render.name, 0, data.render.amount);
+         constructCategory("sub", data.data.type, data.data.ID, data.data.name, 0, data.data.amount);
       }, 1100);
    };
 
@@ -55,14 +55,14 @@ editCategoryForm.onsubmit = async function(event) {
       setTimeout(() => {
          document.getElementById("exitEditCategoryIcon").click();
 
-         if (data.render.changes) {
-            if (data.render.mainOrSub == "reload") {
+         if (data.data.changes) {
+            if (data.data.mainOrSub == "reload") {
                getBudget();
-            } else if (data.render.mainOrSub != "remove") {
+            } else if (data.data.mainOrSub != "remove") {
                // Replace current category node
-               constructCategory(data.render.mainOrSub, data.render.type, data.render.ID, data.render.name, data.render.current, data.render.total);
+               constructCategory(data.data.mainOrSub, data.data.type, data.data.ID, data.data.name, data.data.current, data.data.total);
             } else {
-               document.getElementById(data.render.ID).remove();
+               document.getElementById(data.data.ID).remove();
             }
          }
          disableEditButtons();

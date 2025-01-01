@@ -235,13 +235,13 @@ async function sendRequest(
 
       const data = await response.json();
 
-      if (data.error === true) {
-         throw new Error("");
+      if (response.status === 500) {
+         throw new Error();
       }
 
       if (data.status !== "Success") {
          displayMessage(formButton, data.message, "error");
-         editingContainer = document.getElementById(data.componentID);
+         editingContainer = document.getElementById(data.id);
          editingContainer.classList.add("errorInput");
          formButton.innerHTML = formButtonText;
          formButton.disabled = false;
@@ -262,6 +262,7 @@ async function sendRequest(
          "<p>Could not successfully process request</p>",
          "errorType"
       );
+
       formButton.disabled = false;
       formButton.innerHTML = formButtonText;
       failFunction();

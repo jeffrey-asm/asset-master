@@ -1,7 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const query = require("../database/query.js");
 const validation = require("../database/validation.js");
-const sharedReturn = require("./message.js");
+const responseHandler = require("./message.js");
 const Decimal = require("decimal.js");
 const budgetController = require("./budget.js");
 
@@ -84,10 +84,11 @@ exports.getUserAccounts = asyncHandler(async(request, result) => {
          };
       }
 
-      sharedReturn.sendSuccess(result, "N/A", returnData);
+      responseHandler.sendSuccess(result, "N/A", returnData);
    } catch (error) {
       console.error(error);
-      sharedReturn.sendError(result, 500, "N/A", "Could not successfully process request <i class='fa-solid fa-database'></i>");
+      
+      responseHandler.sendError(result, 500, "N/A", "Could not successfully process request");
    }
 });
 
@@ -132,10 +133,10 @@ exports.addAccount = asyncHandler(async(request, result) => {
       };
 
       await request.session.save();
-      sharedReturn.sendSuccess(result, "Successfully added account <i class=\"fa-solid fa-building-columns\"></i>", normalizedInputs);
+      responseHandler.sendSuccess(result, "Successfully added account", normalizedInputs);
    } catch (error) {
       console.error(error);
-      sharedReturn.sendError(result, 500, "username", "Could not successfully process request <i class='fa-solid fa-database'></i>");
+      responseHandler.sendError(result, 500, "username", "Could not successfully process request");
    }
 });
 
@@ -184,7 +185,7 @@ exports.editAccount = asyncHandler(async(request, result) => {
          delete request.session.accounts[normalizedInputs.ID];
          await request.session.save();
 
-         sharedReturn.sendSuccess(result, "Successfully removed account <i class=\"fa-solid fa-building-columns\"></i>", normalizedInputs);
+         responseHandler.sendSuccess(result, "Successfully removed account", normalizedInputs);
          return;
       }
 
@@ -218,14 +219,14 @@ exports.editAccount = asyncHandler(async(request, result) => {
          };
 
          await request.session.save();
-         sharedReturn.sendSuccess(result, "Successfully edited account <i class=\"fa-solid fa-building-columns\"></i>", normalizedInputs);
+         responseHandler.sendSuccess(result, "Successfully edited account", normalizedInputs);
       } else {
          normalizedInputs.changes = false;
-         sharedReturn.sendSuccess(result, "No changes <i class=\"fa-solid fa-circle-info\"></i>", normalizedInputs);
+         responseHandler.sendSuccess(result, "No changes", normalizedInputs);
       }
    } catch (error) {
       console.error(error);
-      sharedReturn.sendError(result, 500, "username", "Could not successfully process request <i class='fa-solid fa-database'></i>");
+      responseHandler.sendError(result, 500, "username", "Could not successfully process request");
       return;
    }
 });

@@ -1,7 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const query = require("../database/query.js");
 const validation = require("../database/validation.js");
-const sharedReturn = require("./message.js");
+const responseHandler = require("./message.js");
 const Decimal = require("decimal.js");
 
 async function updateBudgetLeftOver(request) {
@@ -49,7 +49,7 @@ exports.addTransaction = asyncHandler(async(request, result) => {
          };
 
          await request.session.save();
-         sharedReturn.sendSuccess(result, "Successfully added transaction <i class=\"fa-solid fa-credit-card\"></i>", normalizedInputs);
+         responseHandler.sendSuccess(result, "Successfully added transaction", normalizedInputs);
          return;
       }
 
@@ -84,10 +84,10 @@ exports.addTransaction = asyncHandler(async(request, result) => {
 
       await request.session.save();
       await updateBudgetLeftOver(request);
-      sharedReturn.sendSuccess(result, "Successfully added transaction <i class=\"fa-solid fa-credit-card\"></i>", normalizedInputs);
+      responseHandler.sendSuccess(result, "Successfully added transaction", normalizedInputs);
    } catch (error) {
       console.error(error);
-      sharedReturn.sendError(result, 500, "N/A", "Could not successfully process request <i class='fa-solid fa-database'></i>");
+      responseHandler.sendError(result, 500, "N/A", "Could not successfully process request");
       return;
    }
 });
@@ -113,7 +113,7 @@ exports.editTransaction = asyncHandler(async(request, result) => {
 
       if (normalizedInputs.remove != "true" && !query.changesMade(normalizedInputs, previousTransaction)) {
          normalizedInputs.changes = false;
-         sharedReturn.sendSuccess(result, "No changes <i class=\"fa-solid fa-circle-info\"></i>", normalizedInputs);
+         responseHandler.sendSuccess(result, "No changes", normalizedInputs);
          return;
       } else {
          normalizedInputs.changes = true;
@@ -154,7 +154,7 @@ exports.editTransaction = asyncHandler(async(request, result) => {
             delete request.session.transactions[normalizedInputs.ID];
             // Removals should only affect current budgets
             await request.session.save();
-            sharedReturn.sendSuccess(result, "Successfully removed transaction <i class=\"fa-solid fa-trash\"></i>", normalizedInputs);
+            responseHandler.sendSuccess(result, "Successfully removed transaction", normalizedInputs);
             return;
          } else {
             // Update budgets
@@ -183,7 +183,7 @@ exports.editTransaction = asyncHandler(async(request, result) => {
 
             await request.session.save();
             await updateBudgetLeftOver(request);
-            sharedReturn.sendSuccess(result, "Successfully removed transaction <i class=\"fa-solid fa-trash\"></i>", normalizedInputs);
+            responseHandler.sendSuccess(result, "Successfully removed transaction", normalizedInputs);
             return;
          }
       } else if (!currentDateAffectsBudget && !previousDateAffectsBudget) {
@@ -204,7 +204,7 @@ exports.editTransaction = asyncHandler(async(request, result) => {
          };
 
          await request.session.save();
-         sharedReturn.sendSuccess(result, "Successfully updated transaction <i class=\"fa-solid fa-credit-card\"></i>", normalizedInputs);
+         responseHandler.sendSuccess(result, "Successfully updated transaction", normalizedInputs);
          return;
       }
 
@@ -371,10 +371,10 @@ exports.editTransaction = asyncHandler(async(request, result) => {
       };
 
       await request.session.save();
-      sharedReturn.sendSuccess(result, "Successfully edited transaction <i class=\"fa-solid fa-credit-card\"></i>", normalizedInputs);
+      responseHandler.sendSuccess(result, "Successfully edited transaction", normalizedInputs);
    } catch (error) {
       console.error(error);
-      sharedReturn.sendError(result, 500, "username", "Could not successfully process request <i class='fa-solid fa-database'></i>");
+      responseHandler.sendError(result, 500, "username", "Could not successfully process request");
       return;
    }
 });

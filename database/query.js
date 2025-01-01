@@ -2,7 +2,7 @@ require("dotenv").config();
 const mysql = require("mysql2");
 const util = require("util");
 const cryptoJS = require("crypto-js");
-const sharedReturn = require("@/controllers/message.js");
+const responseHandler = require("@/controllers/message.js");
 
 exports.runQuery = async function(query = "", inputs = []) {
    // Initialize connection to database
@@ -29,22 +29,22 @@ exports.runQuery = async function(query = "", inputs = []) {
 exports.updateDatabase = async function(result, query = "", items = [], returnInfo = {}) {
    await exports.runQuery(query, items);
 
-   sharedReturn.sendSuccess(result, "Changes saved <i class=\"fa-solid fa-check\"></i>", returnInfo);
+   responseHandler.sendSuccess(result, "Changes saved", returnInfo);
 };
 
-exports.searchDuplicates = async function(result, query, items, componentID, message) {
+exports.searchDuplicates = async function(result, query, items, id, message) {
    try {
       const duplicateCheck = await exports.runQuery(query, items);
 
       if (duplicateCheck.length >= 1) {
-         sharedReturn.sendError(result, 409, componentID, message);
+         responseHandler.sendError(result, 409, id, message);
          return true;
       }
 
       return false;
    } catch (error) {
       console.error(error);
-      sharedReturn.sendError(result, 500, componentID, "Could not successfully process request <i class='fa-solid fa-database'></i>");
+      responseHandler.sendError(result, 500, id, "Could not successfully process request");
       return true;
    }
 };

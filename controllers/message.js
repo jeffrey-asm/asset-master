@@ -1,17 +1,15 @@
-// Shared response functions for sending error and success messages
-exports.sendError = function(result, code, component, text) {
+exports.sendError = function(result, code, id,  message) {
    result.status(code).json({
-      status:"Failure",
-      error:code === 500,
-      componentID: component,
-      message:text
+      status: "Error",
+      id: id,
+      message: message
    });
 };
 
-exports.sendSuccess = function(result, text, returnInfo = {}) {
+exports.sendSuccess = function(result, text, data = {}) {
    result.status(200).json({
       status:"Success",
-      message:text,
-      render:returnInfo
+      message: text,
+      data: data
    });
 };

@@ -177,7 +177,7 @@ export async function getUserData() {;
 
       const data = await response.json();
       // Render object holds all variables essential to constructing front end data
-      const accountKeys = Object.keys(data.render.accounts);
+      const accountKeys = Object.keys(data.data.accounts);
 
       if (accountKeys.length == 0) {
          // Show no accounts available
@@ -185,25 +185,25 @@ export async function getUserData() {;
       }
 
       accountKeys.forEach((key) => {
-         constructAccount(data.render.accounts[key].name, data.render.accounts[key].type, data.render.accounts[key].balance, key);
+         constructAccount(data.data.accounts[key].name, data.data.accounts[key].type, data.data.accounts[key].balance, key);
       });
 
       // Empty option
       document.getElementById("account").innerHTML += "<option value =''></option>";
       document.getElementById("editAccount").innerHTML += "<option value =''></option>";;
 
-      if (data.render.netWorth < 0) {
+      if (data.data.netWorth < 0) {
          document.getElementById("netWorthText").innerHTML =
-         `Net Worth: <span class = 'negativeNetWorth'>-$${(parseFloat(data.render.netWorth) * -1).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>`;
+         `Net Worth: <span class = 'negativeNetWorth'>-$${(parseFloat(data.data.netWorth) * -1).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>`;
       } else {
          document.getElementById("netWorthText").innerHTML =
-         `Net Worth: <span class = 'positiveNetWorth'>$${parseFloat(data.render.netWorth).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>`;
+         `Net Worth: <span class = 'positiveNetWorth'>$${parseFloat(data.data.netWorth).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>`;
       }
 
       // Work on transactions
       let categoryOptions = "<option data-type = 'Income' value = 'Income'>Income</option>";
 
-      const categories = data.render.budget.categories;
+      const categories = data.data.budget.categories;
       const categoriesKeys = Object.keys(categories);
 
       categoriesKeys.sort(function(a, b) {
@@ -230,10 +230,10 @@ export async function getUserData() {;
 
       document.getElementById("category").innerHTML = document.getElementById("editCategory").innerHTML = categoryOptions;
 
-      const transactionKeys = Object.keys(data.render.transactions);
+      const transactionKeys = Object.keys(data.data.transactions);
 
       transactionKeys.forEach((key) => {
-         const currentTransaction = data.render.transactions[key];
+         const currentTransaction = data.data.transactions[key];
          constructTransaction(currentTransaction.accountID, currentTransaction.title, currentTransaction.type, currentTransaction.categoryID, currentTransaction.date, currentTransaction.amount, key);
       });
 

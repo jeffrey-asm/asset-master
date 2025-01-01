@@ -1,7 +1,7 @@
 require("dotenv").config();
 const asyncHandler = require("express-async-handler");
 const fs = require("fs").promises;
-const sharedReturn = require("./message.js");
+const responseHandler = require("./message.js");
 const query = require("../database/query.js");
 const axios = require("axios");
 const { parseString } = require("xml2js");
@@ -128,9 +128,9 @@ exports.fetchHomeData = asyncHandler(async(request, result) => {
          };
       }
 
-      sharedReturn.sendSuccess(result, "Successfully fetched home data <i class='fa-solid fa-database'></i>", data);
+      responseHandler.sendSuccess(result, "Successfully fetched home data", data);
    } catch (error) {
       console.error(error);
-      sharedReturn.sendError(result, 500, "email", "Could not successfully process request <i class='fa-solid fa-database'></i>");
+      responseHandler.sendError(result, 500, "email", "Could not successfully process request");
    }
 });

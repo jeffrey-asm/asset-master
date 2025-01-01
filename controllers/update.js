@@ -1,7 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const query = require("../database/query.js");
 const validation = require("../database/validation.js");
-const sharedReturn = require("./message.js");
+const responseHandler = require("./message.js");
 
 exports.updateUser = asyncHandler(async(request, result) => {
    const normalizedInputs = validation.normalizeInputs(result, request.body);
@@ -20,13 +20,13 @@ exports.updateUser = asyncHandler(async(request, result) => {
    if (request.session.username != normalizedInputs.username) {
       // Attempt to see if new username is unique
       changedUsername = true;
-      const duplicateCheck = await query.searchDuplicates(result, "SELECT * FROM users WHERE username = ?;", [normalizedInputs.username], "username", "Username already taken <i class='fa-solid fa-database'></i>");
+      const duplicateCheck = await query.searchDuplicates(result, "SELECT * FROM users WHERE username = ?;", [normalizedInputs.username], "username", "Username already taken");
       if (duplicateCheck) return;
    }
 
    if (request.session.email != normalizedInputs.email) {
       changedEmail = true;
-      const duplicateCheck = await query.searchDuplicates(result, "SELECT * FROM users WHERE email = ?;", [normalizedInputs.email], "email", "Email already taken <i class='fa-solid fa-database'></i>");
+      const duplicateCheck = await query.searchDuplicates(result, "SELECT * FROM users WHERE email = ?;", [normalizedInputs.email], "email", "Email already taken");
 
       if (duplicateCheck) return;
    }
@@ -55,12 +55,12 @@ exports.updateUser = asyncHandler(async(request, result) => {
          await request.session.save();
       } else {
          // In case user did not change any values, don't bother writing an update query
-         sharedReturn.sendSuccess(result, "No changes <i class=\"fa-solid fa-circle-info\"></i>");
+         responseHandler.sendSuccess(result, "No changes");
          return;
       }
    } catch (error) {
       console.error(error);
-      sharedReturn.sendError(result, 500, "email", "Could not successfully process request <i class='fa-solid fa-database'></i>");
+      responseHandler.sendError(result, 500, "email", "Could not successfully process request");
       return;
    }
 });
@@ -83,19 +83,19 @@ exports.updatePassword = asyncHandler(async(request, result) => {
       if (savedPassword.hasOwnProperty("error")) throw new Error("");
 
       if (savedPassword[0].password != oldPassword) {
-         sharedReturn.sendError(result, 400, "oldPassword", "Incorrect password <i class='fa-solid fa-lock'></i>");
+         responseHandler.sendError(result, 400, "oldPassword", "Incorrect password");
          return;
       } else if (savedPassword[0].password == newPassword) {
-         sharedReturn.sendError(result, 400, "password", "New password must be not be the same as current password <i class='fa-solid fa-lock'></i>");
+         responseHandler.sendError(result, 400, "password", "New password must be not be the same as current password");
          return;
       }
 
       await query.runQuery("UPDATE users SET password = ? WHERE user_id = ?;", [newPassword, request.session.user_id]);
-      sharedReturn.sendSuccess(result, "Password successfully changed <i class=\"fa-solid fa-lock\"></i>");
+      responseHandler.sendSuccess(result, "Password successfully changed");
       return;
    } catch (error) {
       console.error(error);
-      sharedReturn.sendError(result, 500, "oldPassword", "Could not successfully process request <i class='fa-solid fa-database'></i>");
+      responseHandler.sendError(result, 500, "oldPassword", "Could not successfully process request");
       return;
    }
 });
@@ -104,7 +104,7 @@ exports.deleteAccount = asyncHandler(async(request, result) => {
    const normalizedInputs = validation.normalizeInputs(result, request.body);
 
    if (normalizedInputs.message !== `sudo deluser ${request.session.username}`) {
-      sharedReturn.sendError(result, 400, "message", "Incorrect deletion message <i class=\"fa-regular fa-message\"></i>");
+      responseHandler.sendError(result, 400, "message", "Incorrect deletion message");
       return;
    }
 
@@ -112,11 +112,11 @@ exports.deleteAccount = asyncHandler(async(request, result) => {
       const removeUserQuery = "DELETE FROM users WHERE user_id = ?;";
 
       await query.runQuery(removeUserQuery, [request.session.user_id]);
-      sharedReturn.sendSuccess(result, "Successfully removed account <i class=\"fa-solid fa-trash\"></i>");
+      responseHandler.sendSuccess(result, "Successfully removed account");
       return;
    } catch (error) {
       console.error(error);
-      sharedReturn.sendError(result, 500, "message", "Could not successfully process request <i class='fa-solid fa-database'></i>");
+      responseHandler.sendError(result, 500, "message", "Could not successfully process request");
       return;
    }
 });

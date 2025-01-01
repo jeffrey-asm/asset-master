@@ -1,7 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const validation = require("@/database/validation.js");
 const query = require("@/database/query.js");
-const sharedReturn = require("@/controllers/message.js");
+const responseHandler = require("@/controllers/message.js");
 
 exports.signup = asyncHandler(async(request, result) => {
    const normalizedInputs = validation.normalizeInputs(result, request.body);
@@ -18,7 +18,7 @@ exports.signup = asyncHandler(async(request, result) => {
    for (const { method, params } of fields) {
       const validationResult = method(result, ...params);
 
-      if (validationResult.status === "Failure") return;
+      if (validationResult.status === "Error") return;
    }
 
    try {
@@ -31,10 +31,10 @@ exports.signup = asyncHandler(async(request, result) => {
          const field = conflict[0].username === username ? "username" : "email";
 
          const message = field === "username"
-            ? "Username already taken! <i class='fa-solid fa-database'></i>"
-            : "Email already taken! <i class='fa-solid fa-database'></i>";
+            ? "Username already taken!"
+            : "Email already taken!";
 
-         sharedReturn.sendError(result, 409, field, message);
+         responseHandler.sendError(result, 409, field, message);
          return;
       }
 
@@ -59,10 +59,10 @@ exports.signup = asyncHandler(async(request, result) => {
       result.cookie("user_id", user_id, { httpOnly: true });
       request.session.save();
 
-      sharedReturn.sendSuccess(result, "Welcome <i class=\"fa-solid fa-door-open\"></i>");
+      responseHandler.sendSuccess(result, "Welcome");
    } catch (error) {
       console.error(error);
 
-      sharedReturn.sendError(result, 500, "email", "Could not successfully process request <i class='fa-solid fa-database'></i>");
+      responseHandler.sendError(result, 500, "email", "Could not successfully process request");
    }
 });
