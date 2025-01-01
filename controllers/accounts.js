@@ -87,7 +87,7 @@ exports.getUserAccounts = asyncHandler(async(request, result) => {
       responseHandler.sendSuccess(result, "N/A", returnData);
    } catch (error) {
       console.error(error);
-      
+
       responseHandler.sendError(result, 500, "N/A", "Could not successfully process request");
    }
 });

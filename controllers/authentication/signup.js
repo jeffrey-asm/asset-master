@@ -43,13 +43,6 @@ exports.signup = asyncHandler(async(request, result) => {
 
       const user_id = user.insertId;
 
-      // After adding a user, a budget instance must be created
-      const currentMonth = query.getCurrentMonth();
-      await query.runQuery(
-         "INSERT INTO budgets (income_total, expenses_total, income_current, expenses_current, month, user_id) VALUES (?, ?, ?, ?, ?, ?);",
-         [1600.00, 500.00, 0.00, 0.00, currentMonth, user_id]
-      );
-
       // Cache user data in session object for future requests
       request.session.user_id = user_id;
       request.session.username = username;
