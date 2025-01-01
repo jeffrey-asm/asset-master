@@ -1,6 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const query = require("@/database/query.js");
-const responseHandler = require("@/controllers/message.js");
+const responseHandler = require("@/controllers/response/message.js");
 
 exports.login = asyncHandler(async(request, result) => {
    try {

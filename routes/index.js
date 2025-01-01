@@ -1,9 +1,9 @@
 const express = require("express");
 const router = express.Router();
 
-const indexController = require("../controllers/index.js");
-const logInController = require("../controllers/authentication/login.js");
-const signUpController = require("../controllers/authentication/signup.js");
+const indexController = require("@/controllers/routers/index.js");
+const logInController = require("@/controllers/authentication/login.js");
+const signUpController = require("@/controllers/authentication/signup.js");
 
 // Landing Page
 router.get("/", indexController.landing);

@@ -1,7 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const query = require("../database/query.js");
 const validation = require("../database/validation.js");
-const responseHandler = require("./message.js");
+const responseHandler = require("@/controllers/response/message.js");
 const Decimal = require("decimal.js");
 
 async function updateBudgetLeftOver(request) {

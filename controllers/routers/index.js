@@ -8,7 +8,7 @@ async function renderOrRedirect(request, result, file) {
    if (userID !== undefined) {
       return result.redirect("/users/home");
    } else {
-      return result.sendFile(path.join(__dirname, "../views", `${file}`));
+      return result.sendFile(path.join(__dirname, "../../views", `${file}`));
    }
 }
 

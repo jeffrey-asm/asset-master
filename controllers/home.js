@@ -1,7 +1,7 @@
 require("dotenv").config();
 const asyncHandler = require("express-async-handler");
 const fs = require("fs").promises;
-const responseHandler = require("./message.js");
+const responseHandler = require("@/controllers/response/message.js");
 const query = require("../database/query.js");
 const axios = require("axios");
 const { parseString } = require("xml2js");

@@ -2,7 +2,7 @@ require("dotenv").config();
 const mysql = require("mysql2");
 const util = require("util");
 const cryptoJS = require("crypto-js");
-const responseHandler = require("@/controllers/message.js");
+const responseHandler = require("@/controllers/response/message.js");
 
 exports.runQuery = async function(query = "", inputs = []) {
    // Initialize connection to database

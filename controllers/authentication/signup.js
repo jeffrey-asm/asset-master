@@ -1,24 +1,29 @@
 const asyncHandler = require("express-async-handler");
 const validation = require("@/database/validation.js");
 const query = require("@/database/query.js");
-const responseHandler = require("@/controllers/message.js");
+const userModal = require("@/modal/users.js");
+const responseHandler = require("@/controllers/response/message.js");
 
 exports.signup = asyncHandler(async(request, result) => {
-   const normalizedInputs = validation.normalizeInputs(result, request.body);
-   const { username, password, email, additionalPassword } = normalizedInputs;
+   const normalizedInputs = validation.normalizeInputs(request.body);
+   const { username, password, email, confirmPassword } = normalizedInputs;
 
    // Define validation rules and their corresponding parameters for each user input
    const fields = [
       { method: validation.validateUsername, params: [username] },
-      { method: validation.validatePasswords, params: [password, additionalPassword] },
+      { method: validation.validatePasswords, params: [password, confirmPassword] },
       { method: validation.validateEmail, params: [email] }
    ];
 
    // Perform all field validations
    for (const { method, params } of fields) {
-      const validationResult = method(result, ...params);
+      const validationResult = method(...params);
+      console.log(params, validationResult);
 
-      if (validationResult.status === "Error") return;
+      if (validationResult.status !== "Success") {
+         responseHandler.sendError(result, 400, validationResult.id, validationResult.message);
+         return;
+      };
    }
 
    try {
@@ -38,8 +43,7 @@ exports.signup = asyncHandler(async(request, result) => {
          return;
       }
 
-      const insertQuery = "INSERT INTO users (username, password, email, verified) VALUES (?, ?, ?, ?);";
-      const user = await query.runQuery(insertQuery, [username, hashedPassword, email, false]);
+      const user = await userModal.createUser({ username, email, hashedPassword });
 
       const user_id = user.insertId;
 
@@ -53,9 +57,11 @@ exports.signup = asyncHandler(async(request, result) => {
       request.session.save();
 
       responseHandler.sendSuccess(result, "Welcome");
+      return;
    } catch (error) {
       console.error(error);
 
       responseHandler.sendError(result, 500, "email", "Could not successfully process request");
+      return;
    }
 });

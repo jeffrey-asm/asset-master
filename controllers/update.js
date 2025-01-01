@@ -1,7 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const query = require("../database/query.js");
 const validation = require("../database/validation.js");
-const responseHandler = require("./message.js");
+const responseHandler = require("@/controllers/response/message.js");
 
 exports.updateUser = asyncHandler(async(request, result) => {
    const normalizedInputs = validation.normalizeInputs(result, request.body);
@@ -69,7 +69,7 @@ exports.updatePassword = asyncHandler(async(request, result) => {
    const normalizedInputs = validation.normalizeInputs(result, request.body);
 
    // Validate form first
-   const newPasswordValidation = validation.validatePasswords(result, normalizedInputs.password, normalizedInputs.additionalPassword);
+   const newPasswordValidation = validation.validatePasswords(result, normalizedInputs.password, normalizedInputs.confirmPassword);
 
    if (newPasswordValidation.status != "Success") return;
 

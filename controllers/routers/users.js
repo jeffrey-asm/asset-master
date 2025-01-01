@@ -1,7 +1,7 @@
 
 const asyncHandler = require("express-async-handler");
 const path = require("path");
-const query = require("../database/query.js");
+const query = require("@/database/query.js");
 
 async function renderOrRedirect(request, result, file) {
    // Share function for various get requests to send signed out in users to landing page or direct to requested page
@@ -29,7 +29,7 @@ async function renderOrRedirect(request, result, file) {
          await request.session.save();
       }
 
-      return result.sendFile(path.join(__dirname, "../views", `${file}`));
+      return result.sendFile(path.join(__dirname, "../../views", `${file}`));
    }
 }
 
